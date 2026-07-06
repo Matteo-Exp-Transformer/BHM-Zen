@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base clinico-caldo (§13.1): neutro caldo, inchiostro quasi-nero caldo.
+   I token veri si affinano nelle sedute UI — mockup = verità visiva. */
+@layer base {
+  html {
+    @apply bg-sand-50 text-ink antialiased;
+  }
+}
