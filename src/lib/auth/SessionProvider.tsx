@@ -7,13 +7,29 @@ import { SessionContext, type Role, type SessionContextValue } from './session'
 async function fetchMembership(userId: string) {
   const { data, error } = await supabase
     .from('company_members')
-    .select('company_id, role')
+    .select(
+      'company_id, role, staff_id, staff:staff_id(name, department_assignments)',
+    )
     .eq('user_id', userId)
     .eq('is_active', true)
     .limit(1)
     .maybeSingle()
   if (error) throw error
   return data
+}
+
+function pickDisplayName(
+  staffName: string | null | undefined,
+  session: Session | null,
+): string | null {
+  if (staffName) return staffName
+  const meta = session?.user.user_metadata as
+    | { first_name?: string; last_name?: string }
+    | undefined
+  if (meta?.first_name)
+    return [meta.first_name, meta.last_name].filter(Boolean).join(' ')
+  const email = session?.user.email
+  return email ? (email.split('@')[0] ?? null) : null
 }
 
 export function SessionProvider({ children }: { children: ReactNode }) {
@@ -40,12 +56,17 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   })
 
   const role = (membership.data?.role as Role | undefined) ?? null
+  const staff = membership.data?.staff ?? null
+  const assignments = staff?.department_assignments ?? null
   const value: SessionContextValue = {
     session,
     loading: loading || (!!userId && membership.isLoading),
     role,
     companyId: membership.data?.company_id ?? null,
     canDirect: role === 'admin' || role === 'responsabile',
+    staffId: membership.data?.staff_id ?? null,
+    displayName: pickDisplayName(staff?.name, session),
+    departmentIds: assignments && assignments.length > 0 ? assignments : null,
     signOut: async () => {
       await supabase.auth.signOut()
     },

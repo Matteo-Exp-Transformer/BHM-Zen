@@ -12,6 +12,12 @@ export interface SessionContextValue {
   companyId: string | null
   /** Regia visibile solo a titolare/responsabile (§12.2) */
   canDirect: boolean
+  /** scheda staff collegata alla membership (null se non collegata) */
+  staffId: string | null
+  /** nome da mostrare: staff.name → user_metadata → prefisso email */
+  displayName: string | null
+  /** reparti assegnati allo staff; null = nessuna assegnazione → vede tutti */
+  departmentIds: string[] | null
   signOut: () => Promise<void>
 }
 

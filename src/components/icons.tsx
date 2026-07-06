@@ -90,3 +90,121 @@ export function LogoutIcon(props: SVGProps<SVGSVGElement>) {
     </Icon>
   )
 }
+
+export function ThermoIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Icon {...props}>
+      <path d="M14 14.76V4a2 2 0 0 0-4 0v10.76a4 4 0 1 0 4 0Z" />
+      <path d="M12 8v6.5" />
+    </Icon>
+  )
+}
+
+export function CheckIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Icon strokeWidth={2.4} {...props}>
+      <path d="M20 6 9 17l-5-5" />
+    </Icon>
+  )
+}
+
+export function AlertIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Icon {...props}>
+      <path d="M10.3 3.5 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.5a2 2 0 0 0-3.4 0Z" />
+      <path d="M12 9v4" />
+      <path d="M12 17h.01" />
+    </Icon>
+  )
+}
+
+export function ChevronDownIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Icon strokeWidth={2.2} {...props}>
+      <path d="m6 9 6 6 6-6" />
+    </Icon>
+  )
+}
+
+export function UndoIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Icon {...props}>
+      <path d="M3 7v6h6" />
+      <path d="M3 13a9 9 0 1 0 3-7.7L3 8" />
+    </Icon>
+  )
+}
+
+/* --- icone tipo-punto (mockup 02): frigo, freezer, abbattitore, ambiente --- */
+
+export function FridgeIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Icon {...props}>
+      <rect x="6" y="2" width="12" height="20" rx="2" />
+      <path d="M6 11h12" />
+      <path d="M9 6v2M9 15v2" />
+    </Icon>
+  )
+}
+
+export function FreezerIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Icon {...props}>
+      <path d="M12 2v20M2 12h20M5 5l14 14M19 5 5 19" />
+    </Icon>
+  )
+}
+
+export function BlastIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Icon {...props}>
+      <path d="M9.5 9.5a2.5 2.5 0 1 1 3 4H2" />
+      <path d="M12.5 20a2.5 2.5 0 1 0 3-4H2" />
+      <path d="M17 8a3 3 0 1 1 3 5H2" />
+    </Icon>
+  )
+}
+
+export function AmbientIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Icon {...props}>
+      <path d="M3 10h18M4 10l1-4h14l1 4M5 10v9M19 10v9M3 19h18" />
+    </Icon>
+  )
+}
+
+/** Icona per tipo di punto di conservazione (fallback: ambiente). */
+export function PointTypeIcon({
+  pointType,
+  ...props
+}: SVGProps<SVGSVGElement> & { pointType: string }) {
+  switch (pointType) {
+    case 'fridge':
+      return <FridgeIcon {...props} />
+    case 'freezer':
+      return <FreezerIcon {...props} />
+    case 'blast':
+      return <BlastIcon {...props} />
+    default:
+      return <AmbientIcon {...props} />
+  }
+}
+
+/* --- icone mansioni (mockup 01) --- */
+
+export function SprayIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Icon {...props}>
+      <path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2-2Z" />
+    </Icon>
+  )
+}
+
+export function TaskIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Icon {...props}>
+      <path d="M3 3v18h18" />
+      <path d="M7 14l3-3 3 3 5-6" />
+    </Icon>
+  )
+}
