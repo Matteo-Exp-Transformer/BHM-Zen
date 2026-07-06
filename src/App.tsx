@@ -1,6 +1,8 @@
 import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
 import AppShell from '@/components/shell/AppShell'
 import LoginPage from '@/features/auth/LoginPage'
+import OggiPage from '@/features/oggi/OggiPage'
+import RepartiPage from '@/features/reparti/RepartiPage'
 import { useSession } from '@/lib/auth/session'
 
 /** Attesa calma (§13.6): niente spinner ansiogeni per un check di sessione. */
@@ -54,24 +56,8 @@ export default function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route element={<RequireSession />}>
         <Route element={<AppShell />}>
-          <Route
-            index
-            element={
-              <HousePlaceholder
-                title="Oggi"
-                note="Il tuo diario di bordo sta arrivando: le cose da fare ora, il timbro di fine turno."
-              />
-            }
-          />
-          <Route
-            path="reparti"
-            element={
-              <HousePlaceholder
-                title="Reparti"
-                note="Qui vivranno i tuoi reparti: i punti di conservazione, la temperatura che atterra, la cascata."
-              />
-            }
-          />
+          <Route index element={<OggiPage />} />
+          <Route path="reparti" element={<RepartiPage />} />
           <Route
             path="scorte"
             element={

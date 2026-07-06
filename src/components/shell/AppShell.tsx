@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { useSession } from '@/lib/auth/session'
+import { useMyDepartments } from '@/features/reparti/hooks'
 import {
   LogoutIcon,
   OggiIcon,
@@ -21,14 +22,19 @@ interface House {
  * Scheletro di navigazione (§12, mockup 06 = verità visiva):
  * - mobile: bottom tab bar · desktop/tablet (md+): side-rail 82px
  * - la barra si trasforma col ruolo: Regia solo per titolare/responsabile
- * - tab centrale dinamica: nome-reparto se uno solo, «Reparti» se più d'uno
- *   (il nome reale arriva col port dei reparti — per ora etichetta di default)
+ * - tab centrale dinamica (§12.2): un solo reparto assegnato → il SUO nome
+ *   («Cucina»), più reparti o nessuna assegnazione → «Reparti»
  */
 function useHouses(): House[] {
   const { canDirect } = useSession()
+  const { departments } = useMyDepartments()
+  const repartiLabel =
+    !canDirect && departments.length === 1 && departments[0]
+      ? departments[0].name
+      : 'Reparti'
   const houses: House[] = [
     { to: '/', label: 'Oggi', icon: OggiIcon, end: true },
-    { to: '/reparti', label: 'Reparti', icon: RepartiIcon },
+    { to: '/reparti', label: repartiLabel, icon: RepartiIcon },
     { to: '/scorte', label: 'Scorte', icon: ScorteIcon },
   ]
   if (canDirect) houses.push({ to: '/regia', label: 'Regia', icon: RegiaIcon, divided: true })
