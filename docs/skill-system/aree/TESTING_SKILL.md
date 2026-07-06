@@ -7,8 +7,8 @@ description: >-
 
 # Testing — Guida agente (BHM-Zen)
 
-> Stack: **Vitest** + jsdom + Testing Library (unit/component) · **nessun Playwright/Cypress** (roadmap).
-> E2E app = script Node `verify:flows` (login utente test + stesse query dei hook, RLS attiva).
+> Stack: **Vitest** + jsdom + Testing Library (unit/component) · **Playwright** (E2E browser).
+> E2E API = script Node `verify:flows` (login utente test + stesse query dei hook, RLS attiva).
 > Fonte operativa: `docs/guide/HEALTH_CHECK_POST_FABLE.md` §4–§6.
 
 ---
@@ -40,12 +40,12 @@ description: >-
 Logica senza browser (date, occorrenze, stock, haccp-rules, point-verdict)
   → Vitest unit (npm run test)
 
-Flussi app sotto RLS con utente test (Oggi + Reparti: letture + scrittura)
-  → npm run verify:flows | verify:flows:write
-
-Interazione UI reale (tap, layout, PWA)
+Interazione UI reale (tap, layout, PWA, navigazione 4 case)
+  → Playwright (npm run test:e2e) — smoke autenticato + login page
   → QA manuale browser (npm run dev) — checklist HEALTH_CHECK §5
-  → Playwright: NON presente (FU futuro se serve automazione browser)
+
+Flussi dati sotto RLS senza browser (Oggi + Reparti lettura/scrittura)
+  → npm run verify:flows | verify:flows:write
 ```
 
 ---
@@ -55,7 +55,10 @@ Interazione UI reale (tap, layout, PWA)
 ```bash
 npm run test              # unit Vitest, una passata
 npm run test:watch        # unit in watch
-npm run validate          # gate pre-PR: lint + typecheck + test
+npm run test:e2e          # Playwright — avvia dev server + smoke browser
+npm run test:e2e:ui       # Playwright UI mode (debug)
+npm run test:e2e:report   # apre ultimo report HTML Playwright
+npm run validate          # gate pre-PR: lint + typecheck + test (unit only)
 npm run verify:setup      # bootstrap ambiente (prima sessione)
 npm run verify:flows      # E2E lettura RLS — Oggi + Reparti (serve .env.local + TEST_USER_*)
 npm run verify:flows:write  # E2E SCRITTURA sul DB live — righe permanenti; ok owner prima
@@ -70,10 +73,11 @@ npm run build             # smoke build PWA
 
 ## 4. Profilo Verifica — ordine consigliato
 
-1. **`npm run validate`** — gate automatico. Se fallisce, la revisione si ferma.
-2. **`npm run verify:flows`** — se l'area tocca Oggi/Reparti o fondamenta condivise (lettura RLS).
-3. **QA manuale** sulle schermate toccate — checklist `HEALTH_CHECK_POST_FABLE.md` §5.
-4. **`npm run verify:flows:write`** — solo se il task ha introdotto scritture DB e l'owner ha
+1. **`npm run validate`** — gate automatico (unit). Se fallisce, la revisione si ferma.
+2. **`npm run test:e2e`** — smoke browser (login + Oggi + navigazione case). Serve `.env.local` + `TEST_USER_*`.
+3. **`npm run verify:flows`** — se l'area tocca Oggi/Reparti o fondamenta condivise (lettura RLS).
+4. **QA manuale** sulle schermate toccate — checklist `HEALTH_CHECK_POST_FABLE.md` §5.
+5. **`npm run verify:flows:write`** — solo se il task ha introdotto scritture DB e l'owner ha
    autorizzato (modalità **deep**; crea temperature, completamenti, timbri reali).
 5. **Registro esiti** nel report: tabella ID · viewport · esito · nota.
 
@@ -91,7 +95,15 @@ Non dichiarare «verificato» con una sola larghezza né con la sola lettura del
 
 ---
 
-## 5. Mappa test esistenti (unit)
+## 5. Mappa test esistenti
+
+| Percorso | Cosa copre |
+|----------|------------|
+| `e2e/auth.setup.ts` | Login utente test → `e2e/.auth/user.json` (gitignored) |
+| `e2e/smoke.spec.ts` | Oggi caricato, navigazione case, pagina login |
+| `playwright.config.ts` | webServer Vite :3000, progetto chromium |
+
+### Unit (Vitest)
 
 | File | Cosa copre |
 |------|------------|
@@ -101,8 +113,8 @@ Non dichiarare «verificato» con una sola larghezza né con la sola lettura del
 | `src/features/calendario/occurrences.test.ts` | Occorrenze calendario (logica pura) |
 | `src/features/scorte/stock.test.ts` | Sotto-scorta, scadenze, suggerimenti |
 
-**Gap noto:** nessun test automatico browser per Scorte/Regia/Calendario oltre unit puri;
-`verify:flows` copre solo Oggi+Reparti (estensione = follow-up futuro).
+**Gap noto:** `verify:flows` copre solo Oggi+Reparti via API; Playwright smoke non ancora esteso a
+Scorte/Calendario/Regia né a scritture UI.
 
 ---
 
@@ -116,4 +128,4 @@ RULE  test che scrivono sul DB → documentare nel report cosa resta sul live
 
 ---
 
-**Ultimo aggiornamento**: 2026-07-06 · compilata da template: Vitest + verify:flows + HEALTH_CHECK §5, viewport 390/768/1280, FU-004 chiuso · → sessione skill-system lessico+testing
+**Ultimo aggiornamento**: 2026-07-06 · Playwright configurato (test:e2e smoke) + verify:flows · → sessione playwright

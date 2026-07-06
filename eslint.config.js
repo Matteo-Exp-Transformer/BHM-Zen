@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
   // docs/ contiene artefatti storici (test Fase 3 archiviati) — è documentazione, non codice
-  { ignores: ['dist', 'dev-dist', 'node_modules', 'docs', 'src/types/database.types.ts'] },
+  { ignores: ['dist', 'dev-dist', 'node_modules', 'docs', 'src/types/database.types.ts', 'e2e', 'playwright.config.ts'] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],

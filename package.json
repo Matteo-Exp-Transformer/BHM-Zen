@@ -12,6 +12,9 @@
     "type-check": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:report": "playwright show-report",
     "validate": "npm run lint && npm run type-check && npm run test",
     "verify:setup": "node scripts/verify-setup.mjs",
     "verify:supabase-cli": "node scripts/verify-supabase-cli.mjs",
@@ -39,6 +42,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
+    "@playwright/test": "^1.61.1",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.1.0",
     "@testing-library/user-event": "^14.6.1",

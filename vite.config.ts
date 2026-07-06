@@ -52,6 +52,6 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     css: false,
     // docs/ contiene artefatti storici Fase 3 (test archiviati) — non sono test del progetto
-    exclude: ['node_modules/**', 'dist/**', 'docs/**'],
+    exclude: ['node_modules/**', 'dist/**', 'docs/**', 'e2e/**'],
   },
 })
