@@ -28,7 +28,8 @@ scrive da solo il registro difendibile a un controllo. Pratica (coi guanti), edu
 
 ## DENTRO la beta (§5)
 
-Cascata + validazione temperature · diario/calendario con assegnazioni e completamenti ·
+Cascata + validazione temperature · diario/calendario con assegnazioni e completamenti
+(+ **vista completa `/calendario` con completamento anticipato**, dec. 13) ·
 inventario→lista spesa · alert scadenze/manutenzioni · timbro (shift-seal append-only, dec. 7) ·
 export inspection-ready · auth multi-ruolo solo-invito (3 ruoli, dec. 9) · multi-tenant 1 sede ·
 i 3 gesti-firma fatti benissimo.

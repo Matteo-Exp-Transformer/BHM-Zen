@@ -98,6 +98,25 @@ Non chieste in intervista; assunte per non bloccare, allineate ai vincoli del ri
 
 ---
 
+## Decisione 13 — Calendario: vista completa + completamento anticipato (seduta 2026-07-06, CP10)
+
+> Richiesta owner in sessione Fable: «la pagina calendario, dove admin o dipendenti o
+> responsabili, conservano una vista completa delle mansioni da fare (se voglio completare una
+> cosa che sarà da fare nei prossimi giorni la completo dal calendario, poiché il mio turno
+> mostra solo le cose di oggi)». **[NUOVO SCOPE]** (estensione della voce «diario/calendario» già in beta).
+
+- **Pagina figlia di Oggi** (route `/calendario`, ingresso dall'header di Oggi) — NON una quinta
+  casa: la bottom bar del mockup 06 non cambia.
+- Tutti e 3 i ruoli; visibilità = stesse regole di Oggi (dipendente → suoi reparti/assegnate).
+- **Completamento anticipato**: mansioni → completamento che copre il periodo dell'occorrenza
+  futura (append-only, zero schema nuovo); manutenzioni → solo la prossima scadenza reale
+  (ricorrenza rolling via trigger); **temperature MAI dal calendario** (solo lettura al punto).
+- Storno identico a Oggi (dec. 1). Niente retro-completamento di giorni passati.
+
+Definizione completa: [`FEATURE_Calendario_vista-completa.md`](./FEATURE_Calendario_vista-completa.md).
+
+---
+
 ## Per il masterplan §8
 - Le domande "Mappatura area-per-area" e le "due lenti" delle 5 mappe hanno ora **risposte owner** su 10 bivi → §8 spuntabile.
 - **[NUOVO SCOPE] Timbro fine turno** (dec. 7) **definito 2026-07-06**: «sigilla la giornata» (orario + attestazione «tutto registrato» → `shift_seals` append-only, firma audit-grade). Design comportamento/UI = prossima seduta Track A.

@@ -286,6 +286,7 @@ function useInvalidateOggi() {
   return () => {
     void queryClient.invalidateQueries({ queryKey: ['oggi', companyId] })
     void queryClient.invalidateQueries({ queryKey: ['punti-oggi', companyId] })
+    void queryClient.invalidateQueries({ queryKey: ['calendario', companyId] })
   }
 }
 

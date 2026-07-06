@@ -2,8 +2,8 @@
 name: oggi
 description: >-
   Skill per qualsiasi lavoro sulla casa «Oggi» (lente TEMPO): diario di bordo, mansioni del
-  giorno, completamenti, alert, timbro di fine turno. Caricala quando il task nomina Oggi,
-  diario, mansioni di oggi, timbro, alert scadenze.
+  giorno, completamenti, alert, timbro di fine turno, calendario (vista completa /calendario).
+  Caricala quando il task nomina Oggi, diario, mansioni di oggi, timbro, alert scadenze, calendario.
 ---
 
 # 🕐 OGGI — Skill di area (lente TEMPO)
@@ -46,7 +46,8 @@ la lista si acquieta — *«il tuo l'hai fatto»*.
 | Questione | Decisione | Stato |
 |-----------|-----------|-------|
 | Schema `shift_seals` | tabella append-only company/user/opened/closed/attestation | ✅ live (CP5) e usata dal timbro (CP8); più sigilli/giorno = turni spezzati |
-| Storno completamenti | riga con `reverses_completion_id` (dec. 1) | ✅ mansioni generiche (CP8); manutenzioni → FU-008 (draft trigger `20260706070000`, serve push) |
+| Storno completamenti | riga con `reverses_completion_id` (dec. 1) | ✅ mansioni + manutenzioni (CP9: trigger storno-aware `20260706070000` applicato, `useStorna`) |
+| Calendario vista completa | dec. 13: pagina figlia `/calendario`, completamento anticipato (mansioni = periodo; manutenzioni = solo prossima; temperature mai) | definita → [`FEATURE_Calendario_vista-completa.md`](../../meta/MAPPATURA_AREE/FEATURE_Calendario_vista-completa.md) |
 | Metadati `[END_DATE:]` in description | diventa colonna vera | da migrare (il port CP8 non li legge) |
 | Realtime | pattern invalidate-on-change esteso a Oggi (dec. 11); floor refetch-on-focus attivo | FU-010 |
 | Chiusure/weekend | `company_calendar_settings.open_weekdays` | non ancora filtrato in Oggi (da valutare in beta) |
@@ -69,4 +70,4 @@ RULE  date locali Italia: mai toISOString().split (RULE timezone, Bussola §2)
 
 ---
 
-**Ultimo aggiornamento**: 2026-07-06 · CP8: port area completato (diario Ora/A breve/Fatto, storno mansioni, timbro shift_seals) · → Report-port-fu002-fable
+**Ultimo aggiornamento**: 2026-07-06 · CP9/CP10: storno manutenzioni live + dec. 13 Calendario (vista completa, pagina figlia di Oggi) · → report sessione CP10

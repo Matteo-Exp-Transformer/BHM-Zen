@@ -2,6 +2,7 @@ import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
 import AppShell from '@/components/shell/AppShell'
 import LoginPage from '@/features/auth/LoginPage'
 import OggiPage from '@/features/oggi/OggiPage'
+import CalendarioPage from '@/features/calendario/CalendarioPage'
 import RepartiPage from '@/features/reparti/RepartiPage'
 import { useSession } from '@/lib/auth/session'
 
@@ -57,6 +58,7 @@ export default function App() {
       <Route element={<RequireSession />}>
         <Route element={<AppShell />}>
           <Route index element={<OggiPage />} />
+          <Route path="calendario" element={<CalendarioPage />} />
           <Route path="reparti" element={<RepartiPage />} />
           <Route
             path="scorte"

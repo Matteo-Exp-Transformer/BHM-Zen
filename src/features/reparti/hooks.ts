@@ -239,6 +239,7 @@ export function useRegistraTemperatura() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['punti-oggi', companyId] })
       void queryClient.invalidateQueries({ queryKey: ['oggi', companyId] })
+      void queryClient.invalidateQueries({ queryKey: ['calendario', companyId] })
     },
     onError: err => logger.error('registrazione temperatura fallita', err),
   })

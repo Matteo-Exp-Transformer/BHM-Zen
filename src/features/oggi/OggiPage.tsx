@@ -1,10 +1,12 @@
 import { useState, type ReactNode } from 'react'
+import { Link } from 'react-router-dom'
 import { useSession } from '@/lib/auth/session'
 import { useToast } from '@/components/ui/Toast'
 import { Sheet } from '@/components/ui/Sheet'
 import { VerdictChip } from '@/components/ui/VerdictChip'
 import {
   AlertIcon,
+  CalendarIcon,
   CheckIcon,
   FreezerIcon,
   SprayIcon,
@@ -193,11 +195,21 @@ export default function OggiPage() {
           </h2>
           <p className="mt-1 text-sm text-ink-soft">Ecco il tuo oggi.</p>
         </div>
-        <div
-          aria-hidden="true"
-          className="grid h-[42px] w-[42px] place-items-center rounded-full bg-gradient-to-br from-accent to-[color-mix(in_srgb,var(--accent)_60%,#7a2f16)] text-[15px] font-bold text-white shadow-card md:hidden"
-        >
-          {(displayName ?? '·').slice(0, 2).toUpperCase()}
+        <div className="flex items-center gap-2.5">
+          {/* 📅 la vista completa (dec. 13): i prossimi giorni, non solo il turno */}
+          <Link
+            to="/calendario"
+            aria-label="Apri il calendario"
+            className="grid h-[42px] w-[42px] place-items-center rounded-[13px] bg-surface text-ink-soft shadow-card transition-transform active:scale-95"
+          >
+            <CalendarIcon className="h-[21px] w-[21px]" />
+          </Link>
+          <div
+            aria-hidden="true"
+            className="grid h-[42px] w-[42px] place-items-center rounded-full bg-gradient-to-br from-accent to-[color-mix(in_srgb,var(--accent)_60%,#7a2f16)] text-[15px] font-bold text-white shadow-card md:hidden"
+          >
+            {(displayName ?? '·').slice(0, 2).toUpperCase()}
+          </div>
         </div>
       </header>
 
