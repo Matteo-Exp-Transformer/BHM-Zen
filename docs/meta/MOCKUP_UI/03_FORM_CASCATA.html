@@ -1,0 +1,457 @@
+<style>
+  :root{
+    --ground:#EFEDE8; --ground-2:#E7E4DD; --surface:#FFFFFF; --surface-2:#FAF9F6;
+    --ink:#24201C; --ink-2:#4C463F; --ink-muted:#7A7268;
+    --hairline:#E4E0D8; --hairline-2:#EDEAE3;
+    --accent:#C0552E; --accent-ink:#FFFFFF; --accent-soft:#F4E4DB;
+    --ok:#2E8B57; --ok-bg:#E4F1E9; --ok-ink:#1E6B40;
+    --warn:#B9821A; --warn-bg:#F6ECD3; --warn-ink:#87600F;
+    --bad:#C33D3D; --bad-bg:#F7E2E0; --bad-ink:#95271F;
+    --shadow: 0 1px 2px rgba(40,34,28,.04), 0 8px 24px rgba(40,34,28,.06);
+    --shadow-lg: 0 20px 60px rgba(30,24,18,.28);
+    --r: 18px;
+    --font: "Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ground:#161310; --ground-2:#100E0B; --surface:#211D17; --surface-2:#26211A;
+      --ink:#F0EBE3; --ink-2:#C9C2B7; --ink-muted:#A0978A;
+      --hairline:#332D24; --hairline-2:#2A241D;
+      --accent:#DA7A4D; --accent-ink:#1B1510; --accent-soft:#2E2016;
+      --ok:#54B37E; --ok-bg:#16271D; --ok-ink:#84D2A5;
+      --warn:#DDB155; --warn-bg:#2A2312; --warn-ink:#E7C878;
+      --bad:#E0665E; --bad-bg:#2C1714; --bad-ink:#EE908A;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.4);
+      --shadow-lg: 0 24px 70px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="light"]{
+    --ground:#EFEDE8; --ground-2:#E7E4DD; --surface:#FFFFFF; --surface-2:#FAF9F6;
+    --ink:#24201C; --ink-2:#4C463F; --ink-muted:#7A7268;
+    --hairline:#E4E0D8; --hairline-2:#EDEAE3;
+    --accent:#C0552E; --accent-ink:#FFFFFF; --accent-soft:#F4E4DB;
+    --ok:#2E8B57; --ok-bg:#E4F1E9; --ok-ink:#1E6B40;
+    --warn:#B9821A; --warn-bg:#F6ECD3; --warn-ink:#87600F;
+    --bad:#C33D3D; --bad-bg:#F7E2E0; --bad-ink:#95271F;
+    --shadow: 0 1px 2px rgba(40,34,28,.04), 0 8px 24px rgba(40,34,28,.06);
+    --shadow-lg: 0 20px 60px rgba(30,24,18,.28);
+  }
+  :root[data-theme="dark"]{
+    --ground:#161310; --ground-2:#100E0B; --surface:#211D17; --surface-2:#26211A;
+    --ink:#F0EBE3; --ink-2:#C9C2B7; --ink-muted:#A0978A;
+    --hairline:#332D24; --hairline-2:#2A241D;
+    --accent:#DA7A4D; --accent-ink:#1B1510; --accent-soft:#2E2016;
+    --ok:#54B37E; --ok-bg:#16271D; --ok-ink:#84D2A5;
+    --warn:#DDB155; --warn-bg:#2A2312; --warn-ink:#E7C878;
+    --bad:#E0665E; --bad-bg:#2C1714; --bad-ink:#EE908A;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.4);
+    --shadow-lg: 0 24px 70px rgba(0,0,0,.6);
+  }
+
+  *{ box-sizing:border-box; }
+  body{ margin:0; }
+  .wrap{ font-family:var(--font); color:var(--ink); background:radial-gradient(120% 80% at 50% -10%, var(--ground) 0%, var(--ground-2) 100%); min-height:100vh; padding:40px 20px 64px; display:flex; flex-direction:column; align-items:center; gap:34px; -webkit-font-smoothing:antialiased; }
+  .intro{ max-width:560px; text-align:center; display:flex; flex-direction:column; gap:10px; }
+  .eyebrow{ margin:0; font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); }
+  .intro h1{ margin:0; font-size:clamp(26px,5vw,34px); font-weight:750; letter-spacing:-.02em; text-wrap:balance; line-height:1.1; }
+  .lede{ margin:0; font-size:15.5px; line-height:1.55; color:var(--ink-2); text-wrap:balance; }
+  .lede strong{ color:var(--ink); font-weight:650; }
+
+  .stage{ width:100%; display:flex; justify-content:center; }
+  .phone{ position:relative; width:390px; max-width:calc(100vw - 40px); height:min(800px, 86vh); background:var(--surface); border-radius:46px; box-shadow:var(--shadow-lg), 0 0 0 2px var(--hairline-2), 0 0 0 11px var(--ground-2); overflow:hidden; isolation:isolate; }
+  @media (prefers-color-scheme: dark){ .phone{ box-shadow:var(--shadow-lg), 0 0 0 2px #000, 0 0 0 11px #0b0906; } }
+  :root[data-theme="dark"] .phone{ box-shadow:var(--shadow-lg), 0 0 0 2px #000, 0 0 0 11px #0b0906; }
+  .screen{ position:absolute; inset:0; display:flex; flex-direction:column; background:var(--ground); }
+
+  .statusbar{ height:40px; flex:0 0 auto; display:flex; align-items:center; justify-content:space-between; padding:0 26px; font-size:13px; font-weight:600; color:var(--ink); }
+  .statusbar .dots{ display:flex; gap:5px; align-items:center; opacity:.85; }
+  .statusbar .dots span{ width:6px; height:6px; border-radius:50%; background:var(--ink); }
+  .statusbar .dots .b{ width:22px; height:11px; border-radius:3px; border:1.5px solid var(--ink); background:none; position:relative; }
+  .statusbar .dots .b::after{ content:""; position:absolute; inset:2px; width:12px; border-radius:1px; background:var(--ink); }
+
+  /* app bar */
+  .appbar{ flex:0 0 auto; display:flex; align-items:center; gap:12px; padding:6px 16px 10px; }
+  .iconbtn{ width:38px; height:38px; border-radius:11px; border:0; cursor:pointer; background:var(--surface); color:var(--ink); box-shadow:var(--shadow); display:grid; place-items:center; }
+  .iconbtn:focus-visible{ outline:3px solid color-mix(in srgb,var(--accent) 55%, transparent); outline-offset:2px; }
+  .appbar h2{ margin:0; font-size:18px; font-weight:750; letter-spacing:-.01em; }
+  .appbar .in{ font-size:12.5px; color:var(--ink-muted); font-weight:600; }
+
+  /* progress */
+  .progress{ flex:0 0 auto; padding:0 18px 8px; }
+  .track{ height:5px; border-radius:999px; background:var(--hairline); overflow:hidden; }
+  .track > i{ display:block; height:100%; width:20%; background:var(--accent); border-radius:999px; transition:width .5s cubic-bezier(.2,.8,.2,1); }
+  .steps-label{ display:flex; justify-content:space-between; margin-top:6px; font-size:10.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-muted); }
+  .steps-label span.on{ color:var(--accent); }
+
+  .content{ flex:1 1 auto; overflow-y:auto; overflow-x:hidden; padding:6px 16px 120px; display:flex; flex-direction:column; gap:20px; scrollbar-width:none; }
+  .content::-webkit-scrollbar{ display:none; }
+
+  .step{ display:none; flex-direction:column; gap:12px; }
+  .step.show{ display:flex; animation:rise .45s ease both; }
+  @keyframes rise{ from{ opacity:0; transform:translateY(12px) } to{ opacity:1; transform:none } }
+  .step-head{ display:flex; flex-direction:column; gap:3px; padding:0 2px; }
+  .step-head .lab{ font-size:11.5px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-muted); }
+  .step-head .q{ font-size:19px; font-weight:750; letter-spacing:-.01em; }
+
+  .chips{ display:flex; flex-wrap:wrap; gap:10px; }
+  .chip{ appearance:none; border:0; cursor:pointer; font-family:inherit; background:var(--surface); color:var(--ink); box-shadow:var(--shadow), inset 0 0 0 1.5px var(--hairline); border-radius:14px; padding:13px 16px; font-size:15px; font-weight:600; display:inline-flex; align-items:center; gap:9px;
+    transition:opacity .7s ease, transform .7s cubic-bezier(.2,.8,.2,1), background .2s ease, box-shadow .2s ease, max-width .7s ease, padding .7s ease, margin .7s ease, filter .6s ease; max-width:280px; }
+  .chip .ic{ color:var(--ink-muted); display:grid; place-items:center; }
+  .chip:hover{ box-shadow:var(--shadow), inset 0 0 0 1.5px color-mix(in srgb,var(--accent) 40%, var(--hairline)); }
+  .chip[data-sel="1"]{ background:var(--accent); color:var(--accent-ink); box-shadow:0 2px 0 color-mix(in srgb,var(--accent) 55%,#000), var(--shadow); }
+  .chip[data-sel="1"] .ic{ color:var(--accent-ink); }
+  .chip.rec{ box-shadow:var(--shadow), inset 0 0 0 2px var(--ok); }
+  .chip.rec::after{ content:"consigliato"; font-size:10px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--ok-ink); background:var(--ok-bg); padding:2px 7px; border-radius:999px; }
+  .chip[data-sel="1"].rec::after{ color:var(--accent-ink); background:color-mix(in srgb,#000 18%, transparent); }
+  .chip.melt{ opacity:0; transform:scale(.78); max-width:0 !important; padding-left:0; padding-right:0; margin:-5px; overflow:hidden; pointer-events:none; box-shadow:none; filter:blur(2px); }
+  .chip.win{ animation:winpulse .7s cubic-bezier(.2,1.2,.35,1) 1; }
+  @keyframes winpulse{ 0%{ transform:scale(1) } 45%{ transform:scale(1.07) } 100%{ transform:scale(1) } }
+  .chip:focus-visible{ outline:3px solid color-mix(in srgb,var(--accent) 55%, transparent); outline-offset:2px; }
+
+  /* whisper (HACCP knowledge that reveals then settles) */
+  .whisper{ display:none; align-items:flex-start; gap:10px; padding:12px 14px; border-radius:14px; background:var(--ok-bg); color:var(--ok-ink); font-size:13.5px; line-height:1.4; font-weight:550;
+    animation:whisperIn .5s ease both; }
+  .whisper.show{ display:flex; }
+  .whisper.settle{ background:var(--surface-2); color:var(--ink-2); box-shadow:inset 0 0 0 1px var(--hairline); }
+  .whisper svg{ flex:0 0 auto; margin-top:1px; color:var(--ok); }
+  .whisper.settle svg{ color:var(--ink-muted); }
+  @keyframes whisperIn{ from{ opacity:0; transform:translateY(-4px) } to{ opacity:1; transform:none } }
+
+  /* parametri panel */
+  .params{ display:flex; flex-direction:column; gap:13px; background:var(--surface); border-radius:var(--r); box-shadow:var(--shadow); padding:16px; }
+  .param-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .param-row .k{ font-size:14px; color:var(--ink-2); font-weight:600; display:flex; align-items:center; gap:9px; }
+  .param-row .k .pi{ width:32px; height:32px; border-radius:9px; background:var(--surface-2); box-shadow:inset 0 0 0 1px var(--hairline); display:grid; place-items:center; color:var(--ink-muted); }
+  .range-chip{ font-size:14px; font-weight:750; padding:6px 12px; border-radius:999px; background:var(--ok-bg); color:var(--ok-ink); font-variant-numeric:tabular-nums; }
+  .range-chip.amb{ background:var(--surface-2); color:var(--ink-muted); box-shadow:inset 0 0 0 1px var(--hairline); }
+  .stepper{ display:flex; align-items:center; gap:4px; background:var(--surface-2); border-radius:12px; box-shadow:inset 0 0 0 1px var(--hairline); padding:3px; }
+  .stepper button{ width:34px; height:34px; border:0; border-radius:9px; background:var(--surface); box-shadow:var(--shadow); cursor:pointer; font-size:20px; font-weight:700; color:var(--ink); font-family:inherit; }
+  .stepper button:active{ transform:scale(.92); }
+  .stepper .v{ min-width:56px; text-align:center; font-size:15px; font-weight:700; font-variant-numeric:tabular-nums; }
+  .hr{ height:1px; background:var(--hairline); }
+
+  .savebar{ position:absolute; left:0; right:0; bottom:0; padding:14px 16px calc(16px + env(safe-area-inset-bottom)); background:linear-gradient(to top, var(--ground) 62%, transparent); z-index:6; }
+  .btn{ appearance:none; border:0; cursor:pointer; font-family:inherit; border-radius:14px; font-size:16px; font-weight:700; padding:15px 16px; width:100%; display:flex; align-items:center; justify-content:center; gap:9px; transition:transform .12s ease, opacity .3s ease, background .2s ease; }
+  .btn.primary{ background:var(--accent); color:var(--accent-ink); box-shadow:0 2px 0 color-mix(in srgb, var(--accent) 55%, #000), var(--shadow); }
+  .btn.primary:disabled{ opacity:.4; box-shadow:none; cursor:default; }
+  .btn:active:not(:disabled){ transform:scale(.98); }
+  .btn:focus-visible{ outline:3px solid color-mix(in srgb,var(--accent) 55%, transparent); outline-offset:2px; }
+  .btn.ghost{ background:var(--surface); color:var(--ink); box-shadow:var(--shadow), inset 0 0 0 1.5px var(--hairline); }
+
+  /* done overlay */
+  .done{ position:absolute; inset:0; z-index:30; background:var(--ground); display:none; flex-direction:column; align-items:center; justify-content:center; gap:14px; padding:32px; text-align:center; }
+  .done.show{ display:flex; animation:rise .4s ease both; }
+  .done .seal{ width:96px; height:96px; border-radius:50%; display:grid; place-items:center; background:var(--ok-bg); color:var(--ok); animation:pop .55s cubic-bezier(.2,1.3,.4,1) both; }
+  @keyframes pop{ 0%{ transform:scale(.5); opacity:0 } 60%{ transform:scale(1.08) } 100%{ transform:scale(1); opacity:1 } }
+  .done h3{ margin:6px 0 0; font-size:23px; font-weight:750; letter-spacing:-.01em; }
+  .done p{ margin:0; font-size:15px; color:var(--ink-2); line-height:1.5; max-width:280px; }
+  .done .summary{ display:inline-flex; align-items:center; gap:8px; background:var(--surface); box-shadow:var(--shadow); border-radius:999px; padding:8px 15px; font-size:13.5px; font-weight:650; }
+  .done .summary .rc{ color:var(--ok-ink); font-weight:750; font-variant-numeric:tabular-nums; }
+  .done .acts{ display:flex; flex-direction:column; gap:9px; width:100%; max-width:280px; margin-top:8px; }
+
+  .legend{ max-width:620px; width:100%; background:var(--surface); border-radius:20px; box-shadow:var(--shadow); padding:20px 22px; display:flex; flex-direction:column; gap:16px; }
+  .legend h3{ margin:0; font-size:13px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-muted); }
+  .principles{ display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px; }
+  .principles div{ font-size:13px; color:var(--ink-2); line-height:1.45; }
+  .principles b{ color:var(--ink); font-weight:650; display:block; margin-bottom:2px; }
+
+  @media (prefers-reduced-motion: reduce){ *{ animation-duration:.001ms !important; transition-duration:.001ms !important; } }
+</style>
+
+<div class="wrap">
+  <header class="intro">
+    <p class="eyebrow">BHM · Direzione UI · Mockup 3 di 4</p>
+    <h1>Il form a cascata che si scioglie</h1>
+    <p class="lede">L'asset distintivo. Scegli e <strong>le opzioni incompatibili svaniscono</strong>: <em>vedi</em> la logica HACCP accadere e impari la conservazione corretta senza un muro di testo. Prova: <strong>Pesce → Fresco</strong>.</p>
+  </header>
+
+  <div class="stage">
+    <div class="phone" role="application" aria-label="App BHM — form a cascata: aggiungi alimento">
+      <div class="screen" id="screen">
+        <div class="statusbar" aria-hidden="true">
+          <span>17:46</span>
+          <span class="dots"><span></span><span></span><span></span><span class="b"></span></span>
+        </div>
+
+        <div class="appbar">
+          <button class="iconbtn" aria-label="Indietro"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+          <div style="flex:1"><h2>Aggiungi alimento</h2><span class="in">in Cucina</span></div>
+        </div>
+
+        <div class="progress" aria-hidden="true">
+          <div class="track"><i id="bar"></i></div>
+          <div class="steps-label" id="stepsLabel">
+            <span class="on" data-s="1">Categoria</span>
+            <span data-s="2">Stato</span>
+            <span data-s="3">Conservazione</span>
+            <span data-s="4">Parametri</span>
+          </div>
+        </div>
+
+        <div class="content" id="content">
+          <!-- STEP 1: categoria -->
+          <section class="step show" id="step1">
+            <div class="step-head"><span class="lab">Passo 1</span><span class="q">Che alimento è?</span></div>
+            <div class="chips" id="catChips"></div>
+          </section>
+
+          <!-- STEP 2: stato -->
+          <section class="step" id="step2">
+            <div class="step-head"><span class="lab">Passo 2</span><span class="q" id="q2">In che stato?</span></div>
+            <div class="chips" id="stateChips"></div>
+          </section>
+
+          <!-- STEP 3: conservazione -->
+          <section class="step" id="step3">
+            <div class="step-head"><span class="lab">Passo 3</span><span class="q">Dove si conserva?</span></div>
+            <div class="chips" id="storeChips"></div>
+            <div class="whisper" id="whisper">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3A7 7 0 0 0 12 2Z"/><path d="M9 21h6"/></svg>
+              <span id="whisperTxt"></span>
+            </div>
+          </section>
+
+          <!-- STEP 4: parametri -->
+          <section class="step" id="step4">
+            <div class="step-head"><span class="lab">Passo 4</span><span class="q">Ci siamo quasi</span></div>
+            <div class="params">
+              <div class="param-row">
+                <span class="k"><span class="pi"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V4a2 2 0 0 0-4 0v10.76a4 4 0 1 0 4 0Z"/></svg></span>Temperatura HACCP</span>
+                <span class="range-chip" id="rangeChip">0–4 °C</span>
+              </div>
+              <div class="hr"></div>
+              <div class="param-row">
+                <span class="k"><span class="pi"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>Scadenza</span>
+                <div class="stepper">
+                  <button id="shMinus" aria-label="Meno un giorno">−</button>
+                  <span class="v" id="shVal">3 gg</span>
+                  <button id="shPlus" aria-label="Più un giorno">+</button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="savebar">
+          <button class="btn primary" id="saveBtn" disabled>Aggiungi al reparto</button>
+        </div>
+
+        <!-- done -->
+        <div class="done" id="done">
+          <div class="seal"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+          <h3>Fatto!</h3>
+          <p id="doneTxt">Salmone fresco è al suo posto.</p>
+          <span class="summary" id="doneSummary"></span>
+          <div class="acts">
+            <button class="btn ghost" id="againBtn">Aggiungine un altro</button>
+            <button class="btn primary" id="closeBtn">Chiudi</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="legend">
+    <div><h3>Form a cascata — l'asset distintivo (§10.3)</h3></div>
+    <div class="principles">
+      <div><b>La logica si vede</b>Le opzioni impossibili si sciolgono: non un errore dopo, ma un percorso che si stringe sul giusto.</div>
+      <div><b>Sapere che si rivela e si posa</b>Il perché HACCP appare come sussurro verde, poi si acquieta a nota grigia. Impari senza muri.</div>
+      <div><b>Parametri già giusti</b>Temperatura e scadenza arrivano pre-compilate dalla regola: pochi click umani, compliance quasi-automatica.</div>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function buzz(ms){ if(navigator.vibrate && !reduce){ try{ navigator.vibrate(ms); }catch(e){} } }
+
+  var STORAGE = {
+    frigo:{ label:'Frigo 0–4 °C', range:'0–4 °C' },
+    frigocarne:{ label:'Frigo carne 0–2 °C', range:'0–2 °C' },
+    frigopesce:{ label:'Frigo pesce −1–2 °C', range:'−1–2 °C' },
+    congel:{ label:'Congelatore ≤ −18 °C', range:'≤ −18 °C' },
+    abbat:{ label:'Abbattitore', range:'+90→+3 °C' },
+    caldo:{ label:'Mantenimento caldo', range:'≥ 63 °C' },
+    ambiente:{ label:'Dispensa (ambiente)', range:'ambiente' }
+  };
+  var STORE_ORDER = ['frigo','frigocarne','frigopesce','congel','abbat','caldo','ambiente'];
+
+  var CATS = {
+    carne:{ label:'Carne', icon:'M4 12c2-5 14-5 16 0-2 5-14 5-16 0Z',
+      states:{
+        fresca:{ label:'Fresca', allow:['frigocarne','abbat'], rec:'frigocarne', shelf:3, whisper:'La carne fresca sta a <b>0–2 °C</b> — più fredda del frigo generico.' },
+        macinata:{ label:'Macinata', allow:['frigocarne'], rec:'frigocarne', shelf:1, whisper:'Il macinato è delicato: <b>0–2 °C</b> e consumo rapido, entro 24h.' },
+        surgelata:{ label:'Surgelata', allow:['congel'], rec:'congel', shelf:180, whisper:'Surgelato = catena del freddo mai interrotta: <b>≤ −18 °C</b>, sempre.' },
+        cotta:{ label:'Cotta', allow:['abbat','frigo'], rec:'abbat', shelf:3, whisper:'Cotta e da conservare: <b>abbatti</b> sotto i +10 °C in fretta, poi frigo.' }
+      }},
+    pesce:{ label:'Pesce', icon:'M3 12c4-5 11-5 15 0-4 5-11 5-15 0Zm18 0h.01',
+      states:{
+        fresco:{ label:'Fresco', allow:['frigopesce'], rec:'frigopesce', shelf:1, whisper:'Il pesce fresco va <b>−1–2 °C</b>, su ghiaccio: più freddo della carne.' },
+        surgelato:{ label:'Surgelato', allow:['congel'], rec:'congel', shelf:180, whisper:'<b>≤ −18 °C</b>. Scongela in frigo, mai a temperatura ambiente.' },
+        cotto:{ label:'Cotto', allow:['abbat','frigo'], rec:'abbat', shelf:2, whisper:'Abbatti e poi <b>frigo 0–4 °C</b>.' }
+      }},
+    latticini:{ label:'Latticini', icon:'M8 3h8l-1 4v13H9V7L8 3Z',
+      states:{
+        fresco:{ label:'Freschi', allow:['frigo'], rec:'frigo', shelf:5, whisper:'<b>Frigo 0–4 °C</b>. Occhio alla scadenza breve.' },
+        stagionato:{ label:'Stagionati', allow:['frigo','ambiente'], rec:'frigo', shelf:30, whisper:'Stagionati tollerano la cantina fresca; in servizio, frigo.' }
+      }},
+    verdura:{ label:'Verdura', icon:'M12 3c4 3 6 7 4 11a6 6 0 0 1-8 0c-2-4 0-8 4-11Z',
+      states:{
+        fresca:{ label:'Fresca', allow:['frigo','ambiente'], rec:'frigo', shelf:5, whisper:'Molte verdure <b>4–8 °C</b>; alcune (patate, cipolle) a dispensa.' },
+        quarta:{ label:'IV gamma', allow:['frigo'], rec:'frigo', shelf:3, whisper:'Lavata e pronta all\'uso: <b>frigo 0–4 °C</b>, scadenza breve.' },
+        surgelata:{ label:'Surgelata', allow:['congel'], rec:'congel', shelf:365, whisper:'<b>≤ −18 °C</b>.' }
+      }},
+    gastro:{ label:'Gastronomia', icon:'M4 7h16M6 7v13h12V7M9 3v4M15 3v4',
+      states:{
+        caldo:{ label:'Servita calda', allow:['caldo'], rec:'caldo', shelf:0, whisper:'Mantenimento a caldo <b>≥ 63 °C</b> fino al servizio.' },
+        freddo:{ label:'Servita fredda', allow:['frigo','abbat'], rec:'frigo', shelf:2, whisper:'Piatti freddi: <b>0–4 °C</b>.' }
+      }}
+  };
+
+  var content = document.getElementById('content');
+  var bar = document.getElementById('bar');
+  var state = { cat:null, st:null, store:null, shelf:3 };
+
+  function setProgress(step){
+    bar.style.width = (step*25) + '%';
+    document.querySelectorAll('#stepsLabel span').forEach(function(s){ s.classList.toggle('on', +s.getAttribute('data-s') <= step); });
+  }
+  function revealStep(id){ var el=document.getElementById(id); if(!el.classList.contains('show')){ el.classList.add('show'); } }
+  function scrollDown(){ setTimeout(function(){ content.scrollTo({ top:content.scrollHeight, behavior: reduce?'auto':'smooth' }); }, 120); }
+
+  /* ---- STEP 1 ---- */
+  var catChips = document.getElementById('catChips');
+  Object.keys(CATS).forEach(function(key){
+    var c=CATS[key];
+    var b=document.createElement('button'); b.className='chip'; b.setAttribute('data-cat', key);
+    b.innerHTML='<span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="'+c.icon+'"/></svg></span>'+c.label;
+    catChips.appendChild(b);
+  });
+  catChips.addEventListener('click', function(e){
+    var b=e.target.closest('.chip'); if(!b) return; buzz(8);
+    state.cat=b.getAttribute('data-cat'); state.st=null; state.store=null;
+    Array.prototype.forEach.call(catChips.children, function(c){ c.removeAttribute('data-sel'); });
+    b.setAttribute('data-sel','1');
+    buildStates(); setProgress(2); revealStep('step2');
+    // reset downstream
+    document.getElementById('step3').classList.remove('show');
+    document.getElementById('step4').classList.remove('show');
+    document.getElementById('whisper').className='whisper';
+    document.getElementById('saveBtn').disabled=true;
+    scrollDown();
+  });
+
+  /* ---- STEP 2 ---- */
+  var stateChips=document.getElementById('stateChips');
+  function buildStates(){
+    var c=CATS[state.cat]; document.getElementById('q2').textContent='In che stato è '+ (c.label.toLowerCase()) +'?';
+    stateChips.innerHTML='';
+    Object.keys(c.states).forEach(function(key){
+      var s=c.states[key]; var b=document.createElement('button'); b.className='chip'; b.setAttribute('data-st', key); b.textContent=s.label;
+      stateChips.appendChild(b);
+    });
+  }
+  stateChips.addEventListener('click', function(e){
+    var b=e.target.closest('.chip'); if(!b) return; buzz(8);
+    state.st=b.getAttribute('data-st'); state.store=null;
+    Array.prototype.forEach.call(stateChips.children, function(c){ c.removeAttribute('data-sel'); });
+    b.setAttribute('data-sel','1');
+    buildStores(); setProgress(3); revealStep('step3');
+    document.getElementById('step4').classList.remove('show');
+    document.getElementById('saveBtn').disabled=true;
+    scrollDown();
+  });
+
+  /* ---- STEP 3 : reveal all, then MELT incompatible ---- */
+  var storeChips=document.getElementById('storeChips');
+  var whisper=document.getElementById('whisper'), whisperTxt=document.getElementById('whisperTxt');
+  function buildStores(){
+    var s=CATS[state.cat].states[state.st];
+    storeChips.innerHTML='';
+    STORE_ORDER.forEach(function(key){
+      var b=document.createElement('button'); b.className='chip'; b.setAttribute('data-store', key); b.textContent=STORAGE[key].label;
+      if(key===s.rec) b.classList.add('rec');
+      storeChips.appendChild(b);
+    });
+    // RITMO: 1) mostra tutte le possibilità (tempo di vederle) →
+    //        2) il sussurro spiega la regola → 3) le incompatibili si sciolgono, lente →
+    //        4) la scelta giusta viene evidenziata. (feedback owner: era troppo veloce)
+    var SEE   = reduce ? 0 : 1100;   // pausa per leggere le opzioni
+    var STAG  = reduce ? 0 : 240;    // distanza tra un dissolvimento e l'altro
+    var MELT0 = SEE + (reduce ? 0 : 350);
+
+    // 2) sussurro: il "perché" appare mentre le cose stanno per cambiare
+    setTimeout(function(){ whisperTxt.innerHTML=s.whisper; whisper.className='whisper show'; }, reduce?0:SEE);
+
+    // 3) scioglimento lento e scaglionato
+    var i=0, lastMelt=MELT0;
+    STORE_ORDER.forEach(function(key){
+      if(s.allow.indexOf(key)<0){
+        var d = MELT0 + i*STAG; lastMelt = d; i++;
+        (function(el,delay){ setTimeout(function(){ if(el) el.classList.add('melt'); }, delay); })(storeChips.querySelector('[data-store="'+key+'"]'), d);
+      }
+    });
+    var meltDone = lastMelt + (reduce ? 0 : 750);
+
+    // 4) evidenzia il "vincitore" quando è rimasto solo lui
+    setTimeout(function(){ var rec=storeChips.querySelector('[data-store="'+s.rec+'"]'); if(rec) rec.classList.add('win'); }, meltDone);
+
+    // 5) il sussurro si posa a nota grigia dopo il tempo di leggerlo
+    setTimeout(function(){ whisper.classList.add('settle'); }, meltDone + (reduce?0:2800));
+
+    // 6) opzione unica: auto-selezione DOPO che l'utente ha visto lo scioglimento
+    if(s.allow.length===1){
+      setTimeout(function(){ var el=storeChips.querySelector('[data-store="'+s.allow[0]+'"]'); if(el){ selectStore(el); } }, meltDone + (reduce?0:600));
+    }
+  }
+  function selectStore(b){
+    state.store=b.getAttribute('data-store');
+    Array.prototype.forEach.call(storeChips.children, function(c){ c.removeAttribute('data-sel'); });
+    b.setAttribute('data-sel','1');
+    buildParams(); setProgress(4); revealStep('step4');
+    document.getElementById('saveBtn').disabled=false;
+    scrollDown();
+  }
+  storeChips.addEventListener('click', function(e){
+    var b=e.target.closest('.chip'); if(!b || b.classList.contains('melt')) return; buzz(10); selectStore(b);
+  });
+
+  /* ---- STEP 4 : params ---- */
+  var rangeChip=document.getElementById('rangeChip'), shVal=document.getElementById('shVal');
+  function buildParams(){
+    var st=STORAGE[state.store];
+    rangeChip.textContent=st.range;
+    rangeChip.className='range-chip' + (st.range==='ambiente'?' amb':'');
+    state.shelf=CATS[state.cat].states[state.st].shelf;
+    renderShelf();
+  }
+  function renderShelf(){ shVal.textContent = state.shelf + (state.shelf===1?' g':' gg'); }
+  document.getElementById('shMinus').addEventListener('click', function(){ if(state.shelf>0){ state.shelf--; renderShelf(); buzz(5);} });
+  document.getElementById('shPlus').addEventListener('click', function(){ if(state.shelf<400){ state.shelf++; renderShelf(); buzz(5);} });
+
+  /* ---- SAVE ---- */
+  var done=document.getElementById('done');
+  document.getElementById('saveBtn').addEventListener('click', function(){
+    buzz([12,30,60]);
+    var catL=CATS[state.cat].label, stL=CATS[state.cat].states[state.st].label.toLowerCase();
+    var st=STORAGE[state.store];
+    document.getElementById('doneTxt').textContent = catL + ' ' + stL + ' è al suo posto, con i parametri giusti.';
+    document.getElementById('doneSummary').innerHTML = st.label.split(' ')[0] + ' · <span class="rc">'+st.range+'</span> · '+ (state.shelf===1?'1 g':state.shelf+' gg');
+    done.classList.add('show');
+  });
+  document.getElementById('closeBtn').addEventListener('click', function(){ done.classList.remove('show'); resetAll(); });
+  document.getElementById('againBtn').addEventListener('click', function(){ done.classList.remove('show'); resetAll(); });
+
+  function resetAll(){
+    state={ cat:null, st:null, store:null, shelf:3 };
+    Array.prototype.forEach.call(catChips.children, function(c){ c.removeAttribute('data-sel'); });
+    ['step2','step3','step4'].forEach(function(id){ document.getElementById(id).classList.remove('show'); });
+    document.getElementById('whisper').className='whisper';
+    document.getElementById('saveBtn').disabled=true;
+    setProgress(1); content.scrollTo({top:0, behavior:'auto'});
+  }
+
+  setProgress(1);
+})();
+</script>

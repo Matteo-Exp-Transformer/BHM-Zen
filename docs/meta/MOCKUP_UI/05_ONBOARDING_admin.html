@@ -1,0 +1,760 @@
+<style>
+  :root{
+    --ground:#EFEDE8; --ground-2:#E7E4DD; --surface:#FFFFFF; --surface-2:#FAF9F6;
+    --ink:#24201C; --ink-2:#4C463F; --ink-muted:#7A7268;
+    --hairline:#E4E0D8; --hairline-2:#EDEAE3;
+    --accent:#C0552E; --accent-ink:#FFFFFF; --accent-soft:#F4E4DB;
+    --ok:#2E8B57; --ok-bg:#E4F1E9; --ok-ink:#1E6B40;
+    --warn:#B9821A; --warn-bg:#F6ECD3; --warn-ink:#87600F;
+    --bad:#C33D3D; --bad-bg:#F7E2E0; --bad-ink:#95271F;
+    --cold:#3E7CB1; --cold-bg:#E3EDF4; --cold-ink:#2C5C86;
+    --shadow: 0 1px 2px rgba(40,34,28,.04), 0 8px 24px rgba(40,34,28,.06);
+    --shadow-lg: 0 20px 60px rgba(30,24,18,.28);
+    --r: 18px;
+    --font: "Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ground:#161310; --ground-2:#100E0B; --surface:#211D17; --surface-2:#26211A;
+      --ink:#F0EBE3; --ink-2:#C9C2B7; --ink-muted:#A0978A;
+      --hairline:#332D24; --hairline-2:#2A241D;
+      --accent:#DA7A4D; --accent-ink:#1B1510; --accent-soft:#2E2016;
+      --ok:#54B37E; --ok-bg:#16271D; --ok-ink:#84D2A5;
+      --warn:#DDB155; --warn-bg:#2A2312; --warn-ink:#E7C878;
+      --bad:#E0665E; --bad-bg:#2C1714; --bad-ink:#EE908A;
+      --cold:#6FA8D6; --cold-bg:#15222E; --cold-ink:#9CC6E6;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.4);
+      --shadow-lg: 0 24px 70px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="light"]{
+    --ground:#EFEDE8; --ground-2:#E7E4DD; --surface:#FFFFFF; --surface-2:#FAF9F6;
+    --ink:#24201C; --ink-2:#4C463F; --ink-muted:#7A7268;
+    --hairline:#E4E0D8; --hairline-2:#EDEAE3;
+    --accent:#C0552E; --accent-ink:#FFFFFF; --accent-soft:#F4E4DB;
+    --ok:#2E8B57; --ok-bg:#E4F1E9; --ok-ink:#1E6B40;
+    --warn:#B9821A; --warn-bg:#F6ECD3; --warn-ink:#87600F;
+    --bad:#C33D3D; --bad-bg:#F7E2E0; --bad-ink:#95271F;
+    --cold:#3E7CB1; --cold-bg:#E3EDF4; --cold-ink:#2C5C86;
+    --shadow: 0 1px 2px rgba(40,34,28,.04), 0 8px 24px rgba(40,34,28,.06);
+    --shadow-lg: 0 20px 60px rgba(30,24,18,.28);
+  }
+  :root[data-theme="dark"]{
+    --ground:#161310; --ground-2:#100E0B; --surface:#211D17; --surface-2:#26211A;
+    --ink:#F0EBE3; --ink-2:#C9C2B7; --ink-muted:#A0978A;
+    --hairline:#332D24; --hairline-2:#2A241D;
+    --accent:#DA7A4D; --accent-ink:#1B1510; --accent-soft:#2E2016;
+    --ok:#54B37E; --ok-bg:#16271D; --ok-ink:#84D2A5;
+    --warn:#DDB155; --warn-bg:#2A2312; --warn-ink:#E7C878;
+    --bad:#E0665E; --bad-bg:#2C1714; --bad-ink:#EE908A;
+    --cold:#6FA8D6; --cold-bg:#15222E; --cold-ink:#9CC6E6;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.4);
+    --shadow-lg: 0 24px 70px rgba(0,0,0,.6);
+  }
+
+  *{ box-sizing:border-box; }
+  body{ margin:0; }
+  .wrap{ font-family:var(--font); color:var(--ink); background:radial-gradient(120% 80% at 50% -10%, var(--ground) 0%, var(--ground-2) 100%); min-height:100vh; padding:40px 16px 64px; display:flex; flex-direction:column; align-items:center; gap:26px; -webkit-font-smoothing:antialiased; }
+  .intro{ max-width:680px; text-align:center; display:flex; flex-direction:column; gap:10px; }
+  .eyebrow{ margin:0; font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); }
+  .intro h1{ margin:0; font-size:clamp(25px,5vw,33px); font-weight:750; letter-spacing:-.02em; text-wrap:balance; line-height:1.12; }
+  .lede{ margin:0; font-size:15px; line-height:1.55; color:var(--ink-2); text-wrap:balance; }
+  .lede strong{ color:var(--ink); font-weight:650; }
+  svg{ display:block; }
+
+  /* device frame */
+  .stage{ width:100%; display:flex; justify-content:center; }
+  .device{ position:relative; width:960px; max-width:calc(100vw - 32px); height:min(680px, 88vh); background:var(--surface); border-radius:28px; box-shadow:var(--shadow-lg), 0 0 0 2px var(--hairline-2), 0 0 0 10px var(--ground-2); overflow:hidden; isolation:isolate; }
+  @media (prefers-color-scheme: dark){ .device{ box-shadow:var(--shadow-lg), 0 0 0 2px #000, 0 0 0 10px #0b0906; } }
+  :root[data-theme="dark"] .device{ box-shadow:var(--shadow-lg), 0 0 0 2px #000, 0 0 0 10px #0b0906; }
+
+  .app{ position:absolute; inset:0; display:grid; grid-template-columns:78px 1fr; background:var(--ground); transition:grid-template-columns .46s cubic-bezier(.5,.05,.2,1); }
+  .app[data-rail="open"]{ grid-template-columns:320px 1fr; }
+
+  /* ── RAIL (cantiere) — collassabile + navigabile ── */
+  .rail{ position:relative; background:var(--surface); border-right:1px solid var(--hairline); display:flex; flex-direction:column; min-width:0; overflow:hidden; }
+  .railtoggle{ position:absolute; top:14px; right:12px; z-index:5; width:30px; height:30px; border-radius:9px; border:1.5px solid var(--hairline); background:var(--surface); color:var(--ink-2); cursor:pointer; display:grid; place-items:center; font-family:inherit; transition:background .15s ease, transform .3s ease; }
+  .railtoggle:hover{ background:var(--surface-2); color:var(--accent); border-color:var(--accent); }
+  .app[data-rail="open"] .railtoggle{ transform:rotate(180deg); }
+  .railtoggle:focus-visible{ outline:3px solid color-mix(in srgb,var(--accent) 55%, transparent); outline-offset:2px; }
+
+  /* mini (collassato): pallini verticali */
+  .rmini{ display:flex; flex-direction:column; align-items:center; gap:9px; padding:56px 0 18px; overflow-y:auto; }
+  .app[data-rail="open"] .rmini{ display:none; }
+  .rmini .md{ width:34px; height:34px; border-radius:11px; display:grid; place-items:center; font-size:13px; font-weight:800; font-variant-numeric:tabular-nums; border:0; cursor:pointer; background:var(--surface-2); color:var(--ink-muted); box-shadow:inset 0 0 0 1.5px var(--hairline); font-family:inherit; transition:transform .12s ease; }
+  .rmini .md:hover{ transform:translateY(-1px); }
+  .rmini .md.done{ background:var(--ok); color:#fff; box-shadow:none; }
+  .rmini .md.active{ background:var(--accent); color:#fff; box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 18%, transparent); }
+  .rmini .md:focus-visible{ outline:3px solid color-mix(in srgb,var(--accent) 55%, transparent); outline-offset:2px; }
+
+  /* full (aperto): brand + progresso + step + anteprima */
+  .rfull{ display:none; flex-direction:column; padding:18px 16px; gap:4px; overflow-y:auto; scrollbar-width:thin; }
+  .app[data-rail="open"] .rfull{ display:flex; }
+  .rfull::-webkit-scrollbar{ width:7px; } .rfull::-webkit-scrollbar-thumb{ background:var(--hairline); border-radius:7px; }
+  .cbrand{ display:flex; align-items:center; gap:11px; margin:0 30px 4px 2px; }
+  .cbrand .bd{ width:38px; height:38px; border-radius:11px; background:linear-gradient(150deg, var(--accent), color-mix(in srgb,var(--accent) 60%, #7a2f16)); color:#fff; display:grid; place-items:center; font-weight:800; font-size:16px; flex:0 0 auto; }
+  .cbrand .bt{ font-size:14px; font-weight:750; letter-spacing:-.01em; line-height:1.15; }
+  .cbrand .bs{ font-size:11.5px; color:var(--ink-muted); }
+
+  .cprog{ margin:12px 4px 8px; }
+  .cprog .pl{ font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-muted); display:flex; justify-content:space-between; }
+  .cprog .pl b{ color:var(--accent); }
+  .cbar{ height:6px; border-radius:99px; background:var(--hairline-2); overflow:hidden; margin-top:6px; }
+  .cbar > span{ display:block; height:100%; border-radius:99px; background:linear-gradient(90deg, var(--accent), color-mix(in srgb,var(--accent) 65%,#e0a06f)); width:43%; transition:width .5s cubic-bezier(.4,0,.2,1); }
+
+  .step{ display:flex; align-items:center; gap:11px; padding:10px 11px; border-radius:12px; cursor:pointer; border:0; background:transparent; font-family:inherit; text-align:left; width:100%; transition:background .18s ease; }
+  .step:hover{ background:var(--surface-2); }
+  .step .dot{ width:26px; height:26px; border-radius:50%; flex:0 0 auto; display:grid; place-items:center; box-shadow:inset 0 0 0 2px var(--hairline); background:var(--surface); color:var(--ink-muted); font-size:12px; font-weight:800; font-variant-numeric:tabular-nums; transition:all .3s cubic-bezier(.2,1.3,.4,1); }
+  .step .st{ display:flex; flex-direction:column; gap:1px; min-width:0; }
+  .step .sn{ font-size:13.5px; font-weight:650; color:var(--ink-2); }
+  .step .ss{ font-size:11.5px; color:var(--ink-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .step.done .dot{ background:var(--ok); color:#fff; box-shadow:none; }
+  .step.done .sn{ color:var(--ink); }
+  .step.active{ background:var(--accent-soft); }
+  .step.active .dot{ background:var(--accent); color:#fff; box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 18%, transparent); }
+  .step.active .sn{ color:var(--ink); font-weight:750; }
+  .step.active .ss{ color:var(--accent); font-weight:600; }
+  .step .lock{ margin-left:auto; color:var(--ink-muted); opacity:.5; }
+  .step.locked{ cursor:not-allowed; opacity:.62; }
+  .step.locked:hover{ background:transparent; }
+  .step:focus-visible{ outline:3px solid color-mix(in srgb,var(--accent) 55%, transparent); outline-offset:1px; }
+
+  /* anteprima "La tua azienda" dentro il rail aperto */
+  .pv{ margin-top:14px; border-top:1px dashed var(--hairline); padding-top:14px; display:flex; flex-direction:column; gap:13px; }
+  .pv-h .pl{ font-size:11px; font-weight:700; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-muted); }
+  .pv-h .pn{ font-size:16px; font-weight:750; letter-spacing:-.01em; }
+  .pv-block{ display:flex; flex-direction:column; gap:7px; }
+  .pv-bt{ font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-muted); display:flex; justify-content:space-between; align-items:center; }
+  .pv-bt .ct{ background:var(--accent-soft); color:var(--accent); font-size:11px; font-weight:800; border-radius:999px; padding:1px 8px; font-variant-numeric:tabular-nums; }
+  .rep-row{ display:flex; flex-wrap:wrap; gap:5px; }
+  .rep{ font-size:11px; font-weight:600; color:var(--ink-2); background:var(--surface-2); border:1px solid var(--hairline); border-radius:7px; padding:3px 8px; }
+  .avz{ display:flex; }
+  .avz .av{ width:28px; height:28px; border-radius:50%; display:grid; place-items:center; color:#fff; font-size:10.5px; font-weight:750; box-shadow:0 0 0 2px var(--surface); margin-left:-7px; }
+  .avz .av:first-child{ margin-left:0; }
+  .pvpt{ display:flex; align-items:center; gap:9px; background:var(--surface-2); border:1px solid var(--hairline); border-radius:10px; padding:7px 9px; }
+  .pvpt .pi{ width:26px; height:26px; border-radius:8px; display:grid; place-items:center; flex:0 0 auto; background:var(--cold-bg); color:var(--cold-ink); }
+  .pvpt .pi.warm{ background:var(--warn-bg); color:var(--warn-ink); }
+  .pvpt .pmeta{ display:flex; flex-direction:column; min-width:0; }
+  .pvpt .pmn{ font-size:12.5px; font-weight:700; letter-spacing:-.01em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .pvpt .pms{ font-size:10.5px; color:var(--ink-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .pvpt .ptemp{ margin-left:auto; font-size:13px; font-weight:750; font-variant-numeric:tabular-nums; color:var(--cold-ink); }
+  .pvpt .ptemp.warm{ color:var(--warn-ink); }
+  .pvpt.fresh{ animation:landrow .6s cubic-bezier(.2,1.1,.3,1) both; }
+  @keyframes landrow{ 0%{ opacity:0; transform:translateY(-9px) scale(.97); } 55%{ transform:translateY(2px) scale(1); } 100%{ opacity:1; transform:none; } }
+
+  /* la card intera si alza, si raggruppa e vola nella sidebar */
+  .cardfly{ position:fixed; z-index:9999; margin:0; transform-origin:top center; pointer-events:none; border-radius:18px; overflow:hidden; box-shadow:var(--shadow-lg); will-change:transform,opacity; }
+
+  /* ── MAIN panel (step vivo) ── */
+  .main{ overflow-y:auto; scrollbar-width:thin; padding:26px clamp(20px,4vw,40px) 30px; }
+  .main::-webkit-scrollbar{ width:8px; } .main::-webkit-scrollbar-thumb{ background:var(--hairline); border-radius:8px; }
+  .sheet{ max-width:760px; margin:0 auto; display:flex; flex-direction:column; gap:20px; }
+  .phead .lab{ margin:0 0 4px; font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); }
+  .phead h2{ margin:0; font-size:clamp(22px,3.2vw,27px); font-weight:750; letter-spacing:-.02em; }
+  .phead .sub{ margin:6px 0 0; font-size:14px; color:var(--ink-2); line-height:1.5; max-width:52ch; }
+
+  .card{ background:var(--surface); border-radius:18px; box-shadow:var(--shadow); padding:20px clamp(16px,2.5vw,24px); display:flex; flex-direction:column; gap:17px; }
+  .card-t{ font-size:14.5px; font-weight:750; letter-spacing:-.01em; display:flex; align-items:center; gap:9px; }
+  .card-t .ic{ width:30px; height:30px; border-radius:9px; background:var(--accent-soft); color:var(--accent); display:grid; place-items:center; flex:0 0 auto; }
+
+  .field{ display:flex; flex-direction:column; gap:7px; }
+  .field > label{ font-size:12.5px; font-weight:650; color:var(--ink-2); }
+  .field .req{ color:var(--accent); }
+  .field .opt{ font-weight:400; color:var(--ink-muted); }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .inp{ font-family:inherit; font-size:14.5px; color:var(--ink); background:var(--surface-2); border:1.5px solid var(--hairline); border-radius:12px; padding:11px 13px; transition:border-color .18s ease, box-shadow .18s ease; width:100%; }
+  .inp:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 15%, transparent); }
+  .inp::placeholder{ color:var(--ink-muted); }
+  select.inp{ appearance:none; background-image:linear-gradient(45deg,transparent 50%,var(--ink-muted) 50%),linear-gradient(135deg,var(--ink-muted) 50%,transparent 50%); background-position:calc(100% - 18px) 55%, calc(100% - 13px) 55%; background-size:5px 5px,5px 5px; background-repeat:no-repeat; padding-right:34px; cursor:pointer; }
+
+  /* segmented: tipo punto */
+  .seg{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+  .seg button{ font-family:inherit; cursor:pointer; background:var(--surface-2); border:1.5px solid var(--hairline); border-radius:13px; padding:12px 6px 10px; display:flex; flex-direction:column; align-items:center; gap:7px; transition:all .18s ease; color:var(--ink-2); }
+  .seg button .sic{ width:24px; height:24px; color:var(--ink-muted); }
+  .seg button .sl{ font-size:12px; font-weight:700; }
+  .seg button:hover{ border-color:var(--ink-muted); background:var(--surface); }
+  .seg button.on{ border-color:var(--accent); background:var(--accent-soft); color:var(--ink); box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 12%, transparent); }
+  .seg button.on .sic{ color:var(--accent); }
+  .seg button.on.cold{ border-color:var(--cold); background:var(--cold-bg); box-shadow:0 0 0 3px color-mix(in srgb,var(--cold) 15%, transparent); }
+  .seg button.on.cold .sic{ color:var(--cold-ink); }
+  .seg button:focus-visible{ outline:3px solid color-mix(in srgb,var(--accent) 55%, transparent); outline-offset:2px; }
+
+  /* profilo (solo frigo) */
+  .profwrap{ display:flex; flex-direction:column; gap:12px; border-top:1px solid var(--hairline-2); padding-top:16px; }
+  .profwrap.hide{ display:none; }
+  .profgrid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:8px; }
+  .prof{ font-family:inherit; cursor:pointer; text-align:left; background:var(--surface-2); border:1.5px solid var(--hairline); border-radius:12px; padding:11px 12px; display:flex; flex-direction:column; gap:3px; transition:all .16s ease; }
+  .prof .pfn{ font-size:12.5px; font-weight:700; color:var(--ink); }
+  .prof .pft{ font-size:11.5px; color:var(--ink-muted); font-variant-numeric:tabular-nums; }
+  .prof:hover{ border-color:var(--cold); }
+  .prof.on{ border-color:var(--cold); background:var(--cold-bg); box-shadow:0 0 0 3px color-mix(in srgb,var(--cold) 14%, transparent); }
+  .prof.on .pft{ color:var(--cold-ink); font-weight:700; }
+  .prof:focus-visible{ outline:3px solid color-mix(in srgb,var(--cold) 55%, transparent); outline-offset:2px; }
+
+  /* temperatura: FISSA, dal profilo — read only */
+  .temp{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; background:var(--surface-2); border:1.5px solid var(--hairline); border-radius:14px; padding:14px 16px; }
+  .tempread{ display:flex; align-items:baseline; gap:2px; font-variant-numeric:tabular-nums; }
+  .tempread .n{ font-size:40px; font-weight:750; letter-spacing:-.03em; line-height:1; transition:transform .3s cubic-bezier(.2,1.5,.4,1); }
+  .tempread .u{ font-size:19px; font-weight:650; color:var(--ink-muted); }
+  .tempread.amb .n{ font-size:19px; font-weight:700; color:var(--ink-2); }
+  .temp.landed .n{ animation:land .55s cubic-bezier(.2,1.5,.4,1); }
+  @keyframes land{ 0%{ transform:translateY(-14px); opacity:.4; } 60%{ transform:translateY(3px); } 100%{ transform:none; opacity:1; } }
+  .templock{ display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-weight:700; color:var(--ink-muted); background:var(--surface); border:1px solid var(--hairline); border-radius:999px; padding:4px 10px; }
+  .templock svg{ width:12px; height:12px; }
+  .tmeta{ font-size:12.5px; color:var(--ink-2); line-height:1.45; flex:1 1 200px; min-width:180px; }
+  .tmeta b{ color:var(--cold-ink); }
+
+  /* categorie auto-assegnate (read-only) */
+  .autocats{ display:flex; flex-direction:column; gap:8px; }
+  .autocats .achead{ display:flex; align-items:center; justify-content:space-between; }
+  .autocats .achead .lab{ font-size:12.5px; font-weight:650; color:var(--ink-2); }
+  .autocats .achead .from{ font-size:11px; font-weight:700; color:var(--cold-ink); background:var(--cold-bg); border-radius:999px; padding:2px 9px; }
+  .catchips{ display:flex; flex-wrap:wrap; gap:7px; }
+  .catchip{ font-size:12px; font-weight:600; color:var(--ok-ink); background:var(--ok-bg); border:1px solid color-mix(in srgb,var(--ok) 30%, transparent); border-radius:999px; padding:5px 11px; display:inline-flex; align-items:center; gap:6px; }
+  .catchip svg{ width:12px; height:12px; }
+  .catempty{ font-size:12.5px; color:var(--ink-muted); font-style:italic; }
+
+  .whisper{ font-size:12.5px; color:var(--ink-2); line-height:1.5; display:flex; gap:9px; background:var(--cold-bg); border:1px solid color-mix(in srgb,var(--cold) 22%, transparent); border-radius:12px; padding:11px 13px; }
+  .whisper svg{ width:16px; height:16px; flex:0 0 auto; color:var(--cold-ink); margin-top:1px; }
+  .whisper b{ color:var(--cold-ink); }
+
+  .addbtn{ appearance:none; border:0; cursor:pointer; font-family:inherit; border-radius:14px; font-size:14.5px; font-weight:700; padding:13px 20px; display:inline-flex; align-items:center; justify-content:center; gap:9px; background:var(--accent); color:var(--accent-ink); box-shadow:0 2px 0 color-mix(in srgb,var(--accent) 55%,#000), var(--shadow); transition:transform .12s ease; align-self:flex-start; }
+  .addbtn:active{ transform:translateY(1px) scale(.99); box-shadow:0 1px 0 color-mix(in srgb,var(--accent) 55%,#000), var(--shadow); }
+  .addbtn:focus-visible{ outline:3px solid color-mix(in srgb,var(--accent) 55%, transparent); outline-offset:2px; }
+  .addbtn svg{ width:17px; height:17px; }
+
+  .navrow{ display:flex; gap:10px; align-items:center; }
+  .ghost{ appearance:none; font-family:inherit; cursor:pointer; border-radius:14px; font-size:14px; font-weight:650; padding:12px 18px; background:var(--surface); color:var(--ink); box-shadow:var(--shadow), inset 0 0 0 1.5px var(--hairline); transition:transform .12s ease; }
+  .ghost:active{ transform:scale(.99); }
+  .navrow .spacer{ flex:1; }
+  .cta-next{ background:var(--ink); color:var(--surface); border:0; cursor:pointer; font-family:inherit; border-radius:14px; font-size:14px; font-weight:700; padding:12px 20px; display:inline-flex; gap:8px; align-items:center; box-shadow:var(--shadow); transition:transform .12s ease; }
+  .cta-next:active{ transform:scale(.99); }
+
+  /* summary card (per step già fatti / futuri, quando navighi) */
+  .summary{ background:var(--surface); border-radius:16px; box-shadow:var(--shadow); padding:20px; display:flex; align-items:center; gap:14px; }
+  .summary .sicn{ width:44px; height:44px; border-radius:12px; display:grid; place-items:center; flex:0 0 auto; background:var(--ok-bg); color:var(--ok-ink); }
+  .summary.future .sicn{ background:var(--surface-2); color:var(--ink-muted); }
+  .summary .stx{ display:flex; flex-direction:column; gap:2px; }
+  .summary .stx b{ font-size:15px; font-weight:750; }
+  .summary .stx span{ font-size:13px; color:var(--ink-2); }
+  .summary .sgo{ margin-left:auto; }
+
+  .legend{ max-width:680px; width:100%; background:var(--surface); border-radius:20px; box-shadow:var(--shadow); padding:20px 22px; display:flex; flex-direction:column; gap:14px; }
+  .legend h3{ margin:0; font-size:13px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-muted); }
+  .principles{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; }
+  .principles div{ font-size:13px; color:var(--ink-2); line-height:1.45; }
+  .principles b{ color:var(--ink); font-weight:650; display:block; margin-bottom:2px; }
+  .principles code{ background:var(--surface-2); border:1px solid var(--hairline); border-radius:5px; padding:1px 5px; font-size:11.5px; }
+
+  /* ── MOBILE: colonna singola, rail come barra superiore ── */
+  @media (max-width:760px){
+    .device{ height:min(720px, 90vh); }
+    .app{ grid-template-columns:1fr; grid-template-rows:auto 1fr; }
+    .app[data-rail="open"]{ grid-template-columns:1fr; grid-template-rows:auto 1fr; }
+    .rail{ border-right:0; border-bottom:1px solid var(--hairline); }
+    .railtoggle{ top:12px; right:12px; }
+    .app[data-rail="open"] .railtoggle{ transform:rotate(90deg); }
+    /* collassato = striscia orizzontale di pallini */
+    .rmini{ flex-direction:row; padding:12px 52px 12px 14px; gap:8px; overflow-x:auto; overflow-y:hidden; }
+    /* aperto = accordion che scende */
+    .rfull{ max-height:52vh; padding:14px 14px 16px; }
+    .cbrand{ margin-right:44px; }
+    .main{ padding:20px 16px 26px; }
+    .grid2{ grid-template-columns:1fr; }
+    .seg{ grid-template-columns:repeat(2,1fr); }
+  }
+  @media (prefers-reduced-motion: reduce){ *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; } }
+</style>
+
+<div class="wrap">
+  <header class="intro">
+    <p class="eyebrow">BHM · Direzione UI · Mockup 5 — v2</p>
+    <h1>Onboarding titolare — l'azienda che prende forma</h1>
+    <p class="lede">La prima configurazione del <strong>titolare</strong>: obbligatoria, un passo alla volta. La <strong>barra cantiere</strong> a sinistra si chiude per darti spazio mentre compili, e si riapre per mostrarti l'azienda crescere. Qui il passo <em>Punti di conservazione</em>: scegli un <strong>profilo</strong> e la temperatura <strong>la decide l'app</strong> — tu non la digiti.</p>
+  </header>
+
+  <div class="stage">
+    <div class="device" role="application" aria-label="App BHM — Onboarding titolare">
+      <div class="app" data-rail="collapsed" id="app">
+
+        <!-- ── RAIL / cantiere ── -->
+        <aside class="rail" aria-label="Aree di configurazione">
+          <button class="railtoggle" id="railtoggle" type="button" aria-label="Apri o chiudi la barra cantiere" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+
+          <!-- collassato -->
+          <div class="rmini" id="rmini" aria-hidden="false"></div>
+
+          <!-- aperto -->
+          <div class="rfull" id="rfull">
+            <div class="cbrand">
+              <div class="bd" aria-hidden="true">B</div>
+              <div>
+                <div class="bt">Al Ritrovo SRL</div>
+                <div class="bs">Configurazione iniziale</div>
+              </div>
+            </div>
+            <div class="cprog">
+              <div class="pl"><span>Progresso</span><span><b id="pdone">3</b> di 7</span></div>
+              <div class="cbar"><span id="pbar" style="width:43%"></span></div>
+            </div>
+            <div id="steplist"></div>
+
+            <div class="pv">
+              <div class="pv-h">
+                <span class="pl">La tua azienda</span>
+                <div class="pn">Al Ritrovo SRL</div>
+              </div>
+              <div class="pv-block">
+                <div class="pv-bt">Reparti <span class="ct">8</span></div>
+                <div class="rep-row">
+                  <span class="rep">Cucina</span><span class="rep">Bancone</span><span class="rep">Sala</span><span class="rep">Magazzino</span><span class="rep">+4</span>
+                </div>
+              </div>
+              <div class="pv-block">
+                <div class="pv-bt">Staff <span class="ct">6</span></div>
+                <div class="avz" aria-label="6 membri">
+                  <span class="av" style="background:linear-gradient(150deg,#C0552E,#7a2f16)">PD</span>
+                  <span class="av" style="background:linear-gradient(150deg,#2E8B57,#1E6B40)">MC</span>
+                  <span class="av" style="background:linear-gradient(150deg,#3E7CB1,#2C5C86)">EC</span>
+                  <span class="av" style="background:linear-gradient(150deg,#B9821A,#87600F)">FD</span>
+                  <span class="av" style="background:var(--surface-2);color:var(--ink-muted);box-shadow:0 0 0 2px var(--surface), inset 0 0 0 1px var(--hairline)">+2</span>
+                </div>
+              </div>
+              <div class="pv-block">
+                <div class="pv-bt">Punti conservazione <span class="ct" id="pvcount">4</span></div>
+                <div id="pvlist" style="display:flex;flex-direction:column;gap:7px;">
+                  <div class="pvpt"><span class="pi" aria-hidden="true">❄</span><div class="pmeta"><span class="pmn">Frigo A</span><span class="pms">Cucina · Verdure + generico</span></div><span class="ptemp">4°</span></div>
+                  <div class="pvpt"><span class="pi" aria-hidden="true">✻</span><div class="pmeta"><span class="pmn">Freezer A</span><span class="pms">Cucina · Congelati</span></div><span class="ptemp">−18°</span></div>
+                  <div class="pvpt"><span class="pi warm" aria-hidden="true">⚡</span><div class="pmeta"><span class="pmn">Abbattitore</span><span class="pms">Cucina · Abbattimento</span></div><span class="ptemp warm">−30°</span></div>
+                  <div class="pvpt"><span class="pi" aria-hidden="true">❄</span><div class="pmeta"><span class="pmn">Frigo 1</span><span class="pms">Bancone · Massima capienza</span></div><span class="ptemp">2°</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- ── MAIN ── -->
+        <div class="main">
+          <div class="sheet" id="sheet"><!-- render dinamico --></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <h3>Cosa risolve la v2 (5 feedback dell'owner)</h3>
+    <div class="principles">
+      <div><b>Mobile vero, desktop comodo</b>Due zone, non tre colonne: l'anteprima vive <em>dentro</em> la barra. Su mobile la barra diventa una striscia in alto. Ridimensiona per vederlo.</div>
+      <div><b>La temperatura la decide l'app</b>Niente più <code>±</code>: scegli il <b>profilo</b> e la temperatura <em>atterra</em> read-only, con le categorie auto-assegnate. Concetto legacy <code>profileId</code> reso esplicito.</div>
+      <div><b>Barra che si chiude e si riapre</b>Chiusa mentre compili; all'aggiunta si apre, mostra il progresso, poi torna compatta. Prova «Aggiungi punto».</div>
+      <div><b>Configurazione obbligatoria</b>Nessun link «salta»: l'onboarding non si può saltare.</div>
+      <div><b>Aree navigabili</b>I passi nella barra sono cliccabili: torni su Reparti o Staff quando vuoi.</div>
+      <div><b>Dati reali dal codice</b>4 tipi punto, 4 categorie elettrodomestico, 5 profili HACCP con le temperature vere (2/3/4/1/4°C).</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var svg = {
+    check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>',
+    lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
+    info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>',
+    plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>',
+    fridge:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M6 10h12M9.5 6v1.5M9.5 13v2"/></svg>',
+    freezer:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18M6 6l12 12M18 6L6 18"/></svg>',
+    ambient:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M6 20V9l6-4.5L18 9v11M10 20v-5h4v5"/></svg>',
+    blast:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h11a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h9"/></svg>',
+    box:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5zM3 8v8l9 5 9-5V8M12 13v8"/></svg>'
+  };
+
+  // ── modello (dal legacy) ──
+  var PROFILES = {
+    max_capacity:        { name:'Massima capienza', temp:2, cats:['Preparazioni/Pronti','Latticini','Uova','Salumi','Carni crude','Pesce crudo','Verdure','Bevande'], note:'A <b>2°C</b> ci sta tutto, pesce incluso. In cambio serve disciplina: contenitori a tenuta e crudo sempre sul ripiano basso.' },
+    meat_generic:        { name:'Carne + generico', temp:3, cats:['Preparazioni/Pronti','Latticini','Salumi','Carni crude','Verdure','Bevande'], note:'<b>3°C</b>, range operativo 0–4°C. Le carni crude vanno in basso e a tenuta, per non gocciolare sul resto.' },
+    vegetables_generic:  { name:'Verdure + generico', temp:4, cats:['Preparazioni/Pronti','Latticini','Salumi','Verdure','Bevande'], note:'<b>4°C</b>, più gentile con le verdure: meno danni da freddo.' },
+    fish_generic:        { name:'Pesce + generico', temp:1, cats:['Preparazioni/Pronti','Latticini','Pesce crudo','Verdure','Bevande'], note:'<b>1°C</b>, conservativo per il pesce fresco. Doppio contenimento in basso e pulizia frequente.' },
+    beverages_alcoholic: { name:'Bibite e alcolici', temp:4, cats:['Acqua','Succhi','Bibite gassate','Frutta/Verdure','Alcolici'], note:'Cella bevande: nessun obbligo di range, consigliata <b>4°C</b>. Le categorie sono fisse, le mettiamo noi.', locked:true }
+  };
+  var TYPES = {
+    fridge:  { label:'Frigorifero', icon:svg.fridge, cold:true, hasProfile:true },
+    freezer: { label:'Congelatore', icon:svg.freezer, cold:true, temp:-18, cats:['Congelati: carni e pesce','Congelati: vegetali','Congelati: preparazioni','Congelati: dolci'], note:'Standard congelati: <b>−18°C o meno</b>. Separa per tipologia in box dedicati.' },
+    ambient: { label:'Ambiente', icon:svg.ambient, cold:false, temp:null, cats:['Conserve/semiconserve','Prodotti secchi','Salse chiuse'], note:'Dispensa asciutta e areata: <b>nessuna temperatura da registrare</b>, si controllano scadenze e pulizia.' },
+    blast:   { label:'Abbattitore', icon:svg.blast, cold:true, temp:-30, cats:['Abbattimento rapido'], note:'Ciclo di abbattimento/surgelazione. Una sola manutenzione richiesta: la <b>sanificazione</b>.' }
+  };
+  var PROF_APPL = { vertical_fridge_with_freezer:'Verticale con freezer', vertical_fridge_1_door:'Verticale 1 anta', vertical_fridge_2_doors:'Verticale 2 ante', base_refrigerated:'Base refrigerata' };
+
+  var STEPS = [
+    { n:1, name:'Anagrafica', sub:'Al Ritrovo SRL · Bologna', state:'done', recap:'Ragione sociale, indirizzo e P.IVA registrati.' },
+    { n:2, name:'Reparti', sub:'8 reparti attivi', state:'done', recap:'Cucina, Bancone, Sala, Magazzino e altri 4.' },
+    { n:3, name:'Staff & ruoli', sub:'6 persone · inviti pronti', state:'done', recap:'Tu come admin + 5 membri, inviti email pronti.' },
+    { n:4, name:'Punti di conservazione', sub:'', state:'active', recap:'' },
+    { n:5, name:'Attività & manutenzioni', sub:'Si generano dai punti', state:'future', recap:'Le manutenzioni obbligatorie nascono dai punti che stai aggiungendo.' },
+    { n:6, name:'Inventario', sub:'Categorie & prodotti', state:'future', recap:'Categorie prodotto e primo inventario.' },
+    { n:7, name:'Calendario & orari', sub:'Giorni e fasce', state:'future', recap:'Anno lavorativo, chiusure e orari di apertura.' }
+  ];
+
+  var app = document.getElementById('app');
+  var rmini = document.getElementById('rmini');
+  var steplist = document.getElementById('steplist');
+  var sheet = document.getElementById('sheet');
+  var pvList = document.getElementById('pvlist');
+  var pvCount = document.getElementById('pvcount');
+  var railtoggle = document.getElementById('railtoggle');
+
+  var active = 4;           // step attivo
+  var count = 4;            // punti già inseriti
+  var railManual = false;   // l'utente ha aperto la barra a mano?
+
+  // form state (passo 4)
+  var form = { type:'fridge', appliance:'', profile:'', name:'Frigo 2', dep:'Bancone' };
+  var nextNames = ['Frigo 3','Freezer B','Frigo cantina','Frigo pasticceria'];
+
+  // ── RAIL open/close ──
+  function setRail(open){
+    app.setAttribute('data-rail', open ? 'open' : 'collapsed');
+    railtoggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  railtoggle.addEventListener('click', function(e){
+    e.stopPropagation();
+    var open = app.getAttribute('data-rail') !== 'open';
+    railManual = open;
+    setRail(open);
+  });
+  // click generico sulla barra (quando è chiusa) → apre la sidebar e mostra i punti
+  document.querySelector('.rail').addEventListener('click', function(){
+    if(app.getAttribute('data-rail') !== 'open'){ railManual = true; setRail(true); }
+  });
+
+  // ── render rail (mini + full) ──
+  function renderRail(){
+    rmini.innerHTML = '';
+    steplist.innerHTML = '';
+    STEPS.forEach(function(s){
+      // mini dot
+      var md = document.createElement('button');
+      md.type = 'button';
+      md.className = 'md' + (s.state==='done'?' done':'') + (s.n===active?' active':'');
+      md.innerHTML = s.state==='done' ? svg.check : String(s.n);
+      md.setAttribute('aria-label', 'Passo '+s.n+': '+s.name);
+      md.addEventListener('click', function(){ if(s.state!=='future') goStep(s.n); });
+      rmini.appendChild(md);
+
+      // full step row
+      var locked = s.state==='future';
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'step' + (s.state==='done'?' done':'') + (s.n===active?' active':'') + (locked?' locked':'');
+      var subTxt = s.n===4 ? (count+' punti — continua') : s.sub;
+      b.innerHTML = '<span class="dot" aria-hidden="true">'+(s.state==='done'?svg.check:s.n)+'</span>'
+        + '<span class="st"><span class="sn">'+s.name+'</span><span class="ss">'+subTxt+'</span></span>'
+        + (locked?'<span class="lock" aria-hidden="true">'+svg.lock+'</span>':'');
+      if(s.n===4) b.querySelector('.dot').innerHTML = s.n; // attivo mostra numero
+      b.addEventListener('click', function(){ if(!locked) goStep(s.n); });
+      steplist.appendChild(b);
+    });
+    var done = STEPS.filter(function(s){return s.state==='done';}).length;
+    document.getElementById('pdone').textContent = done;
+    document.getElementById('pbar').style.width = Math.round(done/7*100)+'%';
+  }
+
+  // ── navigazione tra step ──
+  function goStep(n){
+    active = n;
+    renderRail();
+    renderSheet();
+    // se la barra era chiusa, apri un attimo l'inquadratura poi lascia decidere l'utente
+    if(app.getAttribute('data-rail')!=='open' && !railManual){ /* resta compatta: nav è dal mini */ }
+  }
+
+  // ── render pannello principale ──
+  function renderSheet(){
+    var s = STEPS.find(function(x){return x.n===active;});
+    if(active===4){ renderConservation(s); return; }
+    // summary card per gli altri step
+    var future = s.state==='future';
+    sheet.innerHTML =
+      '<div class="phead"><p class="lab">Passo '+s.n+' di 7</p><h2>'+s.name+'</h2>'
+      + '<p class="sub">'+(future?'Questo passo si sblocca proseguendo. ':'')+s.recap+'</p></div>'
+      + '<div class="summary '+(future?'future':'')+'">'
+        + '<span class="sicn" aria-hidden="true">'+(future?svg.box:svg.check)+'</span>'
+        + '<span class="stx"><b>'+s.name+'</b><span>'+(future?'In arrivo — '+s.sub:s.sub+' · completato')+'</span></span>'
+        + '<span class="sgo">'+(future
+            ? '<button class="ghost" type="button" data-go="4">← Torna ai punti</button>'
+            : '<button class="ghost" type="button" data-go="4">Continua →</button>')+'</span>'
+      + '</div>'
+      + '<div class="navrow"><button class="ghost" type="button" data-go="'+Math.max(1,s.n-1)+'">← Indietro</button><div class="spacer"></div>'
+      + '<button class="cta-next" type="button" data-go="'+Math.min(7,s.n+1)+'">Avanti →</button></div>';
+    bindGo();
+  }
+
+  function bindGo(){
+    Array.prototype.forEach.call(sheet.querySelectorAll('[data-go]'), function(el){
+      el.addEventListener('click', function(){ goStep(parseInt(el.getAttribute('data-go'),10)); });
+    });
+  }
+
+  // ── passo 4: punti di conservazione (profilo → temperatura fissa) ──
+  function currentTemp(){
+    if(form.type==='fridge'){ return form.profile ? PROFILES[form.profile].temp : null; }
+    return TYPES[form.type].temp;
+  }
+  function currentCats(){
+    if(form.type==='fridge'){ return form.profile ? PROFILES[form.profile].cats : []; }
+    return TYPES[form.type].cats;
+  }
+  function currentNote(){
+    if(form.type==='fridge'){ return form.profile ? PROFILES[form.profile].note : null; }
+    return TYPES[form.type].note;
+  }
+
+  function renderConservation(){
+    var t = TYPES[form.type];
+    var isFridge = form.type==='fridge';
+    var html = ''
+    + '<div class="phead"><p class="lab">Passo 4 · Conservazione</p><h2>Dove tieni il freddo</h2>'
+    + '<p class="sub">Ogni frigo, freezer o abbattitore diventa un punto da controllare. Scegli il profilo giusto: alla temperatura e alle categorie pensiamo noi.</p></div>'
+
+    + '<div class="card">'
+      + '<div class="card-t"><span class="ic" aria-hidden="true">'+svg.box+'</span> Nuovo punto di conservazione</div>'
+
+      + '<div class="grid2">'
+        + '<div class="field"><label for="ptname">Nome <span class="req">*</span></label>'
+          + '<input class="inp" id="ptname" type="text" value="'+form.name+'" placeholder="es. Frigo cucina"></div>'
+        + '<div class="field"><label for="ptdep">Reparto <span class="req">*</span></label>'
+          + '<select class="inp" id="ptdep">'
+            + opt(['Cucina','Bancone','Sala','Magazzino','Magazzino B'], form.dep)
+          + '</select></div>'
+      + '</div>'
+
+      + '<div class="field"><label>Tipo <span class="req">*</span></label>'
+        + '<div class="seg" id="seg" role="group" aria-label="Tipo di punto">'
+          + typeBtn('fridge') + typeBtn('freezer') + typeBtn('ambient') + typeBtn('blast')
+        + '</div></div>'
+
+      // profilo — solo frigo
+      + '<div class="profwrap'+(isFridge?'':' hide')+'" id="profwrap">'
+        + '<div class="field"><label for="ptappl">Attrezzatura <span class="req">*</span></label>'
+          + '<select class="inp" id="ptappl">'
+            + '<option value="">Scegli il tipo di frigo…</option>'
+            + optKV(PROF_APPL, form.appliance)
+          + '</select></div>'
+        + '<div class="field"><label>Profilo del punto <span class="req">*</span> <span class="opt">— decide temperatura e categorie</span></label>'
+          + '<div class="profgrid" id="profgrid" role="group" aria-label="Profilo del punto">'
+            + profBtns()
+          + '</div></div>'
+      + '</div>'
+
+      // temperatura FISSA (read only)
+      + '<div class="field"><label>Temperatura target</label>' + tempBlock() + '</div>'
+
+      // categorie auto-assegnate
+      + '<div class="field"><div class="autocats">'
+        + '<div class="achead"><span class="lab">Cosa ci conservi</span>'
+          + (currentCats().length? '<span class="from">auto-assegnate dal profilo</span>':'')+'</div>'
+        + '<div class="catchips" id="catchips">'+catChips()+'</div>'
+      + '</div></div>'
+
+      // sussurro HACCP
+      + noteBlock()
+
+      + '<button class="addbtn" type="button" id="addbtn">'+svg.plus+' Aggiungi &amp; prepara il prossimo</button>'
+    + '</div>'
+
+    + '<div class="navrow"><button class="ghost" type="button" data-go="3">← Staff</button><div class="spacer"></div>'
+      + '<button class="cta-next" type="button" data-go="5">Attività &amp; manutenzioni →</button></div>';
+
+    sheet.innerHTML = html;
+    bindConservation();
+    bindGo();
+  }
+
+  function opt(arr, sel){ return arr.map(function(v){ return '<option'+(v===sel?' selected':'')+'>'+v+'</option>'; }).join(''); }
+  function optKV(obj, sel){ return Object.keys(obj).map(function(k){ return '<option value="'+k+'"'+(k===sel?' selected':'')+'>'+obj[k]+'</option>'; }).join(''); }
+  function typeBtn(k){
+    var t = TYPES[k]; var on = form.type===k;
+    return '<button type="button" data-type="'+k+'" class="'+(on?'on'+(t.cold?' cold':''):'')+'">'
+      + '<span class="sic" aria-hidden="true">'+t.icon+'</span><span class="sl">'+t.label+'</span></button>';
+  }
+  function profBtns(){
+    return Object.keys(PROFILES).map(function(k){
+      var p = PROFILES[k]; var on = form.profile===k;
+      return '<button type="button" class="prof'+(on?' on':'')+'" data-prof="'+k+'">'
+        + '<span class="pfn">'+p.name+'</span><span class="pft">consiglia '+p.temp+'°C</span></button>';
+    }).join('');
+  }
+  function tempBlock(){
+    var temp = currentTemp();
+    if(form.type==='ambient'){
+      return '<div class="temp" id="temp"><div class="tempread amb"><span class="n" id="tnum">non monitorata</span></div>'
+        + '<span class="templock">'+svg.lock+' da profilo</span>'
+        + '<div class="tmeta">L\'ambiente non ha un target: si controllano scadenze e pulizia.</div></div>';
+    }
+    if(temp===null){
+      return '<div class="temp" id="temp"><div class="tempread"><span class="n" id="tnum">—</span><span class="u">°C</span></div>'
+        + '<div class="tmeta">Scegli un <b>profilo</b> qui sopra: la temperatura la imposta l\'app.</div></div>';
+    }
+    return '<div class="temp" id="temp"><div class="tempread"><span class="n" id="tnum">'+temp+'</span><span class="u">°C</span></div>'
+      + '<span class="templock">'+svg.lock+' decisa dal profilo</span>'
+      + '<div class="tmeta">Valore fisso a norma HACCP. Non si digita a mano.</div></div>';
+  }
+  function catChips(){
+    var cats = currentCats();
+    if(!cats.length) return '<span class="catempty">Scegli un profilo per vedere le categorie a norma.</span>';
+    return cats.map(function(c){ return '<span class="catchip">'+svg.check+c+'</span>'; }).join('');
+  }
+  function noteBlock(){
+    var note = currentNote();
+    if(!note) return '';
+    return '<div class="whisper">'+svg.info+'<div>'+note+'</div></div>';
+  }
+
+  function refreshDerived(landed){
+    // temperatura
+    var temp = document.getElementById('temp');
+    if(temp){ temp.outerHTML = tempBlock(); }
+    if(landed){ var tb = document.getElementById('temp'); if(tb){ tb.classList.remove('landed'); void tb.offsetWidth; tb.classList.add('landed'); } }
+    // categorie
+    var cc = document.getElementById('catchips'); if(cc){ cc.innerHTML = catChips(); }
+    var head = cc && cc.parentNode.querySelector('.from');
+    // sussurro
+    var wold = sheet.querySelector('.whisper'); if(wold) wold.remove();
+    var nb = noteBlock();
+    if(nb){ var addb = document.getElementById('addbtn'); addb.insertAdjacentHTML('beforebegin', nb); }
+    // ricrea la pill "auto-assegnate" se serve
+    var ach = sheet.querySelector('.autocats .achead');
+    if(ach){ var has = currentCats().length>0; var f = ach.querySelector('.from');
+      if(has && !f){ ach.insertAdjacentHTML('beforeend','<span class="from">auto-assegnate dal profilo</span>'); }
+      if(!has && f){ f.remove(); } }
+  }
+
+  function bindConservation(){
+    var seg = document.getElementById('seg');
+    seg.addEventListener('click', function(e){
+      var b = e.target.closest('button[data-type]'); if(!b) return;
+      form.type = b.getAttribute('data-type');
+      form.profile = ''; // reset profilo quando cambi tipo
+      if(form.type!=='fridge'){ form.appliance=''; }
+      renderConservation(); // ridisegna (mostra/nasconde profilo)
+      // piccola enfasi sulla temperatura se non-frigo (atterra subito)
+      if(form.type!=='fridge'){ var tb=document.getElementById('temp'); if(tb){ tb.classList.add('landed'); } }
+    });
+
+    var appl = document.getElementById('ptappl');
+    if(appl){ appl.addEventListener('change', function(){ form.appliance = appl.value; }); }
+
+    var pg = document.getElementById('profgrid');
+    if(pg){ pg.addEventListener('click', function(e){
+      var b = e.target.closest('button[data-prof]'); if(!b) return;
+      Array.prototype.forEach.call(pg.children, function(x){ x.classList.remove('on'); });
+      b.classList.add('on');
+      form.profile = b.getAttribute('data-prof');
+      refreshDerived(true); // temperatura atterra + categorie compaiono
+    }); }
+
+    var nameInp = document.getElementById('ptname');
+    nameInp.addEventListener('input', function(){ form.name = nameInp.value; });
+    var depSel = document.getElementById('ptdep');
+    depSel.addEventListener('change', function(){ form.dep = depSel.value; });
+
+    document.getElementById('addbtn').addEventListener('click', onAdd);
+  }
+
+  // ── aggiungi punto → raccogli i dati e portali nella barra ──
+  function scheduleCollapse(){
+    if(railManual) return;
+    window.clearTimeout(onAdd._t);
+    onAdd._t = window.setTimeout(function(){ setRail(false); }, 1700);
+  }
+  function prepNext(){
+    form.name = nextNames.shift() || '';
+    form.profile = '';
+    renderConservation();
+  }
+  function onAdd(){
+    var temp = currentTemp();
+    if(form.type==='fridge' && !form.profile){
+      // gentile: chiedi il profilo, evidenzia
+      var pw = document.getElementById('profgrid');
+      if(pw){ pw.scrollIntoView({block:'nearest', behavior:'smooth'}); if(pw.animate) pw.animate([{boxShadow:'0 0 0 0 rgba(62,124,177,.5)'},{boxShadow:'0 0 0 8px rgba(62,124,177,0)'}], {duration:600}); }
+      return;
+    }
+    var t = TYPES[form.type];
+    var name = (form.name||'Nuovo punto').trim();
+    var tempTxt = form.type==='ambient' ? 'amb' : (temp+'°');
+    var profTxt = form.type==='fridge' ? PROFILES[form.profile].name : t.label;
+    var warm = form.type==='blast' || form.type==='ambient';
+    var glyph = form.type==='blast'?'⚡':form.type==='ambient'?'▤':'❄';
+
+    var row = document.createElement('div');
+    row.className = 'pvpt fresh';
+    row.innerHTML = '<span class="pi'+(warm?' warm':'')+'" aria-hidden="true">'+glyph+'</span>'
+      + '<div class="pmeta"><span class="pmn">'+name+'</span><span class="pms">'+form.dep+' · '+profTxt+'</span></div>'
+      + '<span class="ptemp'+(warm?' warm':'')+'">'+tempTxt+'</span>';
+
+    count++;
+    pvCount.textContent = count;
+
+    var card = sheet.querySelector('.card');
+    var seg = document.getElementById('seg');
+    var mainEl = document.querySelector('.main');
+
+    // apri la sidebar (destinazione) e aggiorna il progresso
+    setRail(true);
+    renderRail();
+
+    function land(){
+      pvList.appendChild(row);
+      row.scrollIntoView({ block:'nearest', behavior:'smooth' });
+      scheduleCollapse();
+      prepNext(); // 4) compare il nuovo form vuoto
+    }
+
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduce || !card || !card.animate){ land(); return; }
+
+    // 2) la camera porta la sezione "Tipo" al centro della visuale
+    if(seg && mainEl && mainEl.scrollBy){
+      var segR = seg.getBoundingClientRect();
+      var mR = mainEl.getBoundingClientRect();
+      mainEl.scrollBy({ top:(segR.top + segR.height/2) - (mR.top + mR.height/2), behavior:'smooth' });
+    }
+
+    // 3) dopo lo scroll: la card si ALZA, si RAGGRUPPA verso l'alto e VOLA nella sidebar
+    window.setTimeout(function(){
+      var sRect = card.getBoundingClientRect();
+      var tRect = pvList.getBoundingClientRect();
+
+      var clone = card.cloneNode(true);
+      clone.className = 'card cardfly';
+      clone.style.left = sRect.left + 'px';
+      clone.style.top = sRect.top + 'px';
+      clone.style.width = sRect.width + 'px';
+      clone.style.height = sRect.height + 'px';
+      document.body.appendChild(clone);
+      card.style.visibility = 'hidden'; // il modal "reale" sparisce mentre il clone vola
+
+      // spostamento del punto-alto della card verso la lista punti nella sidebar
+      var dx = (tRect.left + tRect.width/2) - (sRect.left + sRect.width/2);
+      var dy = tRect.bottom - sRect.top;
+
+      var a = clone.animate([
+        { transform:'translate(0,0) scale(1)',            opacity:1,   offset:0 },
+        { transform:'translate(0,-14px) scale(1.02)',      opacity:1,   offset:.16 },  // si alza
+        { transform:'translate(0,-8px) scale(.5)',         opacity:.98, offset:.5 },   // raggruppa sotto di sé
+        { transform:'translate('+dx+'px,'+dy+'px) scale(.22)', opacity:.1, offset:1 }  // entra nella sidebar
+      ], { duration:840, easing:'cubic-bezier(.5,.02,.28,1)' });
+      var done = function(){ if(clone.parentNode) clone.remove(); land(); };
+      a.onfinish = done; a.oncancel = done;
+    }, 440);
+  }
+
+  // init
+  renderRail();
+  renderSheet();
+})();
+</script>

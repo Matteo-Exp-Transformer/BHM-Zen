@@ -1,0 +1,570 @@
+<style>
+  :root{
+    --ground:#EFEDE8; --ground-2:#E7E4DD;
+    --surface:#FFFFFF; --surface-2:#FAF9F6;
+    --ink:#24201C; --ink-2:#4C463F; --ink-muted:#7A7268;
+    --hairline:#E4E0D8; --hairline-2:#EDEAE3;
+    --accent:#C0552E; --accent-ink:#FFFFFF; --accent-soft:#F4E4DB;
+    --ok:#2E8B57; --ok-bg:#E4F1E9; --ok-ink:#1E6B40;
+    --warn:#B9821A; --warn-bg:#F6ECD3; --warn-ink:#87600F;
+    --bad:#C33D3D; --bad-bg:#F7E2E0; --bad-ink:#95271F;
+    --shadow: 0 1px 2px rgba(40,34,28,.04), 0 8px 24px rgba(40,34,28,.06);
+    --shadow-lg: 0 20px 60px rgba(30,24,18,.28);
+    --r: 18px;
+    --font: "Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ground:#161310; --ground-2:#100E0B;
+      --surface:#211D17; --surface-2:#26211A;
+      --ink:#F0EBE3; --ink-2:#C9C2B7; --ink-muted:#A0978A;
+      --hairline:#332D24; --hairline-2:#2A241D;
+      --accent:#DA7A4D; --accent-ink:#1B1510; --accent-soft:#2E2016;
+      --ok:#54B37E; --ok-bg:#16271D; --ok-ink:#84D2A5;
+      --warn:#DDB155; --warn-bg:#2A2312; --warn-ink:#E7C878;
+      --bad:#E0665E; --bad-bg:#2C1714; --bad-ink:#EE908A;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.4);
+      --shadow-lg: 0 24px 70px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="light"]{
+    --ground:#EFEDE8; --ground-2:#E7E4DD; --surface:#FFFFFF; --surface-2:#FAF9F6;
+    --ink:#24201C; --ink-2:#4C463F; --ink-muted:#7A7268;
+    --hairline:#E4E0D8; --hairline-2:#EDEAE3;
+    --accent:#C0552E; --accent-ink:#FFFFFF; --accent-soft:#F4E4DB;
+    --ok:#2E8B57; --ok-bg:#E4F1E9; --ok-ink:#1E6B40;
+    --warn:#B9821A; --warn-bg:#F6ECD3; --warn-ink:#87600F;
+    --bad:#C33D3D; --bad-bg:#F7E2E0; --bad-ink:#95271F;
+    --shadow: 0 1px 2px rgba(40,34,28,.04), 0 8px 24px rgba(40,34,28,.06);
+    --shadow-lg: 0 20px 60px rgba(30,24,18,.28);
+  }
+  :root[data-theme="dark"]{
+    --ground:#161310; --ground-2:#100E0B; --surface:#211D17; --surface-2:#26211A;
+    --ink:#F0EBE3; --ink-2:#C9C2B7; --ink-muted:#A0978A;
+    --hairline:#332D24; --hairline-2:#2A241D;
+    --accent:#DA7A4D; --accent-ink:#1B1510; --accent-soft:#2E2016;
+    --ok:#54B37E; --ok-bg:#16271D; --ok-ink:#84D2A5;
+    --warn:#DDB155; --warn-bg:#2A2312; --warn-ink:#E7C878;
+    --bad:#E0665E; --bad-bg:#2C1714; --bad-ink:#EE908A;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.4);
+    --shadow-lg: 0 24px 70px rgba(0,0,0,.6);
+  }
+
+  *{ box-sizing:border-box; }
+  body{ margin:0; }
+  .wrap{
+    font-family:var(--font); color:var(--ink);
+    background:radial-gradient(120% 80% at 50% -10%, var(--ground) 0%, var(--ground-2) 100%);
+    min-height:100vh; padding:40px 20px 64px;
+    display:flex; flex-direction:column; align-items:center; gap:34px; -webkit-font-smoothing:antialiased;
+  }
+  .intro{ max-width:560px; text-align:center; display:flex; flex-direction:column; gap:10px; }
+  .eyebrow{ margin:0; font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); }
+  .intro h1{ margin:0; font-size:clamp(26px,5vw,34px); font-weight:750; letter-spacing:-.02em; text-wrap:balance; line-height:1.1; }
+  .lede{ margin:0; font-size:15.5px; line-height:1.55; color:var(--ink-2); text-wrap:balance; }
+  .lede strong{ color:var(--ink); font-weight:650; }
+
+  .stage{ width:100%; display:flex; justify-content:center; }
+  .phone{
+    position:relative; width:390px; max-width:calc(100vw - 40px); height:min(800px, 86vh);
+    background:var(--surface); border-radius:46px;
+    box-shadow:var(--shadow-lg), 0 0 0 2px var(--hairline-2), 0 0 0 11px var(--ground-2);
+    overflow:hidden; isolation:isolate;
+  }
+  @media (prefers-color-scheme: dark){ .phone{ box-shadow:var(--shadow-lg), 0 0 0 2px #000, 0 0 0 11px #0b0906; } }
+  :root[data-theme="dark"] .phone{ box-shadow:var(--shadow-lg), 0 0 0 2px #000, 0 0 0 11px #0b0906; }
+  .screen{ position:absolute; inset:0; display:flex; flex-direction:column; background:var(--ground); }
+
+  .statusbar{ height:40px; flex:0 0 auto; display:flex; align-items:center; justify-content:space-between; padding:0 26px; font-size:13px; font-weight:600; color:var(--ink); }
+  .statusbar .dots{ display:flex; gap:5px; align-items:center; opacity:.85; }
+  .statusbar .dots span{ width:6px; height:6px; border-radius:50%; background:var(--ink); }
+  .statusbar .dots .b{ width:22px; height:11px; border-radius:3px; border:1.5px solid var(--ink); background:none; position:relative; }
+  .statusbar .dots .b::after{ content:""; position:absolute; inset:2px; width:12px; border-radius:1px; background:var(--ink); }
+
+  .content{ flex:1 1 auto; overflow-y:auto; overflow-x:hidden; padding:6px 16px 150px; display:flex; flex-direction:column; gap:20px; scrollbar-width:none; }
+  .content::-webkit-scrollbar{ display:none; }
+
+  /* reparto header + switcher */
+  .rep-head{ display:flex; align-items:flex-start; justify-content:space-between; padding:10px 2px 0; gap:12px; }
+  .rep-head .date{ margin:0 0 5px; font-size:12px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-muted); }
+  .switcher{ display:inline-flex; align-items:center; gap:8px; background:var(--surface); border:0; cursor:pointer; font-family:inherit; padding:6px 12px 6px 8px; border-radius:999px; box-shadow:var(--shadow); }
+  .switcher .badge{ width:30px; height:30px; border-radius:9px; background:var(--accent-soft); color:var(--accent); display:grid; place-items:center; }
+  .switcher .nm{ font-size:20px; font-weight:750; letter-spacing:-.02em; color:var(--ink); }
+  .switcher svg{ color:var(--ink-muted); }
+  .rep-head .meta{ margin:8px 0 0 4px; font-size:13.5px; color:var(--ink-muted); }
+  .rep-head .meta b{ color:var(--warn-ink); font-weight:700; }
+  .avatar{ width:40px; height:40px; border-radius:50%; flex:0 0 auto; background:linear-gradient(150deg, var(--accent), color-mix(in srgb, var(--accent) 60%, #7a2f16)); color:#fff; display:grid; place-items:center; font-size:14px; font-weight:700; box-shadow:var(--shadow); }
+
+  /* schematic map */
+  .map-wrap{ display:flex; flex-direction:column; gap:9px; }
+  .map{
+    position:relative; width:100%; aspect-ratio:4/3; border-radius:var(--r);
+    background:
+      linear-gradient(var(--hairline-2) 1px, transparent 1px) 0 0/100% 26px,
+      linear-gradient(90deg, var(--hairline-2) 1px, transparent 1px) 0 0/26px 100%,
+      var(--surface-2);
+    box-shadow:inset 0 0 0 2px var(--hairline); overflow:hidden;
+  }
+  .zone{ position:absolute; border-radius:10px; background:color-mix(in srgb, var(--ink) 5%, transparent); box-shadow:inset 0 0 0 1px var(--hairline); display:grid; place-items:center; font-size:10.5px; font-weight:650; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-muted); }
+  .wall-label{ position:absolute; top:8px; left:12px; font-size:10.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-muted); }
+  .door{ position:absolute; right:-1px; top:38%; width:6px; height:44px; background:var(--ground); box-shadow:inset 0 0 0 1px var(--hairline); border-radius:3px; }
+
+  .marker{
+    position:absolute; transform:translate(-50%,-50%); border:0; cursor:pointer; font-family:inherit;
+    display:flex; flex-direction:column; align-items:center; gap:3px; background:none; padding:2px;
+  }
+  .marker .dot{ width:34px; height:34px; border-radius:11px; display:grid; place-items:center; background:var(--surface); box-shadow:var(--shadow), inset 0 0 0 2px var(--hairline); color:var(--ink-2); transition:transform .18s ease, box-shadow .2s ease; }
+  .marker .val{ font-size:11px; font-weight:750; font-variant-numeric:tabular-nums; padding:1px 7px; border-radius:999px; background:var(--surface); box-shadow:var(--shadow); color:var(--ink-muted); white-space:nowrap; }
+  .marker.ok .dot{ box-shadow:var(--shadow), inset 0 0 0 2px var(--ok); color:var(--ok-ink); } .marker.ok .val{ background:var(--ok-bg); color:var(--ok-ink); }
+  .marker.warn .dot{ box-shadow:var(--shadow), inset 0 0 0 2px var(--warn); color:var(--warn-ink); } .marker.warn .val{ background:var(--warn-bg); color:var(--warn-ink); }
+  .marker.bad .dot{ box-shadow:var(--shadow), inset 0 0 0 2px var(--bad); color:var(--bad-ink); } .marker.bad .val{ background:var(--bad-bg); color:var(--bad-ink); }
+  .marker.todo .dot{ box-shadow:var(--shadow), inset 0 0 0 2px var(--accent); color:var(--accent); animation:pulse 1.8s ease-in-out infinite; }
+  .marker.todo .val{ color:var(--accent); font-weight:700; }
+  @keyframes pulse{ 0%,100%{ box-shadow:var(--shadow), inset 0 0 0 2px var(--accent) } 50%{ box-shadow:0 0 0 6px var(--accent-soft), inset 0 0 0 2px var(--accent) } }
+  .marker:active .dot{ transform:scale(.9); }
+  .marker.sel .dot{ transform:scale(1.12); }
+  .marker:focus-visible .dot{ outline:3px solid color-mix(in srgb,var(--accent) 55%, transparent); outline-offset:2px; }
+  .map-legend{ display:flex; gap:14px; flex-wrap:wrap; padding:0 2px; }
+  .map-legend span{ display:inline-flex; align-items:center; gap:6px; font-size:11.5px; color:var(--ink-muted); font-weight:600; }
+  .map-legend i{ width:10px; height:10px; border-radius:3px; }
+
+  .sec{ display:flex; flex-direction:column; gap:11px; }
+  .sec-label{ display:flex; align-items:center; gap:9px; font-size:11.5px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-muted); padding:0 2px; }
+  .sec-label .line{ flex:1 1 auto; height:1px; background:var(--hairline); }
+
+  .card{ background:var(--surface); border-radius:var(--r); box-shadow:var(--shadow); padding:15px 15px 14px; display:flex; flex-direction:column; gap:13px; transition:box-shadow .25s ease, transform .25s ease; scroll-margin-top:10px; }
+  .card.point.sel{ box-shadow:var(--shadow), inset 0 0 0 2px var(--accent); }
+  .card .top{ display:flex; align-items:flex-start; gap:12px; }
+  .icon-badge{ width:42px; height:42px; border-radius:12px; flex:0 0 auto; display:grid; place-items:center; background:var(--surface-2); color:var(--ink-2); box-shadow:inset 0 0 0 1px var(--hairline); }
+  .card .verb{ margin:0; font-size:17px; font-weight:700; letter-spacing:-.01em; line-height:1.15; }
+  .card .where{ margin:5px 0 0; font-size:13px; color:var(--ink-muted); display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
+  .card .where .pill{ background:var(--surface-2); box-shadow:inset 0 0 0 1px var(--hairline); padding:2px 9px; border-radius:999px; font-weight:600; color:var(--ink-2); }
+
+  .verdict-chip{ display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:700; padding:5px 10px; border-radius:999px; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .verdict-chip.ok{ background:var(--ok-bg); color:var(--ok-ink); } .verdict-chip.warn{ background:var(--warn-bg); color:var(--warn-ink); }
+  .verdict-chip.bad{ background:var(--bad-bg); color:var(--bad-ink); } .verdict-chip.todo{ background:var(--surface-2); color:var(--ink-muted); box-shadow:inset 0 0 0 1px var(--hairline); }
+
+  .btn{ appearance:none; border:0; cursor:pointer; font-family:inherit; border-radius:12px; font-size:15px; font-weight:650; padding:13px 16px; width:100%; display:flex; align-items:center; justify-content:center; gap:9px; transition:transform .12s ease, background .2s ease; }
+  .btn:active{ transform:scale(.975); }
+  .btn.primary{ background:var(--accent); color:var(--accent-ink); box-shadow:0 2px 0 color-mix(in srgb, var(--accent) 55%, #000), var(--shadow); }
+  .btn.ghost{ background:var(--surface-2); color:var(--ink); box-shadow:inset 0 0 0 1.5px var(--hairline); }
+  .btn:focus-visible{ outline:3px solid color-mix(in srgb,var(--accent) 55%, transparent); outline-offset:2px; }
+  .btn.small{ font-size:14px; padding:11px 14px; }
+
+  .quick{ display:grid; grid-template-columns:1fr 1fr; gap:11px; }
+  .quick button{ background:var(--surface); border:0; cursor:pointer; font-family:inherit; border-radius:var(--r); box-shadow:var(--shadow); padding:15px 14px; display:flex; align-items:center; gap:11px; font-size:14.5px; font-weight:650; color:var(--ink); transition:transform .12s ease; }
+  .quick button:active{ transform:scale(.97); }
+  .quick .qi{ width:36px; height:36px; border-radius:10px; display:grid; place-items:center; background:var(--accent-soft); color:var(--accent); flex:0 0 auto; }
+  .quick button:focus-visible{ outline:3px solid color-mix(in srgb,var(--accent) 55%, transparent); outline-offset:2px; }
+
+  .just-landed{ animation:pop .5s cubic-bezier(.2,1.3,.4,1) both; }
+  @keyframes pop{ 0%{ transform:scale(.96) } 60%{ transform:scale(1.02) } 100%{ transform:scale(1) } }
+
+  .tabbar{ position:absolute; left:0; right:0; bottom:0; flex:0 0 auto; height:74px; padding:8px 12px calc(8px + env(safe-area-inset-bottom)); background:color-mix(in srgb, var(--surface) 88%, transparent); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border-top:1px solid var(--hairline); display:flex; justify-content:space-around; align-items:stretch; z-index:5; }
+  .tab{ background:none; border:0; cursor:pointer; font-family:inherit; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; color:var(--ink-muted); font-size:11px; font-weight:600; flex:1; border-radius:12px; transition:color .2s ease; }
+  .tab.active{ color:var(--accent); }
+  .tab svg{ width:23px; height:23px; }
+  .tab:focus-visible{ outline:2px solid color-mix(in srgb,var(--accent) 55%, transparent); outline-offset:2px; }
+
+  .toast{ position:absolute; left:50%; bottom:92px; transform:translate(-50%, 14px); background:var(--ink); color:var(--ground); padding:11px 20px; border-radius:999px; font-size:14.5px; font-weight:650; box-shadow:var(--shadow-lg); opacity:0; pointer-events:none; z-index:20; transition:opacity .25s ease, transform .25s cubic-bezier(.2,1.3,.4,1); }
+  .toast.show{ opacity:1; transform:translate(-50%, 0); }
+
+  /* sheets (keypad + cascade) */
+  .scrim{ position:absolute; inset:0; background:rgba(20,16,12,.42); backdrop-filter:blur(2px); opacity:0; pointer-events:none; transition:opacity .3s ease; z-index:30; }
+  .scrim.show{ opacity:1; pointer-events:auto; }
+  .sheet{ position:absolute; left:0; right:0; bottom:0; z-index:31; background:var(--surface); border-radius:26px 26px 0 0; padding:10px 18px calc(20px + env(safe-area-inset-bottom)); box-shadow:0 -12px 40px rgba(20,16,12,.22); transform:translateY(102%); transition:transform .38s cubic-bezier(.2,.9,.2,1); display:flex; flex-direction:column; gap:13px; }
+  .sheet.show{ transform:translateY(0); }
+  .handle{ width:40px; height:5px; border-radius:999px; background:var(--hairline); margin:2px auto; }
+  .s-head .st{ margin:0; font-size:13px; font-weight:650; color:var(--ink-muted); display:flex; gap:7px; justify-content:center; align-items:center; text-align:center; }
+  .s-title{ margin:0; text-align:center; font-size:17px; font-weight:750; letter-spacing:-.01em; }
+
+  .display{ text-align:center; padding:8px 0 4px; border-radius:16px; margin:2px 0; transition:background .45s ease; }
+  .display .num{ font-size:56px; font-weight:750; letter-spacing:-.03em; line-height:1; font-variant-numeric:tabular-nums; color:var(--ink); display:inline-flex; align-items:baseline; gap:3px; }
+  .display .num .unit{ font-size:25px; font-weight:600; color:var(--ink-muted); }
+  .display .num.placeholder{ color:var(--ink-muted); opacity:.45; }
+  .whisper{ text-align:center; font-size:13px; color:var(--ink-muted); min-height:18px; transition:opacity .4s ease, color .3s ease; }
+  .display.land{ animation:land .5s cubic-bezier(.2,1.2,.35,1) both; }
+  @keyframes land{ 0%{ transform:translateY(-16px); opacity:.2 } 55%{ transform:translateY(3px) } 100%{ transform:translateY(0); opacity:1 } }
+  .display.v-ok{ background:var(--ok-bg); } .display.v-ok .num{ color:var(--ok-ink); }
+  .display.v-warn{ background:var(--warn-bg); } .display.v-warn .num{ color:var(--warn-ink); }
+  .display.v-bad{ background:var(--bad-bg); } .display.v-bad .num{ color:var(--bad-ink); }
+
+  .keys{ display:grid; grid-template-columns:repeat(3,1fr); gap:9px; }
+  .key{ appearance:none; border:0; cursor:pointer; font-family:inherit; background:var(--surface-2); color:var(--ink); box-shadow:inset 0 0 0 1px var(--hairline); border-radius:15px; padding:15px 0; font-size:23px; font-weight:600; font-variant-numeric:tabular-nums; transition:transform .1s ease, background .15s ease; }
+  .key:active{ transform:scale(.94); background:var(--ground-2); }
+  .key.util{ font-size:19px; color:var(--ink-muted); }
+  .key:focus-visible{ outline:3px solid color-mix(in srgb,var(--accent) 55%, transparent); outline-offset:2px; }
+  .actions{ display:flex; flex-direction:column; gap:8px; margin-top:2px; }
+  .cancel{ background:none; border:0; color:var(--ink-muted); font-family:inherit; font-size:14px; font-weight:600; padding:6px; cursor:pointer; }
+
+  /* cascade teaser */
+  .cascade-q{ font-size:13px; font-weight:700; letter-spacing:.02em; color:var(--ink-2); margin:6px 2px 0; }
+  .chips{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{ appearance:none; border:0; cursor:pointer; font-family:inherit; background:var(--surface-2); color:var(--ink); box-shadow:inset 0 0 0 1.5px var(--hairline); border-radius:12px; padding:10px 14px; font-size:14px; font-weight:600; transition:opacity .45s ease, transform .45s cubic-bezier(.2,.8,.2,1), background .2s ease, box-shadow .2s ease, max-width .45s ease, padding .45s ease, margin .45s ease; max-width:240px; }
+  .chip[data-sel="1"]{ background:var(--accent); color:var(--accent-ink); box-shadow:0 2px 0 color-mix(in srgb,var(--accent) 55%,#000); }
+  .chip.melt{ opacity:0; transform:scale(.8); max-width:0; padding-left:0; padding-right:0; margin:-4px; overflow:hidden; pointer-events:none; box-shadow:none; }
+  .chip:focus-visible{ outline:3px solid color-mix(in srgb,var(--accent) 55%, transparent); outline-offset:2px; }
+  .cascade-note{ font-size:12.5px; color:var(--ink-muted); text-align:center; line-height:1.4; margin:4px 0 0; }
+  .cascade-note b{ color:var(--accent); }
+
+  .content > *{ animation:rise .5s ease both; }
+  .content > *:nth-child(1){ animation-delay:.02s } .content > *:nth-child(2){ animation-delay:.08s } .content > *:nth-child(3){ animation-delay:.14s } .content > *:nth-child(4){ animation-delay:.2s } .content > *:nth-child(5){ animation-delay:.26s }
+  @keyframes rise{ from{ opacity:0; transform:translateY(10px) } to{ opacity:1; transform:none } }
+
+  .legend{ max-width:620px; width:100%; background:var(--surface); border-radius:20px; box-shadow:var(--shadow); padding:20px 22px; display:flex; flex-direction:column; gap:16px; }
+  .legend h3{ margin:0; font-size:13px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-muted); }
+  .principles{ display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px; }
+  .principles div{ font-size:13px; color:var(--ink-2); line-height:1.45; }
+  .principles b{ color:var(--ink); font-weight:650; display:block; margin-bottom:2px; }
+
+  @media (prefers-reduced-motion: reduce){ *{ animation-duration:.001ms !important; transition-duration:.001ms !important; } }
+</style>
+
+<div class="wrap">
+  <header class="intro">
+    <p class="eyebrow">BHM · Direzione UI · Mockup 2 di 4</p>
+    <h1>Reparti — la lente spazio</h1>
+    <p class="lede">La “sua cucina” codificata: uno <strong>schematico dei punti</strong>. Tocca un punto sulla mappa <em>oppure</em> “Registra” su una card → la temperatura <strong>atterra dallo spazio</strong>. In fondo, un assaggio del <strong>form a cascata</strong>.</p>
+  </header>
+
+  <div class="stage">
+    <div class="phone" role="application" aria-label="App BHM — schermata Reparto Cucina">
+      <div class="screen" id="screen">
+        <div class="statusbar" aria-hidden="true">
+          <span>17:44</span>
+          <span class="dots"><span></span><span></span><span></span><span class="b"></span></span>
+        </div>
+
+        <div class="content" id="content">
+          <header class="rep-head">
+            <div>
+              <p class="date">Reparto</p>
+              <button class="switcher" aria-label="Cambia reparto: Cucina">
+                <span class="badge" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11h18"/><path d="M5 11V7a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v4"/><path d="M6 11v9M18 11v9M4 20h16"/><path d="M9 7h.01M13 7h.01"/></svg>
+                </span>
+                <span class="nm">Cucina</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <p class="meta">5 punti · <b>1 da controllare</b></p>
+            </div>
+            <div class="avatar" aria-label="Luca Rossi">LR</div>
+          </header>
+
+          <!-- schematic map -->
+          <div class="map-wrap">
+            <div class="map" id="map" role="group" aria-label="Schematico dei punti del reparto Cucina">
+              <span class="wall-label">Cucina</span>
+              <div class="door" aria-hidden="true"></div>
+              <div class="zone" style="left:34%; top:44%; width:32%; height:26%;">Piano lavoro</div>
+              <div class="zone" style="left:6%; bottom:6%; width:88%; height:15%;">Bancone</div>
+
+              <button class="marker ok" data-id="frigo1" style="left:14%; top:24%;" aria-label="Frigo 1, ok 2 gradi">
+                <span class="dot"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M6 11h12"/><path d="M9 6v2M9 15v2"/></svg></span>
+                <span class="val">2°</span>
+              </button>
+              <button class="marker todo" data-id="frigo2" style="left:14%; top:62%;" aria-label="Frigo 2, da controllare">
+                <span class="dot"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M6 11h12"/><path d="M9 6v2M9 15v2"/></svg></span>
+                <span class="val">–</span>
+              </button>
+              <button class="marker ok" data-id="congel" style="left:50%; top:22%;" aria-label="Congelatore, ok meno 18 gradi">
+                <span class="dot"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20M5 5l14 14M19 5 5 19"/></svg></span>
+                <span class="val">−18°</span>
+              </button>
+              <button class="marker ok" data-id="abbat" style="left:84%; top:24%;" aria-label="Abbattitore, ok 3 gradi">
+                <span class="dot"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 9.5a2.5 2.5 0 1 1 3 4H2"/><path d="M12.5 20a2.5 2.5 0 1 0 3-4H2"/><path d="M17 8a3 3 0 1 1 3 5H2"/></svg></span>
+                <span class="val">3°</span>
+              </button>
+              <button class="marker warn" data-id="bancone" style="left:70%; bottom:13%; top:auto;" aria-label="Bancone freddo, attento 6 gradi">
+                <span class="dot"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h18M4 10l1-4h14l1 4M5 10v9M19 10v9M3 19h18"/></svg></span>
+                <span class="val">6°</span>
+              </button>
+            </div>
+            <div class="map-legend" aria-hidden="true">
+              <span><i style="background:var(--ok)"></i>in range</span>
+              <span><i style="background:var(--warn)"></i>attento</span>
+              <span><i style="background:var(--accent)"></i>da controllare</span>
+            </div>
+          </div>
+
+          <!-- points list -->
+          <section class="sec">
+            <div class="sec-label"><span>Punti di conservazione</span><span class="line"></span></div>
+
+            <article class="card point" data-id="frigo2">
+              <div class="top">
+                <div class="icon-badge" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M6 11h12"/><path d="M9 6v2M9 15v2"/></svg></div>
+                <div style="flex:1"><p class="verb">Frigo 2</p><p class="where"><span class="pill">Frigorifero</span> atteso 0–4&nbsp;°C</p></div>
+                <span class="verdict-chip todo js-chip">da controllare</span>
+              </div>
+              <button class="btn primary reg js-reg">Registra temperatura</button>
+            </article>
+
+            <article class="card point" data-id="bancone">
+              <div class="top">
+                <div class="icon-badge" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h18M4 10l1-4h14l1 4M5 10v9M19 10v9M3 19h18"/></svg></div>
+                <div style="flex:1"><p class="verb">Bancone freddo</p><p class="where"><span class="pill">Espositore</span> atteso 0–4&nbsp;°C</p></div>
+                <span class="verdict-chip warn js-chip">6&nbsp;°C · attento</span>
+              </div>
+              <button class="btn ghost reg js-reg small">Registra di nuovo</button>
+            </article>
+
+            <article class="card point" data-id="frigo1">
+              <div class="top">
+                <div class="icon-badge" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M6 11h12"/><path d="M9 6v2M9 15v2"/></svg></div>
+                <div style="flex:1"><p class="verb">Frigo 1</p><p class="where"><span class="pill">Frigorifero</span> atteso 0–4&nbsp;°C</p></div>
+                <span class="verdict-chip ok js-chip">2&nbsp;°C · ok</span>
+              </div>
+              <button class="btn ghost reg js-reg small">Registra di nuovo</button>
+            </article>
+
+            <article class="card point" data-id="congel">
+              <div class="top">
+                <div class="icon-badge" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20M5 5l14 14M19 5 5 19"/></svg></div>
+                <div style="flex:1"><p class="verb">Congelatore</p><p class="where"><span class="pill">Freezer</span> atteso −22…−16&nbsp;°C</p></div>
+                <span class="verdict-chip ok js-chip">−18&nbsp;°C · ok</span>
+              </div>
+              <button class="btn ghost reg js-reg small">Registra di nuovo</button>
+            </article>
+
+            <article class="card point" data-id="abbat">
+              <div class="top">
+                <div class="icon-badge" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 9.5a2.5 2.5 0 1 1 3 4H2"/><path d="M12.5 20a2.5 2.5 0 1 0 3-4H2"/><path d="M17 8a3 3 0 1 1 3 5H2"/></svg></div>
+                <div style="flex:1"><p class="verb">Abbattitore</p><p class="where"><span class="pill">Blast</span> atteso 0–4&nbsp;°C</p></div>
+                <span class="verdict-chip ok js-chip">3&nbsp;°C · ok</span>
+              </div>
+              <button class="btn ghost reg js-reg small">Registra di nuovo</button>
+            </article>
+          </section>
+
+          <!-- in questo reparto -->
+          <section class="sec">
+            <div class="sec-label"><span>In questo reparto</span><span class="line"></span></div>
+            <div class="quick">
+              <button id="addFood">
+                <span class="qi" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></span>
+                Aggiungi alimento
+              </button>
+              <button>
+                <span class="qi" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2-2Z"/></svg></span>
+                Manutenzioni
+              </button>
+            </div>
+          </section>
+        </div>
+
+        <div class="toast" id="toast"></div>
+
+        <nav class="tabbar" aria-label="Navigazione principale">
+          <button class="tab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            Oggi
+          </button>
+          <button class="tab active" aria-current="page">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+            Reparti
+          </button>
+          <button class="tab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8 12 3l9 5v8l-9 5-9-5Z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></svg>
+            Scorte
+          </button>
+          <button class="tab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="m3 10 4-4M9 10l4-4M15 10l4-4"/></svg>
+            Regia
+          </button>
+        </nav>
+
+        <!-- keypad sheet -->
+        <div class="scrim" id="scrim"></div>
+        <section class="sheet" id="sheet" aria-label="Registra temperatura" aria-hidden="true">
+          <div class="handle"></div>
+          <div class="s-head"><p class="st"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/></svg><span id="kpWhere">Cucina · Frigo 2</span></p></div>
+          <div class="display" id="display"><span class="num placeholder" id="num">—<span class="unit">°C</span></span></div>
+          <p class="whisper" id="whisper">atteso 0–4&nbsp;°C</p>
+          <div class="keys" id="keys">
+            <button class="key" data-k="1">1</button><button class="key" data-k="2">2</button><button class="key" data-k="3">3</button>
+            <button class="key" data-k="4">4</button><button class="key" data-k="5">5</button><button class="key" data-k="6">6</button>
+            <button class="key" data-k="7">7</button><button class="key" data-k="8">8</button><button class="key" data-k="9">9</button>
+            <button class="key util" data-k="sign">±</button><button class="key" data-k="0">0</button><button class="key util" data-k="del" aria-label="Cancella">⌫</button>
+          </div>
+          <div class="actions"><button class="btn primary" id="confirm">Conferma</button><button class="cancel" id="cancel">Annulla</button></div>
+        </section>
+
+        <!-- cascade teaser sheet -->
+        <div class="scrim" id="scrim2"></div>
+        <section class="sheet" id="sheet2" aria-label="Aggiungi alimento — anteprima" aria-hidden="true">
+          <div class="handle"></div>
+          <p class="s-title">Aggiungi alimento</p>
+          <p class="cascade-q">Che alimento è?</p>
+          <div class="chips" id="foodChips">
+            <button class="chip" data-food="surgelato">Surgelato</button>
+            <button class="chip" data-food="fresco">Fresco</button>
+            <button class="chip" data-food="secco">Secco / dispensa</button>
+          </div>
+          <p class="cascade-q">Dove va conservato?</p>
+          <div class="chips" id="storeChips">
+            <button class="chip" data-store="congel" data-ok="surgelato">Congelatore</button>
+            <button class="chip" data-store="frigo" data-ok="fresco">Frigo</button>
+            <button class="chip" data-store="bancone" data-ok="fresco">Bancone freddo</button>
+            <button class="chip" data-store="dispensa" data-ok="secco">Dispensa</button>
+          </div>
+          <p class="cascade-note">Le opzioni incompatibili <b>svaniscono</b> mentre scegli — vedi la logica HACCP accadere. <br>Il form completo è il <b>Mockup 3</b>.</p>
+          <div class="actions"><button class="cancel" id="cancel2">Chiudi anteprima</button></div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <footer class="legend">
+    <div><h3>Reparti — la lente spazio (§12)</h3></div>
+    <div class="principles">
+      <div><b>Spazio ↔ tempo</b>Lo stesso punto vive qui (dove) e in “Oggi” (quando). Due lenti, un dato.</div>
+      <div><b>Tocchi il punto, registri</b>Dalla mappa o dalla card: stesso gesto 🌡️. Il verdetto-colore aggiorna mappa e lista insieme.</div>
+      <div><b>Il manuale visivo</b>Il nuovo dipendente “vede la sua cucina” — dove sta cosa, cosa va controllato. Orientamento, non wizard.</div>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function buzz(ms){ if(navigator.vibrate && !reduce){ try{ navigator.vibrate(ms); }catch(e){} } }
+
+  var toast = document.getElementById('toast'), toastTimer;
+  function showToast(m){ toast.textContent=m; toast.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(function(){ toast.classList.remove('show'); },1500); }
+
+  var POINTS = {
+    frigo1:{ name:'Frigo 1', lo:0, hi:4 },
+    frigo2:{ name:'Frigo 2', lo:0, hi:4 },
+    congel:{ name:'Congelatore', lo:-22, hi:-16 },
+    abbat:{ name:'Abbattitore', lo:0, hi:4 },
+    bancone:{ name:'Bancone freddo', lo:0, hi:4 }
+  };
+  function verdict(v, lo, hi){
+    if(v>=lo && v<=hi) return {k:'ok', label:'ok', word:'Perfetto, in range.'};
+    if((v>hi && v<=hi+2)||(v<lo && v>=lo-2)) return {k:'warn', label:'attento', word:'Attento — appena fuori dal range.'};
+    return {k:'bad', label:'fuori norma', word:'Fuori norma — segnala o intervieni.'};
+  }
+  function fmt(v){ return (Math.round(v*10)/10).toString().replace('.', ','); }
+
+  /* ---- selection sync map<->list ---- */
+  function selectPoint(id){
+    document.querySelectorAll('.marker').forEach(function(m){ m.classList.toggle('sel', m.getAttribute('data-id')===id); });
+    document.querySelectorAll('.card.point').forEach(function(c){ c.classList.toggle('sel', c.getAttribute('data-id')===id); });
+  }
+
+  /* ---- keypad ---- */
+  var scrim=document.getElementById('scrim'), sheet=document.getElementById('sheet');
+  var numEl=document.getElementById('num'), display=document.getElementById('display'), whisper=document.getElementById('whisper');
+  var kpWhere=document.getElementById('kpWhere');
+  var buf='', neg=false, curId=null;
+
+  function rangeText(p){ return 'atteso ' + (p.lo<0?('−'+Math.abs(p.hi)+'…−'+Math.abs(p.lo)):(p.lo+'–'+p.hi)) + ' °C'; }
+  function renderNum(){
+    var show=(neg?'-':'')+(buf===''?'':buf);
+    if(show===''){ numEl.className='num placeholder'; numEl.innerHTML='—<span class="unit">°C</span>'; }
+    else{ numEl.className='num'; numEl.innerHTML=show.replace('.', ',')+'<span class="unit">°C</span>'; }
+  }
+  function openKeypad(id){
+    curId=id; var p=POINTS[id];
+    buf=''; neg=false; renderNum(); display.className='display';
+    kpWhere.textContent='Cucina · '+p.name;
+    whisper.textContent=rangeText(p); whisper.style.opacity='1'; whisper.style.color='';
+    scrim.classList.add('show'); sheet.classList.add('show'); sheet.setAttribute('aria-hidden','false');
+    selectPoint(id);
+  }
+  function closeKeypad(){ scrim.classList.remove('show'); sheet.classList.remove('show'); sheet.setAttribute('aria-hidden','true'); }
+  scrim.addEventListener('click', closeKeypad);
+  document.getElementById('cancel').addEventListener('click', closeKeypad);
+
+  document.getElementById('keys').addEventListener('click', function(e){
+    var b=e.target.closest('.key'); if(!b) return; var k=b.getAttribute('data-k'); buzz(6);
+    if(k==='del'){ buf=buf.slice(0,-1); if(buf==='') neg=false; }
+    else if(k==='sign'){ neg=!neg; }
+    else { if(buf.replace('.','').replace('-','').length<3){ buf+=k; } }
+    display.className='display'; renderNum();
+  });
+
+  document.getElementById('confirm').addEventListener('click', function(){
+    if(buf===''){ display.classList.remove('land'); void display.offsetWidth; display.classList.add('land'); return; }
+    var p=POINTS[curId]; var val=parseFloat((neg?'-':'')+buf); var vd=verdict(val,p.lo,p.hi);
+    display.className='display v-'+vd.k; void display.offsetWidth; display.classList.add('land');
+    whisper.textContent=vd.word; whisper.style.color='var(--'+(vd.k==='ok'?'ok-ink':vd.k==='warn'?'warn-ink':'bad-ink')+')';
+    buzz(vd.k==='ok'?18:[10,40,10]);
+    setTimeout(function(){ closeKeypad(); applyReading(curId, val, vd); }, 900);
+  });
+
+  function applyReading(id, val, vd){
+    // update card
+    var card=document.querySelector('.card.point[data-id="'+id+'"]');
+    if(card){
+      var chip=card.querySelector('.js-chip');
+      chip.className='verdict-chip '+vd.k+' js-chip';
+      chip.textContent=fmt(val)+' °C · '+vd.label;
+      chip.classList.add('just-landed'); setTimeout(function(){ chip.classList.remove('just-landed'); },600);
+      var btn=card.querySelector('.js-reg');
+      btn.className='btn ghost reg js-reg small'; btn.textContent='Registra di nuovo';
+    }
+    // update marker
+    var mk=document.querySelector('.marker[data-id="'+id+'"]');
+    if(mk){
+      mk.className='marker '+vd.k; if(id==='congel') mk.querySelector('.val').textContent=fmt(val)+'°';
+      else mk.querySelector('.val').textContent=fmt(val)+'°';
+    }
+    // update header count if a "todo" got resolved
+    refreshMeta();
+    showToast(vd.k==='ok'?'Fatto! ':'Registrato.');
+  }
+  function refreshMeta(){
+    var todo=document.querySelectorAll('.marker.todo').length;
+    var meta=document.querySelector('.rep-head .meta');
+    meta.innerHTML = todo>0 ? ('5 punti · <b>'+todo+' da controllare</b>') : '5 punti · <span style="color:var(--ok-ink);font-weight:700">tutti controllati</span>';
+  }
+
+  // markers open keypad
+  document.querySelectorAll('.marker').forEach(function(m){
+    m.addEventListener('click', function(){ openKeypad(m.getAttribute('data-id')); });
+  });
+  // list buttons
+  document.querySelectorAll('.js-reg').forEach(function(b){
+    b.addEventListener('click', function(){ openKeypad(b.closest('.card.point').getAttribute('data-id')); });
+  });
+  // selecting a card highlights (tap on card body)
+  document.querySelectorAll('.card.point').forEach(function(c){
+    c.addEventListener('click', function(e){ if(e.target.closest('.js-reg')) return; selectPoint(c.getAttribute('data-id')); });
+  });
+
+  /* ---- cascade teaser ---- */
+  var scrim2=document.getElementById('scrim2'), sheet2=document.getElementById('sheet2');
+  function openCascade(){
+    // reset
+    document.querySelectorAll('#foodChips .chip').forEach(function(c){ c.removeAttribute('data-sel'); });
+    document.querySelectorAll('#storeChips .chip').forEach(function(c){ c.classList.remove('melt'); c.removeAttribute('data-sel'); });
+    scrim2.classList.add('show'); sheet2.classList.add('show'); sheet2.setAttribute('aria-hidden','false');
+  }
+  function closeCascade(){ scrim2.classList.remove('show'); sheet2.classList.remove('show'); sheet2.setAttribute('aria-hidden','true'); }
+  document.getElementById('addFood').addEventListener('click', openCascade);
+  scrim2.addEventListener('click', closeCascade);
+  document.getElementById('cancel2').addEventListener('click', closeCascade);
+
+  document.getElementById('foodChips').addEventListener('click', function(e){
+    var b=e.target.closest('.chip'); if(!b) return; buzz(8);
+    document.querySelectorAll('#foodChips .chip').forEach(function(c){ c.removeAttribute('data-sel'); });
+    b.setAttribute('data-sel','1');
+    var food=b.getAttribute('data-food');
+    // melt incompatible storages
+    document.querySelectorAll('#storeChips .chip').forEach(function(c){
+      var ok=c.getAttribute('data-ok')===food;
+      c.classList.toggle('melt', !ok);
+      if(!ok) c.removeAttribute('data-sel');
+    });
+  });
+  document.getElementById('storeChips').addEventListener('click', function(e){
+    var b=e.target.closest('.chip'); if(!b || b.classList.contains('melt')) return; buzz(10);
+    document.querySelectorAll('#storeChips .chip').forEach(function(c){ c.removeAttribute('data-sel'); });
+    b.setAttribute('data-sel','1');
+    setTimeout(function(){ closeCascade(); showToast('Fatto! Alimento aggiunto.'); }, 520);
+  });
+})();
+</script>

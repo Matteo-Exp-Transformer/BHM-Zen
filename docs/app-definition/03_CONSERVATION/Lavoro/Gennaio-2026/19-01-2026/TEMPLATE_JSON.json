@@ -1,0 +1,208 @@
+{
+  "schemaVersion": "1.0.0",
+  "applianceTemplate": {
+    "templateId": "vertical_fridge_with_freezer_v1",
+    "applianceType": "Frigorifero verticale con Freezer",
+    "compartments": [
+      { "id": "fr_shelf_1_top", "zone": "fridge", "label": "Ripiano 1 (alto)", "order": 1 },
+      { "id": "fr_shelf_2", "zone": "fridge", "label": "Ripiano 2", "order": 2 },
+      { "id": "fr_shelf_3", "zone": "fridge", "label": "Ripiano 3", "order": 3 },
+      { "id": "fr_shelf_4_bottom", "zone": "fridge", "label": "Ripiano 4 (basso)", "order": 4 },
+      { "id": "fr_crisper_drawer", "zone": "fridge", "label": "Cassetto/Vaschetta", "order": 5 },
+      { "id": "fr_door_1_top", "zone": "fridge_door", "label": "Porta ripiano 1 (alto)", "order": 6 },
+      { "id": "fr_door_2_mid", "zone": "fridge_door", "label": "Porta ripiano 2 (medio)", "order": 7 },
+      { "id": "fr_door_3_bottom", "zone": "fridge_door", "label": "Porta ripiano 3 (basso)", "order": 8 },
+      { "id": "fz_drawer_1_top", "zone": "freezer", "label": "Freezer cassetto 1 (alto)", "order": 9 },
+      { "id": "fz_drawer_2_mid", "zone": "freezer", "label": "Freezer cassetto 2 (medio)", "order": 10 },
+      { "id": "fz_drawer_3_bottom", "zone": "freezer", "label": "Freezer cassetto 3 (basso)", "order": 11 }
+    ],
+    "globalPlacementRules": [
+      {
+        "ruleId": "raw_below_rte",
+        "title": "Crudo sempre sotto a Preparazioni/Pronti/Cotti",
+        "short": "Ripiani alti = Preparazioni/Pronti/Cotti; ripiani bassi = crudi (a tenuta)."
+      },
+      {
+        "ruleId": "sealed_containers",
+        "title": "Crudi e preparazioni SEMPRE chiusi e a tenuta",
+        "short": "Doppio contenimento dove possibile + etichetta (nome, data/ora, scadenza)."
+      },
+      {
+        "ruleId": "door_is_warmest",
+        "title": "La porta è la zona più instabile (aperture frequenti)",
+        "short": "Porta solo per bevande/condimenti/conserve chiuse, evitare alimenti molto deperibili."
+      },
+      {
+        "ruleId": "freezer_target",
+        "title": "Freezer: mantenere almeno -18°C",
+        "short": "Separare per tipologia (carne/pesce/vegetali/pronti) in sacchetti/box dedicati."
+      },
+      {
+        "ruleId": "herbs_with_produce",
+        "title": "Erbe aromatiche = come ortofrutta fresca",
+        "short": "Meglio nel cassetto verdure, protette e lontane da crudi che possono gocciolare."
+      }
+    ]
+  },
+
+  "categoryDictionary": [
+    { "id": "rte", "label": "Preparazioni/Pronti/Cotti (RTE)" },
+    { "id": "dairy", "label": "Latticini (latte, yogurt, formaggi)" },
+    { "id": "eggs", "label": "Uova (in contenitore dedicato)" },
+    { "id": "cured_meats", "label": "Salumi e affettati" },
+    { "id": "produce", "label": "Verdure e ortofrutta" },
+    { "id": "aromatic_herbs", "label": "Erbe aromatiche fresche" },
+    { "id": "raw_meat", "label": "Carni crude" },
+    { "id": "raw_fish", "label": "Pesce e frutti di mare crudi" },
+    { "id": "sauces_closed", "label": "Salse/condimenti (solo chiusi o contenitori chiusi)" },
+    { "id": "beverages", "label": "Bevande (chiuse/tappate)" },
+    { "id": "preserves_closed", "label": "Conserve/semiconserve (chiuse)" },
+    { "id": "frozen_ready", "label": "Congelati: preparazioni porzionate / basi" },
+    { "id": "frozen_veg", "label": "Congelati: vegetali" },
+    { "id": "frozen_meat_fish", "label": "Congelati: carni e pesce (separati)" }
+  ],
+
+  "profiles": [
+    {
+      "profileId": "max_capacity",
+      "name": "Profilo Massima Capienza",
+      "fridgeType": "Frigorifero verticale con Freezer",
+      "recommendedSetPointsC": { "fridge": 2.0, "freezer": -18.0 },
+      "allowedCategoryIds": [
+        "rte", "dairy", "eggs", "cured_meats", "produce", "aromatic_herbs",
+        "raw_meat", "raw_fish", "sauces_closed", "beverages", "preserves_closed",
+        "frozen_ready", "frozen_veg", "frozen_meat_fish"
+      ],
+      "compartmentFill": {
+        "fr_shelf_1_top": ["rte"],
+        "fr_shelf_2": ["dairy", "eggs"],
+        "fr_shelf_3": ["cured_meats", "sauces_closed"],
+        "fr_shelf_4_bottom": ["raw_meat", "raw_fish"],
+        "fr_crisper_drawer": ["produce", "aromatic_herbs"],
+        "fr_door_1_top": ["beverages", "preserves_closed"],
+        "fr_door_2_mid": ["sauces_closed"],
+        "fr_door_3_bottom": ["beverages", "preserves_closed"],
+        "fz_drawer_1_top": ["frozen_ready"],
+        "fz_drawer_2_mid": ["frozen_veg"],
+        "fz_drawer_3_bottom": ["frozen_meat_fish"]
+      },
+      "haccpNotes": [
+        "Capienza massima = disciplina massima: contenitori a tenuta e ordine verticale rigoroso.",
+        "Sul ripiano basso: ideale usare BOX separati (carne vs pesce) per evitare contatti/odori e ridurre rischio contaminazione.",
+        "Set point 2°C: compromesso conservativo per includere anche pesce (vicino a 0–2°C)."
+      ]
+    },
+    {
+      "profileId": "meat_generic",
+      "name": "Profilo Carne + Generico",
+      "fridgeType": "Frigorifero verticale con Freezer",
+      "recommendedSetPointsC": { "fridge": 3.0, "freezer": -18.0 },
+      "allowedCategoryIds": [
+        "rte", "dairy", "cured_meats", "produce", "aromatic_herbs",
+        "raw_meat", "sauces_closed", "beverages", "preserves_closed",
+        "frozen_ready", "frozen_veg", "frozen_meat_fish"
+      ],
+      "compartmentFill": {
+        "fr_shelf_1_top": ["rte"],
+        "fr_shelf_2": ["dairy"],
+        "fr_shelf_3": ["cured_meats", "sauces_closed"],
+        "fr_shelf_4_bottom": ["raw_meat"],
+        "fr_crisper_drawer": ["produce", "aromatic_herbs"],
+        "fr_door_1_top": ["beverages", "preserves_closed"],
+        "fr_door_2_mid": ["sauces_closed"],
+        "fr_door_3_bottom": ["beverages", "preserves_closed"],
+        "fz_drawer_1_top": ["frozen_ready"],
+        "fz_drawer_2_mid": ["frozen_veg"],
+        "fz_drawer_3_bottom": ["frozen_meat_fish"]
+      },
+      "haccpNotes": [
+        "Carni crude sempre in basso e a tenuta (anti-gocciolamento).",
+        "Set point 3°C: range operativo tipico 0–4°C con buon margine."
+      ]
+    },
+    {
+      "profileId": "vegetables_generic",
+      "name": "Profilo Verdure + Generico",
+      "fridgeType": "Frigorifero verticale con Freezer",
+      "recommendedSetPointsC": { "fridge": 4.0, "freezer": -18.0 },
+      "allowedCategoryIds": [
+        "rte", "dairy", "cured_meats", "produce", "aromatic_herbs",
+        "sauces_closed", "beverages", "preserves_closed",
+        "frozen_ready", "frozen_veg"
+      ],
+      "compartmentFill": {
+        "fr_shelf_1_top": ["rte"],
+        "fr_shelf_2": ["dairy"],
+        "fr_shelf_3": ["produce", "cured_meats"],
+        "fr_shelf_4_bottom": ["produce"],
+        "fr_crisper_drawer": ["produce", "aromatic_herbs"],
+        "fr_door_1_top": ["beverages", "preserves_closed"],
+        "fr_door_2_mid": ["sauces_closed"],
+        "fr_door_3_bottom": ["beverages"],
+        "fz_drawer_1_top": ["frozen_ready"],
+        "fz_drawer_2_mid": ["frozen_veg"],
+        "fz_drawer_3_bottom": ["frozen_ready"]
+      },
+      "haccpNotes": [
+        "Set point 4°C: più adatto a verdure rispetto a 1–2°C (riduce rischio danni da freddo su alcune).",
+        "Se gestisci ortaggi/erbe molto sensibili al freddo, valuta gestione dedicata in base a prodotto e rotazione."
+      ]
+    },
+    {
+      "profileId": "fish_generic",
+      "name": "Profilo Pesce + Generico",
+      "fridgeType": "Frigorifero verticale con Freezer",
+      "recommendedSetPointsC": { "fridge": 1.0, "freezer": -18.0 },
+      "allowedCategoryIds": [
+        "rte", "dairy", "produce", "aromatic_herbs", "raw_fish",
+        "sauces_closed", "beverages", "preserves_closed",
+        "frozen_ready", "frozen_veg", "frozen_meat_fish"
+      ],
+      "compartmentFill": {
+        "fr_shelf_1_top": ["rte"],
+        "fr_shelf_2": ["dairy", "sauces_closed"],
+        "fr_shelf_3": ["produce"],
+        "fr_shelf_4_bottom": ["raw_fish"],
+        "fr_crisper_drawer": ["produce", "aromatic_herbs"],
+        "fr_door_1_top": ["beverages"],
+        "fr_door_2_mid": ["sauces_closed"],
+        "fr_door_3_bottom": ["beverages", "preserves_closed"],
+        "fz_drawer_1_top": ["frozen_ready"],
+        "fz_drawer_2_mid": ["frozen_veg"],
+        "fz_drawer_3_bottom": ["frozen_meat_fish"]
+      },
+      "haccpNotes": [
+        "Set point 1°C: profilo conservativo per avvicinarsi al requisito 'vicino al ghiaccio fondente' per il pesce fresco.",
+        "Pesce crudo: doppio contenimento + pulizia frequente del ripiano basso (liquidi/odori)."
+      ]
+    },
+    {
+      "profileId": "meat_fish_generic",
+      "name": "Profilo Carne + Pesce + Generico",
+      "fridgeType": "Frigorifero verticale con Freezer",
+      "recommendedSetPointsC": { "fridge": 2.0, "freezer": -18.0 },
+      "allowedCategoryIds": [
+        "rte", "dairy", "cured_meats", "produce", "aromatic_herbs",
+        "raw_meat", "raw_fish", "sauces_closed", "beverages", "preserves_closed",
+        "frozen_ready", "frozen_veg", "frozen_meat_fish"
+      ],
+      "compartmentFill": {
+        "fr_shelf_1_top": ["rte"],
+        "fr_shelf_2": ["dairy"],
+        "fr_shelf_3": ["cured_meats", "sauces_closed"],
+        "fr_shelf_4_bottom": ["raw_meat", "raw_fish"],
+        "fr_crisper_drawer": ["produce", "aromatic_herbs"],
+        "fr_door_1_top": ["beverages"],
+        "fr_door_2_mid": ["sauces_closed"],
+        "fr_door_3_bottom": ["beverages", "preserves_closed"],
+        "fz_drawer_1_top": ["frozen_ready"],
+        "fz_drawer_2_mid": ["frozen_veg"],
+        "fz_drawer_3_bottom": ["frozen_meat_fish"]
+      },
+      "haccpNotes": [
+        "Profilo ibrido: sul ripiano basso separare carne e pesce con BOX dedicati (non solo 'a lato').",
+        "Set point 2°C: compromesso per includere pesce e mantenere margine di sicurezza."
+      ]
+    }
+  ]
+}

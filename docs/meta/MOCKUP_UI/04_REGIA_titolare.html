@@ -1,0 +1,323 @@
+<style>
+  :root{
+    --ground:#EFEDE8; --ground-2:#E7E4DD; --surface:#FFFFFF; --surface-2:#FAF9F6;
+    --ink:#24201C; --ink-2:#4C463F; --ink-muted:#7A7268;
+    --hairline:#E4E0D8; --hairline-2:#EDEAE3;
+    --accent:#C0552E; --accent-ink:#FFFFFF; --accent-soft:#F4E4DB;
+    --ok:#2E8B57; --ok-bg:#E4F1E9; --ok-ink:#1E6B40;
+    --warn:#B9821A; --warn-bg:#F6ECD3; --warn-ink:#87600F;
+    --bad:#C33D3D; --bad-bg:#F7E2E0; --bad-ink:#95271F;
+    --shadow: 0 1px 2px rgba(40,34,28,.04), 0 8px 24px rgba(40,34,28,.06);
+    --shadow-lg: 0 20px 60px rgba(30,24,18,.28);
+    --r: 18px;
+    --font: "Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ground:#161310; --ground-2:#100E0B; --surface:#211D17; --surface-2:#26211A;
+      --ink:#F0EBE3; --ink-2:#C9C2B7; --ink-muted:#A0978A;
+      --hairline:#332D24; --hairline-2:#2A241D;
+      --accent:#DA7A4D; --accent-ink:#1B1510; --accent-soft:#2E2016;
+      --ok:#54B37E; --ok-bg:#16271D; --ok-ink:#84D2A5;
+      --warn:#DDB155; --warn-bg:#2A2312; --warn-ink:#E7C878;
+      --bad:#E0665E; --bad-bg:#2C1714; --bad-ink:#EE908A;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.4);
+      --shadow-lg: 0 24px 70px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="light"]{
+    --ground:#EFEDE8; --ground-2:#E7E4DD; --surface:#FFFFFF; --surface-2:#FAF9F6;
+    --ink:#24201C; --ink-2:#4C463F; --ink-muted:#7A7268;
+    --hairline:#E4E0D8; --hairline-2:#EDEAE3;
+    --accent:#C0552E; --accent-ink:#FFFFFF; --accent-soft:#F4E4DB;
+    --ok:#2E8B57; --ok-bg:#E4F1E9; --ok-ink:#1E6B40;
+    --warn:#B9821A; --warn-bg:#F6ECD3; --warn-ink:#87600F;
+    --bad:#C33D3D; --bad-bg:#F7E2E0; --bad-ink:#95271F;
+    --shadow: 0 1px 2px rgba(40,34,28,.04), 0 8px 24px rgba(40,34,28,.06);
+    --shadow-lg: 0 20px 60px rgba(30,24,18,.28);
+  }
+  :root[data-theme="dark"]{
+    --ground:#161310; --ground-2:#100E0B; --surface:#211D17; --surface-2:#26211A;
+    --ink:#F0EBE3; --ink-2:#C9C2B7; --ink-muted:#A0978A;
+    --hairline:#332D24; --hairline-2:#2A241D;
+    --accent:#DA7A4D; --accent-ink:#1B1510; --accent-soft:#2E2016;
+    --ok:#54B37E; --ok-bg:#16271D; --ok-ink:#84D2A5;
+    --warn:#DDB155; --warn-bg:#2A2312; --warn-ink:#E7C878;
+    --bad:#E0665E; --bad-bg:#2C1714; --bad-ink:#EE908A;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.4);
+    --shadow-lg: 0 24px 70px rgba(0,0,0,.6);
+  }
+
+  *{ box-sizing:border-box; }
+  body{ margin:0; }
+  .wrap{ font-family:var(--font); color:var(--ink); background:radial-gradient(120% 80% at 50% -10%, var(--ground) 0%, var(--ground-2) 100%); min-height:100vh; padding:40px 20px 64px; display:flex; flex-direction:column; align-items:center; gap:30px; -webkit-font-smoothing:antialiased; }
+  .intro{ max-width:640px; text-align:center; display:flex; flex-direction:column; gap:10px; }
+  .eyebrow{ margin:0; font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); }
+  .intro h1{ margin:0; font-size:clamp(26px,5vw,34px); font-weight:750; letter-spacing:-.02em; text-wrap:balance; line-height:1.1; }
+  .lede{ margin:0; font-size:15.5px; line-height:1.55; color:var(--ink-2); text-wrap:balance; }
+  .lede strong{ color:var(--ink); font-weight:650; }
+
+  /* tablet frame */
+  .stage{ width:100%; display:flex; justify-content:center; }
+  .tablet{ position:relative; width:860px; max-width:calc(100vw - 40px); height:min(600px, 82vh); background:var(--surface); border-radius:30px; box-shadow:var(--shadow-lg), 0 0 0 2px var(--hairline-2), 0 0 0 10px var(--ground-2); overflow:hidden; isolation:isolate; }
+  @media (prefers-color-scheme: dark){ .tablet{ box-shadow:var(--shadow-lg), 0 0 0 2px #000, 0 0 0 10px #0b0906; } }
+  :root[data-theme="dark"] .tablet{ box-shadow:var(--shadow-lg), 0 0 0 2px #000, 0 0 0 10px #0b0906; }
+  .app{ position:absolute; inset:0; display:grid; grid-template-columns:84px 1fr; background:var(--ground); }
+
+  /* side-rail (unfold of the bottom bar) */
+  .rail{ background:var(--surface); border-right:1px solid var(--hairline); display:flex; flex-direction:column; align-items:center; padding:16px 0; gap:6px; }
+  .rail .brand{ width:40px; height:40px; border-radius:12px; background:linear-gradient(150deg, var(--accent), color-mix(in srgb,var(--accent) 60%, #7a2f16)); color:#fff; display:grid; place-items:center; font-weight:800; font-size:17px; margin-bottom:12px; }
+  .rail nav{ display:flex; flex-direction:column; gap:4px; width:100%; align-items:center; flex:1; }
+  .rail a{ width:64px; padding:9px 0; border-radius:13px; display:flex; flex-direction:column; align-items:center; gap:4px; font-size:10.5px; font-weight:600; color:var(--ink-muted); text-decoration:none; cursor:pointer; transition:background .2s ease, color .2s ease; }
+  .rail a svg{ width:22px; height:22px; }
+  .rail a.active{ color:var(--accent); background:var(--accent-soft); }
+  .rail a:hover:not(.active){ background:var(--surface-2); }
+  .rail .me{ width:38px; height:38px; border-radius:50%; background:linear-gradient(150deg,#6b7280,#4b5563); color:#fff; display:grid; place-items:center; font-size:13px; font-weight:700; }
+
+  .main{ overflow-y:auto; padding:26px 30px 40px; display:flex; flex-direction:column; gap:22px; scrollbar-width:thin; }
+  .main::-webkit-scrollbar{ width:8px; } .main::-webkit-scrollbar-thumb{ background:var(--hairline); border-radius:8px; }
+
+  .head{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  .head .lab{ margin:0 0 3px; font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); }
+  .head h2{ margin:0; font-size:28px; font-weight:750; letter-spacing:-.02em; }
+  .head .sub{ margin:5px 0 0; font-size:14px; color:var(--ink-muted); }
+  .biz{ display:inline-flex; align-items:center; gap:9px; background:var(--surface); box-shadow:var(--shadow); border-radius:999px; padding:7px 14px 7px 8px; font-size:13.5px; font-weight:650; }
+  .biz .bd{ width:28px; height:28px; border-radius:8px; background:var(--accent-soft); color:var(--accent); display:grid; place-items:center; }
+
+  /* respiro hero */
+  .respiro{ display:grid; grid-template-columns:auto 1fr; gap:22px; align-items:center; background:var(--surface); border-radius:22px; box-shadow:var(--shadow); padding:22px 24px; }
+  .orb-wrap{ position:relative; width:104px; height:104px; display:grid; place-items:center; }
+  .orb-wrap .ring{ position:absolute; inset:0; border-radius:50%; background:var(--ok-bg); animation:breathe 5.5s ease-in-out infinite; }
+  .orb-wrap .ring2{ position:absolute; inset:14px; border-radius:50%; background:color-mix(in srgb,var(--ok) 16%, var(--surface)); animation:breathe 5.5s ease-in-out infinite .3s; }
+  .orb-wrap .core{ position:relative; width:56px; height:56px; border-radius:50%; background:radial-gradient(circle at 40% 35%, color-mix(in srgb,var(--ok) 55%, #fff), var(--ok)); box-shadow:0 6px 16px color-mix(in srgb,var(--ok) 40%, transparent); display:grid; place-items:center; color:#fff; }
+  @keyframes breathe{ 0%,100%{ transform:scale(.94); opacity:.7 } 50%{ transform:scale(1.06); opacity:1 } }
+  .respiro .txt h3{ margin:0; font-size:21px; font-weight:750; letter-spacing:-.01em; }
+  .respiro .txt p{ margin:5px 0 0; font-size:14.5px; color:var(--ink-2); line-height:1.5; }
+  .respiro .txt .rok{ color:var(--ok-ink); font-weight:700; }
+
+  /* tiles */
+  .tiles{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; }
+  .tile{ background:var(--surface); border-radius:16px; box-shadow:var(--shadow); padding:15px 16px; display:flex; flex-direction:column; gap:5px; }
+  .tile .tl{ font-size:11.5px; font-weight:650; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-muted); display:flex; align-items:center; gap:7px; }
+  .tile .tl .d{ width:8px; height:8px; border-radius:50%; }
+  .tile .num{ font-size:26px; font-weight:750; letter-spacing:-.02em; font-variant-numeric:tabular-nums; }
+  .tile .ts{ font-size:12.5px; color:var(--ink-muted); }
+  .d.ok{ background:var(--ok); } .d.warn{ background:var(--warn); } .d.neu{ background:var(--ink-muted); }
+
+  /* dossier */
+  .dossier{ background:linear-gradient(180deg, var(--accent-soft), var(--surface) 60%); border-radius:22px; box-shadow:var(--shadow); padding:24px; display:flex; flex-direction:column; gap:6px; }
+  .dossier .dh{ font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); }
+  .dossier h3{ margin:2px 0 2px; font-size:22px; font-weight:750; letter-spacing:-.01em; }
+  .dossier .dp{ margin:0 0 8px; font-size:14px; color:var(--ink-2); line-height:1.5; max-width:52ch; }
+  .btn{ appearance:none; border:0; cursor:pointer; font-family:inherit; border-radius:14px; font-size:15.5px; font-weight:700; padding:14px 22px; display:inline-flex; align-items:center; justify-content:center; gap:10px; transition:transform .12s ease, opacity .3s; align-self:flex-start; }
+  .btn.primary{ background:var(--accent); color:var(--accent-ink); box-shadow:0 2px 0 color-mix(in srgb,var(--accent) 55%,#000), var(--shadow); }
+  .btn.primary:active{ transform:scale(.98); }
+  .btn.ghost{ background:var(--surface); color:var(--ink); box-shadow:var(--shadow), inset 0 0 0 1.5px var(--hairline); }
+  .btn:focus-visible{ outline:3px solid color-mix(in srgb,var(--accent) 55%, transparent); outline-offset:2px; }
+
+  .build{ display:none; margin-top:10px; grid-template-columns:1fr auto; gap:20px; align-items:start; }
+  .build.show{ display:grid; animation:rise .4s ease both; }
+  @keyframes rise{ from{ opacity:0; transform:translateY(8px) } to{ opacity:1; transform:none } }
+  .buildlist{ display:flex; flex-direction:column; gap:8px; }
+  .brow{ display:flex; align-items:center; gap:11px; font-size:14px; color:var(--ink-2); font-weight:550; opacity:0; transform:translateX(-6px); transition:opacity .4s ease, transform .4s ease; }
+  .brow.in{ opacity:1; transform:none; }
+  .brow .ck{ width:24px; height:24px; border-radius:7px; background:var(--ok-bg); color:var(--ok-ink); display:grid; place-items:center; flex:0 0 auto; }
+  .brow b{ color:var(--ink); font-weight:700; font-variant-numeric:tabular-nums; }
+  .buildcap{ margin-top:6px; font-size:13.5px; font-weight:600; color:var(--ink-muted); min-height:18px; }
+  .buildcap.done{ color:var(--ok-ink); }
+  .buildbar{ height:5px; border-radius:999px; background:var(--hairline); overflow:hidden; margin-top:8px; }
+  .buildbar > i{ display:block; height:100%; width:0; background:var(--ok); border-radius:999px; transition:width .5s ease; }
+
+  /* the assembling document thumbnail */
+  .doc{ width:168px; flex:0 0 auto; background:#fff; border-radius:10px; box-shadow:var(--shadow-lg); padding:16px 15px; transform:rotate(-2deg); position:relative; }
+  :root[data-theme="dark"] .doc, .doc{ color:#211d17; }
+  .doc .seal{ position:absolute; top:-12px; right:-10px; width:52px; height:52px; border-radius:50%; border:3px solid var(--ok); color:var(--ok); display:grid; place-items:center; font-size:8.5px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; text-align:center; line-height:1.1; background:#fff; transform:rotate(10deg) scale(0); transition:transform .5s cubic-bezier(.2,1.4,.4,1); }
+  .doc.ready .seal{ transform:rotate(10deg) scale(1); }
+  .doc .dtitle{ font-size:10px; font-weight:800; color:#24201C; letter-spacing:.02em; }
+  .doc .dsub{ font-size:8px; color:#7A7268; margin-top:2px; }
+  .doc .line{ height:5px; border-radius:2px; background:#EDEAE3; margin-top:7px; }
+  .doc .line.s{ width:60%; } .doc .line.m{ width:85%; }
+  .doc .chiprow{ display:flex; gap:4px; margin-top:8px; }
+  .doc .minichip{ height:12px; border-radius:3px; background:#E4F1E9; flex:1; }
+
+  /* imposta */
+  .imposta{ display:flex; flex-direction:column; gap:12px; }
+  .sec-label{ font-size:11.5px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-muted); }
+  .setup{ display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; }
+  .setup button{ text-align:left; background:var(--surface); border:0; cursor:pointer; font-family:inherit; border-radius:16px; box-shadow:var(--shadow); padding:16px; display:flex; gap:13px; align-items:center; transition:transform .12s ease; }
+  .setup button:active{ transform:scale(.98); }
+  .setup .si{ width:40px; height:40px; border-radius:11px; background:var(--surface-2); box-shadow:inset 0 0 0 1px var(--hairline); color:var(--ink-2); display:grid; place-items:center; flex:0 0 auto; }
+  .setup .st{ font-size:15px; font-weight:700; } .setup .ss{ font-size:12.5px; color:var(--ink-muted); margin-top:1px; }
+  .setup button:focus-visible{ outline:3px solid color-mix(in srgb,var(--accent) 55%, transparent); outline-offset:2px; }
+
+  .legend{ max-width:640px; width:100%; background:var(--surface); border-radius:20px; box-shadow:var(--shadow); padding:20px 22px; display:flex; flex-direction:column; gap:16px; }
+  .legend h3{ margin:0; font-size:13px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-muted); }
+  .principles{ display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px; }
+  .principles div{ font-size:13px; color:var(--ink-2); line-height:1.45; }
+  .principles b{ color:var(--ink); font-weight:650; display:block; margin-bottom:2px; }
+
+  @media (max-width:560px){
+    .app{ grid-template-columns:70px 1fr; } .rail a{ width:58px; font-size:9.5px; }
+    .main{ padding:20px 16px 30px; } .respiro{ grid-template-columns:1fr; text-align:center; justify-items:center; }
+    .build{ grid-template-columns:1fr; } .doc{ justify-self:center; }
+  }
+  @media (prefers-reduced-motion: reduce){ *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; } }
+</style>
+
+<div class="wrap">
+  <header class="intro">
+    <p class="eyebrow">BHM · Direzione UI · Mockup 4 di 4</p>
+    <h1>Regia — il respiro dell'azienda</h1>
+    <p class="lede">La vista del <strong>titolare</strong>, sul “banco” (tablet/desktop): la bottom bar <em>si dispiega</em> in side-rail. Il <strong>respiro</strong> dice a colpo d'occhio “sei pronto a un controllo”. Poi il momento-eroe: <strong>“Genera dossier”</strong> → il documento si costruisce da solo.</p>
+  </header>
+
+  <div class="stage">
+    <div class="tablet" role="application" aria-label="App BHM — Regia (vista titolare su tablet)">
+      <div class="app">
+        <!-- side-rail -->
+        <aside class="rail">
+          <div class="brand" aria-hidden="true">B</div>
+          <nav aria-label="Navigazione">
+            <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Oggi</a>
+            <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Reparti</a>
+            <a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8 12 3l9 5v8l-9 5-9-5Z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></svg>Scorte</a>
+            <a class="active" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="m3 10 4-4M9 10l4-4M15 10l4-4"/></svg>Regia</a>
+          </nav>
+          <div class="me" aria-label="Luca Rossi">LR</div>
+        </aside>
+
+        <!-- main -->
+        <div class="main">
+          <div class="head">
+            <div>
+              <p class="lab">Regia</p>
+              <h2>Buonasera, Luca</h2>
+              <p class="sub">Martedì 5 luglio · fine giornata</p>
+            </div>
+            <span class="biz"><span class="bd" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-5h6v5"/></svg></span>Trattoria da Luca</span>
+          </div>
+
+          <!-- respiro -->
+          <div class="respiro">
+            <div class="orb-wrap" aria-hidden="true">
+              <span class="ring"></span><span class="ring2"></span>
+              <span class="core"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+            </div>
+            <div class="txt">
+              <h3>Tutto in ordine.</h3>
+              <p><span class="rok">Sei pronto a un controllo.</span> Le temperature di oggi sono a posto, le mansioni chiuse e i turni sigillati. Se arrivasse un'ispezione, hai tutto.</p>
+            </div>
+          </div>
+
+          <!-- tiles: calmi e onesti, non allarmistici -->
+          <div class="tiles">
+            <div class="tile"><span class="tl"><span class="d ok"></span>Temperature</span><span class="num">48/48</span><span class="ts">tutte in range oggi</span></div>
+            <div class="tile"><span class="tl"><span class="d ok"></span>Mansioni</span><span class="num">12</span><span class="ts">completate · 1 nota</span></div>
+            <div class="tile"><span class="tl"><span class="d warn"></span>Scadenze</span><span class="num">2</span><span class="ts">questa settimana</span></div>
+            <div class="tile"><span class="tl"><span class="d neu"></span>Turni</span><span class="num">3</span><span class="ts">sigillati oggi</span></div>
+          </div>
+
+          <!-- dossier hero -->
+          <div class="dossier">
+            <span class="dh">Dimostro</span>
+            <h3>Il dossier del controllo</h3>
+            <p class="dp">Non lo compili: lo hai già scritto, gesto dopo gesto, per tutta la giornata. Premi e si assembla da solo.</p>
+            <button class="btn primary" id="genBtn">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v5h5"/><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M8 13h8M8 17h5"/></svg>
+              Genera dossier
+            </button>
+
+            <div class="build" id="build">
+              <div>
+                <div class="buildlist" id="buildlist">
+                  <div class="brow"><span class="ck"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Intestazione azienda &amp; sede</div>
+                  <div class="brow"><span class="ck"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Registro temperature · <b>48 letture</b></div>
+                  <div class="brow"><span class="ck"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Mansioni svolte · <b>12</b></div>
+                  <div class="brow"><span class="ck"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Manutenzioni &amp; controlli</div>
+                  <div class="brow"><span class="ck"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Note &amp; eccezioni · <b>2</b></div>
+                  <div class="brow"><span class="ck"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Firme &amp; sigilli di turno</div>
+                </div>
+                <div class="buildbar" aria-hidden="true"><i id="buildbar"></i></div>
+                <p class="buildcap" id="buildcap">Ci penso io…</p>
+                <button class="btn primary" id="dlBtn" style="display:none; margin-top:12px;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M5 21h14"/></svg>
+                  Scarica PDF audit-grade
+                </button>
+              </div>
+
+              <div class="doc" id="doc" aria-hidden="true">
+                <div class="seal">Pronto<br>al<br>controllo</div>
+                <div class="dtitle">DOSSIER HACCP</div>
+                <div class="dsub">Trattoria da Luca · 05/07/2026</div>
+                <div class="line m"></div><div class="line s"></div>
+                <div class="chiprow"><span class="minichip"></span><span class="minichip"></span><span class="minichip"></span></div>
+                <div class="line m"></div><div class="line"></div><div class="line s"></div>
+                <div class="chiprow"><span class="minichip"></span><span class="minichip"></span></div>
+                <div class="line m"></div><div class="line s"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- imposta (① entry) -->
+          <div class="imposta">
+            <span class="sec-label">Imposta la tua azienda</span>
+            <div class="setup">
+              <button><span class="si"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span><span class="st">Reparti &amp; punti</span><span class="ss">5 reparti · 14 punti</span></span></button>
+              <button><span class="si"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg></span><span><span class="st">Staff &amp; ruoli</span><span class="ss">6 persone</span></span></button>
+              <button><span class="si"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V4a2 2 0 0 0-4 0v10.76a4 4 0 1 0 4 0Z"/></svg></span><span><span class="st">Parametri HACCP</span><span class="ss">soglie &amp; scadenze</span></span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="legend">
+    <div><h3>Regia — ①Imposto ③Controllo ④Dimostro (§9, §12)</h3></div>
+    <div class="principles">
+      <div><b>Il respiro, non il cruscotto</b>Un indicatore calmo e onesto: “pronto a un controllo”. Emerge con gentilezza, non urla numeri rossi.</div>
+      <div><b>Il dossier si assembla da solo</b>La prova legale è il sottoprodotto del fare: ogni gesto di “Oggi” l'ha già scritta. Climax emotivo del prodotto.</div>
+      <div><b>La UI si dispiega</b>Stessa app, sul banco: la bottom bar diventa side-rail, il contenuto respira in larghezza. Mobile perfetto, desktop comodo.</div>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function buzz(ms){ if(navigator.vibrate && !reduce){ try{ navigator.vibrate(ms); }catch(e){} } }
+
+  var genBtn=document.getElementById('genBtn'), build=document.getElementById('build');
+  var rows=document.querySelectorAll('#buildlist .brow'), bar=document.getElementById('buildbar');
+  var cap=document.getElementById('buildcap'), doc=document.getElementById('doc'), dlBtn=document.getElementById('dlBtn');
+  var running=false;
+
+  genBtn.addEventListener('click', function(){
+    if(running) return; running=true; buzz(14);
+    genBtn.style.display='none';
+    build.classList.add('show');
+    cap.classList.remove('done'); cap.textContent='Ci penso io…';
+    doc.classList.remove('ready'); dlBtn.style.display='none';
+    rows.forEach(function(r){ r.classList.remove('in'); });
+    bar.style.width='0';
+
+    var step = reduce ? 60 : 620;
+    rows.forEach(function(r, idx){
+      setTimeout(function(){
+        r.classList.add('in'); buzz(8);
+        bar.style.width = Math.round((idx+1)/rows.length*100) + '%';
+      }, 300 + idx*step);
+    });
+
+    var end = 300 + rows.length*step + (reduce?60:400);
+    setTimeout(function(){
+      doc.classList.add('ready'); buzz([12,30,70]);
+      cap.classList.add('done'); cap.textContent='Pronto. Ce l’hai tutto.';
+      dlBtn.style.display='inline-flex';
+      running=false;
+    }, end);
+  });
+
+  dlBtn.addEventListener('click', function(){ buzz(10); cap.textContent='Scaricato · dossier_05-07-2026.pdf'; });
+})();
+</script>
