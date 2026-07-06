@@ -264,6 +264,37 @@ export function XIcon(props: SVGProps<SVGSVGElement>) {
   )
 }
 
+/* --- icone Regia (mockup 04) --- */
+
+export function UsersIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Icon {...props}>
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+    </Icon>
+  )
+}
+
+export function FileIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Icon {...props}>
+      <path d="M14 3v5h5" />
+      <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
+      <path d="M8 13h8M8 17h5" />
+    </Icon>
+  )
+}
+
+export function DownloadIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Icon {...props}>
+      <path d="M12 3v12m0 0 4-4m-4 4-4-4" />
+      <path d="M5 21h14" />
+    </Icon>
+  )
+}
+
 /* --- icone mansioni (mockup 01) --- */
 
 export function SprayIcon(props: SVGProps<SVGSVGElement>) {

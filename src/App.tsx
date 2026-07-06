@@ -5,6 +5,7 @@ import OggiPage from '@/features/oggi/OggiPage'
 import CalendarioPage from '@/features/calendario/CalendarioPage'
 import RepartiPage from '@/features/reparti/RepartiPage'
 import ScortePage from '@/features/scorte/ScortePage'
+import RegiaPage from '@/features/regia/RegiaPage'
 import { useSession } from '@/lib/auth/session'
 
 /** Attesa calma (§13.6): niente spinner ansiogeni per un check di sessione. */
@@ -32,26 +33,6 @@ function RequireDirector() {
   return <Outlet />
 }
 
-/**
- * Placeholder di casa: montano il layout reale (mockup 01/02/04/07) man mano
- * che le aree vengono portate. Testo = voce umana, mai «lorem ipsum».
- */
-function HousePlaceholder({ title, note }: { title: string; note: string }) {
-  return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-4 px-4 py-6 md:px-7 md:py-8">
-      <header>
-        <p className="mb-0.5 text-[11px] font-bold uppercase tracking-[0.14em] text-accent">
-          BHM
-        </p>
-        <h2 className="text-2xl font-bold tracking-tight md:text-[25px]">{title}</h2>
-      </header>
-      <div className="rounded-card bg-surface p-5 text-sm leading-relaxed text-ink-soft shadow-card">
-        {note}
-      </div>
-    </div>
-  )
-}
-
 export default function App() {
   return (
     <Routes>
@@ -63,15 +44,7 @@ export default function App() {
           <Route path="reparti" element={<RepartiPage />} />
           <Route path="scorte" element={<ScortePage />} />
           <Route element={<RequireDirector />}>
-            <Route
-              path="regia"
-              element={
-                <HousePlaceholder
-                  title="Regia"
-                  note="① Imposto · ③ Controllo · ④ Dimostro — l'ingresso del titolare. In costruzione."
-                />
-              }
-            />
+            <Route path="regia" element={<RegiaPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

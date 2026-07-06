@@ -20,7 +20,22 @@ export default defineConfig({
         start_url: '/',
         background_color: '#faf7f2',
         theme_color: '#b8552f',
+        icons: [
+          {
+            src: 'pwa-icon.svg',
+            sizes: '512x512',
+            type: 'image/svg+xml',
+            purpose: 'any',
+          },
+          {
+            src: 'pwa-icon.svg',
+            sizes: '512x512',
+            type: 'image/svg+xml',
+            purpose: 'maskable',
+          },
+        ],
       },
+      includeAssets: ['pwa-icon.svg'],
     }),
   ],
   resolve: {

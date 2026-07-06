@@ -47,7 +47,14 @@ audit-grade PDF/CSV (workstream 7).
 - **`/sign-up` pubblica chiusa**: design solo-invito (decisione default confermata).
 - **Dashboard: mai dati finti** (dec. 2) — meglio vuoto onesto che numero inventato.
 
-## 5. Questioni aperte
+## 5. Implementazione beta (CP12, 2026-07-06)
+
+Viva in `src/features/regia/`: **③ Controllo** (`useRespiro` — numeri dal DB, tono ok/warn/alarm),
+**④ Dimostro** (dossier CSV del giorno da registri append-only), **① parziale** (staff CRUD;
+invito password = FU-001 residuo), parametri HACCP in sheet sola lettura. Onboarding 7 step =
+ancora da fare.
+
+## 6. Questioni aperte
 
 | Questione | Decisione | Stato |
 |-----------|-----------|-------|
@@ -56,7 +63,7 @@ audit-grade PDF/CSV (workstream 7).
 | Forma esatta vat_number/ragione sociale | da progettare | aperta |
 | Onboarding dipendente | carta bianca a Fable (nessun mockup) | da disegnare |
 
-## 6. LOCK di area
+## 7. LOCK di area
 
 ```
 RULE  parametri HACCP in UI = read-only, fonte src/compliance/haccp-rules.ts (dec. 6)
@@ -64,7 +71,7 @@ RULE  ruolo = company_members.role, unica fonte (dec. 9)
 RULE  auth/inviti/ruoli = trigger DEEP (Bussola §6)
 ```
 
-## 7. Mappa
+## 8. Mappa
 
 | Se il task tocca… | Apri |
 |-------------------|------|
@@ -75,4 +82,4 @@ RULE  auth/inviti/ruoli = trigger DEEP (Bussola §6)
 
 ---
 
-**Ultimo aggiornamento**: 2026-07-06 · scaffolding iniziale (installazione §14.5) · → sessione Fable CP3 (git log)
+**Ultimo aggiornamento**: 2026-07-06 · CP12 Regia viva (respiro+dossier+staff) · → Report-sessione-cp10-12-fable.md
