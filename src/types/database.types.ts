@@ -165,8 +165,10 @@ export type Database = {
           email: string
           id: string
           name: string
+          onboarding_completed: boolean
           staff_count: number
           updated_at: string
+          vat_number: string | null
         }
         Insert: {
           address: string
@@ -174,8 +176,10 @@ export type Database = {
           email: string
           id?: string
           name: string
+          onboarding_completed?: boolean
           staff_count: number
           updated_at?: string
+          vat_number?: string | null
         }
         Update: {
           address?: string
@@ -183,8 +187,10 @@ export type Database = {
           email?: string
           id?: string
           name?: string
+          onboarding_completed?: boolean
           staff_count?: number
           updated_at?: string
+          vat_number?: string | null
         }
         Relationships: []
       }
@@ -842,6 +848,7 @@ export type Database = {
           maintenance_task_id: string
           next_due_date: string | null
           photos: Json | null
+          reverses_completion_id: string | null
           status: string
           updated_at: string | null
         }
@@ -857,6 +864,7 @@ export type Database = {
           maintenance_task_id: string
           next_due_date?: string | null
           photos?: Json | null
+          reverses_completion_id?: string | null
           status?: string
           updated_at?: string | null
         }
@@ -872,6 +880,7 @@ export type Database = {
           maintenance_task_id?: string
           next_due_date?: string | null
           photos?: Json | null
+          reverses_completion_id?: string | null
           status?: string
           updated_at?: string | null
         }
@@ -888,6 +897,13 @@ export type Database = {
             columns: ["maintenance_task_id"]
             isOneToOne: false
             referencedRelation: "maintenance_tasks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenance_completions_reverses_completion_id_fkey"
+            columns: ["reverses_completion_id"]
+            isOneToOne: false
+            referencedRelation: "maintenance_completions"
             referencedColumns: ["id"]
           },
         ]
@@ -1234,6 +1250,7 @@ export type Database = {
       products: {
         Row: {
           allergens: string[] | null
+          archived_at: string | null
           barcode: string | null
           category_id: string | null
           company_id: string
@@ -1241,13 +1258,17 @@ export type Database = {
           conservation_point_id: string | null
           created_at: string
           department_id: string | null
+          expired_at: string | null
           expiry_date: string | null
           id: string
           label_photo_url: string | null
           name: string
           notes: string | null
+          par_level: number | null
+          previous_product_id: string | null
           purchase_date: string | null
           quantity: number | null
+          reinsertion_count: number
           sku: string | null
           status: string
           supplier_name: string | null
@@ -1256,6 +1277,7 @@ export type Database = {
         }
         Insert: {
           allergens?: string[] | null
+          archived_at?: string | null
           barcode?: string | null
           category_id?: string | null
           company_id: string
@@ -1263,13 +1285,17 @@ export type Database = {
           conservation_point_id?: string | null
           created_at?: string
           department_id?: string | null
+          expired_at?: string | null
           expiry_date?: string | null
           id?: string
           label_photo_url?: string | null
           name: string
           notes?: string | null
+          par_level?: number | null
+          previous_product_id?: string | null
           purchase_date?: string | null
           quantity?: number | null
+          reinsertion_count?: number
           sku?: string | null
           status?: string
           supplier_name?: string | null
@@ -1278,6 +1304,7 @@ export type Database = {
         }
         Update: {
           allergens?: string[] | null
+          archived_at?: string | null
           barcode?: string | null
           category_id?: string | null
           company_id?: string
@@ -1285,13 +1312,17 @@ export type Database = {
           conservation_point_id?: string | null
           created_at?: string
           department_id?: string | null
+          expired_at?: string | null
           expiry_date?: string | null
           id?: string
           label_photo_url?: string | null
           name?: string
           notes?: string | null
+          par_level?: number | null
+          previous_product_id?: string | null
           purchase_date?: string | null
           quantity?: number | null
+          reinsertion_count?: number
           sku?: string | null
           status?: string
           supplier_name?: string | null
@@ -1327,6 +1358,13 @@ export type Database = {
             referencedRelation: "departments"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "products_previous_product_id_fkey"
+            columns: ["previous_product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
         ]
       }
       restaurant_settings: {
@@ -1349,6 +1387,47 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      shift_seals: {
+        Row: {
+          attestation: boolean
+          closed_at: string
+          company_id: string
+          created_at: string
+          id: string
+          notes: string | null
+          opened_at: string
+          user_id: string
+        }
+        Insert: {
+          attestation: boolean
+          closed_at?: string
+          company_id: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          opened_at: string
+          user_id: string
+        }
+        Update: {
+          attestation?: boolean
+          closed_at?: string
+          company_id?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          opened_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shift_seals_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       shopping_list_items: {
         Row: {
@@ -1531,6 +1610,67 @@ export type Database = {
           },
         ]
       }
+      stock_counts: {
+        Row: {
+          company_id: string
+          conservation_point_id: string | null
+          counted_at: string
+          counted_by: string | null
+          created_at: string
+          expiry_confirmed: boolean | null
+          id: string
+          notes: string | null
+          product_id: string
+          quantity: number
+        }
+        Insert: {
+          company_id: string
+          conservation_point_id?: string | null
+          counted_at?: string
+          counted_by?: string | null
+          created_at?: string
+          expiry_confirmed?: boolean | null
+          id?: string
+          notes?: string | null
+          product_id: string
+          quantity: number
+        }
+        Update: {
+          company_id?: string
+          conservation_point_id?: string | null
+          counted_at?: string
+          counted_by?: string | null
+          created_at?: string
+          expiry_confirmed?: boolean | null
+          id?: string
+          notes?: string | null
+          product_id?: string
+          quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_counts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_counts_conservation_point_id_fkey"
+            columns: ["conservation_point_id"]
+            isOneToOne: false
+            referencedRelation: "conservation_points"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_counts_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       task_completions: {
         Row: {
           company_id: string
@@ -1542,6 +1682,7 @@ export type Database = {
           notes: string | null
           period_end: string
           period_start: string
+          reverses_completion_id: string | null
           task_id: string
           updated_at: string
         }
@@ -1555,6 +1696,7 @@ export type Database = {
           notes?: string | null
           period_end: string
           period_start: string
+          reverses_completion_id?: string | null
           task_id: string
           updated_at?: string
         }
@@ -1568,6 +1710,7 @@ export type Database = {
           notes?: string | null
           period_end?: string
           period_start?: string
+          reverses_completion_id?: string | null
           task_id?: string
           updated_at?: string
         }
@@ -1577,6 +1720,13 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "task_completions_reverses_completion_id_fkey"
+            columns: ["reverses_completion_id"]
+            isOneToOne: false
+            referencedRelation: "task_completions"
             referencedColumns: ["id"]
           },
           {
@@ -1707,7 +1857,11 @@ export type Database = {
           conservation_point_id: string
           created_at: string
           id: string
+          method: string
+          notes: string | null
+          photo_evidence: string | null
           recorded_at: string
+          recorded_by: string | null
           temperature: number
         }
         Insert: {
@@ -1715,7 +1869,11 @@ export type Database = {
           conservation_point_id: string
           created_at?: string
           id?: string
+          method: string
+          notes?: string | null
+          photo_evidence?: string | null
           recorded_at: string
+          recorded_by?: string | null
           temperature: number
         }
         Update: {
@@ -1723,7 +1881,11 @@ export type Database = {
           conservation_point_id?: string
           created_at?: string
           id?: string
+          method?: string
+          notes?: string | null
+          photo_evidence?: string | null
           recorded_at?: string
+          recorded_by?: string | null
           temperature?: number
         }
         Relationships: [
@@ -2023,8 +2185,47 @@ export type Database = {
         Returns: string
       }
       cleanup_expired_csrf_tokens: { Args: never; Returns: undefined }
+      complete_shopping_list: {
+        Args: { p_list_id: string }
+        Returns: undefined
+      }
+      create_shopping_list_with_items: {
+        Args: {
+          p_company_id: string
+          p_description?: string
+          p_items?: Json
+          p_list_name: string
+          p_notes?: string
+        }
+        Returns: string
+      }
       ensure_user_session: { Args: never; Returns: string }
       get_active_company_id: { Args: never; Returns: string }
+      get_shopping_lists_with_stats: {
+        Args: {
+          p_company_id: string
+          p_limit?: number
+          p_offset?: number
+          p_status?: string
+        }
+        Returns: {
+          checked_items: number
+          company_id: string
+          completed_at: string
+          completion_percentage: number
+          created_at: string
+          created_by: string
+          description: string
+          id: string
+          is_completed: boolean
+          is_template: boolean
+          name: string
+          notes: string
+          status: string
+          total_items: number
+          updated_at: string
+        }[]
+      }
       get_user_companies: {
         Args: never
         Returns: {
@@ -2048,6 +2249,10 @@ export type Database = {
       switch_active_company: {
         Args: { p_new_company_id: string }
         Returns: boolean
+      }
+      toggle_shopping_list_item: {
+        Args: { p_checked: boolean; p_item_id: string }
+        Returns: undefined
       }
     }
     Enums: {

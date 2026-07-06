@@ -6,4 +6,4 @@
 
 | Data | Profilo | Tema (one-liner) | Report |
 |------|---------|------------------|--------|
-| {{GG-MM-AA}} | {{Esecuzione}} | {{cosa fatto in breve}} | `sessioni/{{GG-MM-AA}}/Report-{{tema}}.md` |
+| 06-07-26 | Esecuzione (Fable) | Fondamenta: ambiente sbloccato · baseline+tipi · skill-system §14.5 · scaffold app · haccp-rules+gate-2 · 8 migration audit-grade APPLICATE sul live · branch §15 protetti | `sessioni/06-07-26/Report-fondamenta-fable.md` |

@@ -10,10 +10,10 @@
 ## Dove sono (aggiornare SEMPRE per ultima cosa)
 
 - **Data**: 2026-07-06
-- **Branch**: `init/fondamenta`
-- **Fase masterplan (§6)**: ws2 ✅ (skill-system) · scaffold app ✅ · compliance stampo ✅ · ws3 in corso (gap migration da scrivere)
-- **Ultimo checkpoint**: CP4 — scaffold app + fonte-unica HACCP + gate-2
-- **Prossimo passo**: branch `integrazione` + push → migration gap audit-grade (P0: 015, append-only, RPC shopping)
+- **Branch**: `init/fondamenta` (= `integrazione`, entrambi pushati e protetti)
+- **Fase masterplan (§6)**: ws1-3 ✅ **COMPLETI** (fondamenta prodotto validate · skill-system · DB audit-grade APPLICATO sul live) · prossimo: ws4-6 (port logica + shell UI dai mockup)
+- **Ultimo checkpoint**: CP5 — 8 migration gap applicate, tipi rigenerati, gate verde
+- **Prossimo passo**: FU-001 shell navigazione (mockup 06) + auth/inviti · FU-002 port hooks/services (verdetti ♻️ delle mappe)
 
 ## Checkpoint fatti
 
@@ -23,6 +23,7 @@
 | CP2 | 2026-07-06 | Baseline schema live (`20260706015742`, 37 tabelle) + history remota allineata + tipi generati. Gap A0 **ri-verificati sul live: tutti confermati** | *(vedi git log)* |
 | CP3 | 2026-07-06 | Skill-system installato (§14.5): bussola compilata (profili, routing, LOCK, 9 RULE §14.4), 3 porte allineate (CLAUDE/AGENTS/cursor), vocabolario seed (comandi v0 + 4 case canoniche; 7 nomi-elemento in PROPOSTE), ledger IDEE_ESPERIENZA + AGGIORNAMENTI_HACCP, COMPLIANCE_CONTEXT stampo, skill-consulenti (Ufficiale-HACCP, Ristoratore), 5 skill d'area (Oggi/Reparti/Scorte/Regia/DB), template report con «💡 Idee» + footer-tracciabilità, CHIUSURA compilata. Didattico OFF | *(vedi git log)* |
 | CP4 | 2026-07-06 | Scaffold app snello (Vite 6 + React 18 + TS strict + Tailwind clinico-caldo + React Query + router 4 case + PWA manifest; NIENTE dead code legacy) + `src/compliance/haccp-rules.ts` (LOCK: stampo tipato, 3 regole seed `pending` con source_ref, verdetto colore, validatore) + gate-2 test (14 ✓). `npm run validate` verde · build+PWA ok · dev server verificato HTTP 200 · 0 vulnerabilità (bump vite 6/vitest 3) | *(vedi git log)* |
+| CP5 | 2026-07-06 | **8 migration audit-grade APPLICATE sul DB live** (autorizzazione owner esplicita): 015+method NOT NULL, append-only+storno (temp/task/maintenance), `shift_seals`, ciclo scadenze products, `par_level`+`stock_counts`, companies beta, 4 RPC shopping, realtime ×10. History 9/9 · smoke REST 6/6 · tipi rigenerati (2390) · validate verde. Branch `integrazione` ff+push, `main`/`integrazione` protetti (no force-push/delete). Report deep: `docs/skill-system/sessioni/06-07-26/` | *(vedi git log)* |
 
 ## Decisioni prese in sessione (owner, 2026-07-06)
 
