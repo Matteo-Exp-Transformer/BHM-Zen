@@ -8,42 +8,29 @@
 
 ## In attesa di decisione
 
-### [CANDIDATA — pratica] Anteprima HTML strutturale per decisioni UI (agente prepara-prompt)
-- **Cosa:** quando un lavoro tocca UI/responsive e l'agente **prepara-prompt** deve fare domande
-  che fanno decidere la UI all'utente, genera una **pagina HTML temporanea** (in `tmp/`,
-  gitignored) che mostra **a livello strutturale** le opzioni, così l'utente decide guardando.
-- **Chi:** SOLO l'agente prepara-prompt (filtro d'ingresso). NON l'agente esecutore.
-- **Quando:** solo se la decisione UI dell'utente sblocca il prompt; se la UI è già chiara, no.
-- **Perché:** l'utente decide meglio vedendo una struttura che immaginandola a parole.
-- **Da decidere:** promuovere a regola attiva del ruolo prepara-prompt? Con quale livello di
-  automatismo (sempre / solo su richiesta)?
-- **Stato:** in attesa · **Origine:** richiesta utente 2026-05-29 (sessione skill system v0)
-
-### [CANDIDATE — parole-elemento] Seed lessico-mappa §14.6 masterplan (7 nomi corti)
-
-> Seed suggerito dal masterplan §14.6: nomi corti per gli **elementi** che l'app crea. I nomi di
-> **pagina/tab** (Oggi/Reparti/Scorte/Regia) sono già canonici e sono entrati diretti in
-> `VOCABOLARIO.md` sezione B; questi restano proposte finché l'owner non li conferma.
-
-| Termine lungo attuale | Nome corto proposto |
-|-----------------------|---------------------|
-| punto di conservazione | **punto** (dentro un reparto; sigla `PdC` nei doc) |
-| form conservazione a cascata | **cascata** |
-| timbro di fine turno | **timbro** |
-| registrazione temperatura (gesto «che atterra») | **registra temp** |
-| mappa/schematico dei reparti | **mappa** |
-| export audit-grade («Genera dossier») | **dossier** |
-| registro immutabile che alimenta il dossier | **registro** |
-
-- **Perché:** un linguaggio unico per gli elementi → meno testo, meno fraintendimenti (§14.6).
-- **Da decidere:** conferma owner voce per voce (poi salgono in VOCABOLARIO sezione B, Liv. 1).
-- **Stato:** in attesa · **Origine:** masterplan §14.6 (seed Fable, installazione 2026-07-06)
-
-<!-- Aggiungi qui le candidate. Formato libero ma includi sempre: Cosa · Perché · Da decidere ·
-     Stato · Origine. Per le parole-comando segui il formato di VOCABOLARIO.md. -->
+<!-- Nessuna candidata aperta — 06-07-26 -->
 
 ---
 
 ## Archivio (decise — con esito)
 
-<!-- Quando una candidata viene approvata o scartata, spostala qui con l'esito e la data. -->
+### [SCARTATA 06-07-26] Anteprima HTML strutturale per decisioni UI (agente prepara-prompt)
+- **Esito:** scartata — troppo pesante come regola fissa. L'owner chiederà **ad hoc** in chat
+  (HTML o rappresentazione stilizzata) solo quando serve una decisione UI.
+- **Origine:** richiesta utente 2026-05-29 · decisione owner 06-07-26
+
+### [APPROVATA 06-07-26] Seed lessico-mappa §14.6 — 7 nomi-elemento
+
+Promossi in `VOCABOLARIO.md` sezione B (Liv. 1). Forme owner:
+
+| Termine lungo | Nome approvato |
+|---------------|----------------|
+| punto di conservazione | **pdc** / **PDC** |
+| form conservazione a cascata | **cascata** |
+| timbro di fine turno | **timbro** |
+| registrazione temperatura | **regtemp** |
+| mappa/schematico reparti | **piantina** (planimetria) |
+| export «Genera dossier» | **dossier** |
+| pacchetto ispezione multi-periodo | **prova haccp** (sostituisce «registro») |
+
+- **Esito:** approvati tutti · **Origine:** masterplan §14.6 + chat owner 06-07-26

@@ -3,7 +3,7 @@ name: reparti
 description: >-
   Skill per qualsiasi lavoro sulla casa «Reparti» (lente SPAZIO): reparti assegnati, punti di
   conservazione, registrazione temperatura, form a cascata, mappa del ristorante. Caricala
-  quando il task nomina reparti, punti, frigo, temperature, cascata, conservazione.
+  quando il task nomina reparti, pdc, frigo, regtemp, cascata, piantina, conservazione.
 ---
 
 # 🧭 REPARTI — Skill di area (lente SPAZIO)
@@ -14,15 +14,14 @@ description: >-
 
 ## 1. A che serve (il senso)
 
-I reparti **assegnati** all'utente: dentro ogni reparto la struttura reale (frigo, banconi,
-stazioni = **punti di conservazione**), la **registrazione temperatura** e il **form a cascata**.
-La «cucina» è solo UNO dei reparti possibili (sala, bar, magazzino, pasticceria…). La mappa dei
-reparti è il **manuale operativo visivo**: il nuovo dipendente vi trova «dove sta cosa».
-Qui vivono 2 dei 3 gesti-firma: 🌡️ la temperatura che atterra · 💧 la cascata che si scioglie.
+I reparti **assegnati** all'utente: dentro ogni reparto i **pdc** (frigo, banconi, stazioni),
+**regtemp**, **cascata** e la **piantina** (planimetria schematica — dove sta cosa).
+La «cucina» è solo UNO dei reparti possibili (sala, bar, magazzino, pasticceria…).
+Qui vivono 2 dei 3 gesti-firma: 🌡️ **regtemp** che atterra · 💧 la **cascata** che si scioglie.
 
 ## 2. Chi fa cosa
 
-- **Dipendente**: naviga i suoi reparti → tocca un punto → registra la temperatura (tastierone
+- **Dipendente**: naviga i suoi reparti → tocca un **pdc** → **regtemp** (tastierone
   da guanti; il colore È il verdetto) → inserisce prodotti con la cascata.
 - **Titolare** (da Regia/①): codifica reparti e punti; qui li usa come tutti.
 
@@ -66,11 +65,12 @@ RULE  temperature_readings: INSERT-only; storno per annullare (dec. 1)
 | Se il task tocca… | Apri |
 |-------------------|------|
 | il codice reale dell'area | `src/features/reparti/` (hooks · KeypadSheet · RepartiPage) |
-| il ponte punto→regola (verdetto) | `src/compliance/point-verdict.ts` (zero numeri: legge il LOCK) |
+| il ponte pdc→regola (verdetto) | `src/compliance/point-verdict.ts` (zero numeri: legge il LOCK) |
+| la piantina / marker-verdetto | mockup `02_REPARTO_cucina.html` |
 | dettaglio flussi/dati legacy | `docs/meta/MAPPATURA_AREE/MAPPA_Reparti_conservation.md` |
 | soglie/categorie conservazione | `context/COMPLIANCE_CONTEXT.md` + `src/compliance/haccp-rules.ts` |
 | schema DB (letture, punti, profili) | `aree/DB_SKILL.md` |
 
 ---
 
-**Ultimo aggiornamento**: 2026-07-06 · CP8: port area completato (punti+letture oggi, registra append-only con auto-complete, schematico marker-verdetto) · → Report-port-fu002-fable
+**Ultimo aggiornamento**: 2026-07-06 · lessico-elemento owner (pdc, regtemp, piantina, cascata) · → sessione skill-system lessico+testing

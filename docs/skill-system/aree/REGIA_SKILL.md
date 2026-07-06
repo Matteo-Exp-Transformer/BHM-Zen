@@ -20,8 +20,9 @@ description: >-
 L'unico ingresso gestionale del **titolare** (il target che compra, §9.2): qui codifica la
 struttura reale (① IMPOSTO → il manuale operativo eseguibile), controlla il lavoro (③) e genera
 la prova (④ «Genera dossier» — il **climax emotivo** del prodotto: il documento si costruisce
-da solo dai gesti quotidiani). Visibile **solo** a titolare/responsabile (barra che si trasforma
-col ruolo, §12.2).
+da solo dai gesti quotidiani). **Dossier** = export singolo; **prova haccp** = pacchetto completo
+multi-periodo (giorno/settimana/mese/anno) per ispezioni — oggi parziale (CSV giorno).
+Visibile **solo** a titolare/responsabile (barra che si trasforma col ruolo, §12.2).
 
 ## 2. Chi fa cosa
 

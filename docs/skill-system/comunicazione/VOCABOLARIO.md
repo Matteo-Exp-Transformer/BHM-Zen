@@ -138,9 +138,9 @@ L'agente di lavoro **non decide** promozione/regressione: scrive solo i dati. De
 > coniare con l'utente una parola breve e registrarla qui, poi aggiornare la routing. Vedi
 > `REVISIONE.md`.
 
-> **Nomi CANONICI** (decisi owner, masterplan §12/§13.7 — non proposte): le 4 case sotto.
-> I nomi-elemento corti (punto, cascata, timbro, registra temp, mappa, dossier, registro) sono
-> **proposte** in `PROPOSTE.md` finché l'owner non conferma (§14.6).
+> **Nomi CANONICI pagina** (masterplan §12/§13.7): le 4 case sotto.
+> **Nomi-elemento** (owner 2026-07-06): pdc · cascata · timbro · regtemp · piantina · dossier ·
+> prova haccp — voci sotto.
 
 ### «Oggi» — Liv. 1
 - **Punta a:** la casa-diario (lente TEMPO): cosa fare ora, ieri/domani, timbro fine turno, alert.
@@ -148,8 +148,7 @@ L'agente di lavoro **non decide** promozione/regressione: scrive solo i dati. De
 - **Livello:** 1 · **Approvata il:** canonica §12 (2026-07-05) · **Origine:** masterplan
 
 ### «Reparti» (o il nome di un reparto: cucina, sala, bar, magazzino…) — Liv. 1
-- **Punta a:** la casa-spazio: reparti assegnati, punti di conservazione, registra temperatura,
-  form a cascata, mappa del ristorante.
+- **Punta a:** la casa-spazio: reparti assegnati, pdc, regtemp, cascata, piantina.
 - **Comportamento agente:** carica `aree/REPARTI_SKILL.md`
 - **Livello:** 1 · **Approvata il:** canonica §12 (2026-07-05) · **Origine:** masterplan
 
@@ -160,9 +159,55 @@ L'agente di lavoro **non decide** promozione/regressione: scrive solo i dati. De
 
 ### «Regia» — Liv. 1
 - **Punta a:** l'ingresso gestionale del titolare: ① Imposto (setup/onboarding) · ③ Controllo ·
-  ④ Dimostro (dossier/export).
+  ④ Dimostro (dossier · prova haccp).
 - **Comportamento agente:** carica `aree/REGIA_SKILL.md`
 - **Livello:** 1 · **Approvata il:** canonica §13.7 (2026-07-05) · **Origine:** masterplan
+
+### «pdc» / «PDC» / «punto di conservazione» — Liv. 1
+- **Punta a:** un singolo punto di conservazione **dentro** un reparto (frigo, bancone, cella…),
+  NON il reparto intero. Nel DB: `conservation_points`.
+- **Comportamento agente:** task su pdc/letture/conservazione → `aree/REPARTI_SKILL.md` (schema →
+  `aree/DB_SKILL.md`). Non confondere con «Reparti» (la tab) né con un reparto nominato (cucina…).
+- **Livello:** 1 · **Approvata il:** 06-07-26 · **Origine:** owner (seed §14.6, forma «pdc»)
+
+### «cascata» — Liv. 1
+- **Punta a:** il form a scelta guidata per inserire prodotti in conservazione (mockup 03): opzioni
+  incompatibili che svaniscono con ritmo lento (§13.5.2). **Beta:** non ancora nel codice — solo mockup.
+- **Comportamento agente:** `aree/REPARTI_SKILL.md` + mockup `03_FORM_CASCATA.html`.
+- **Livello:** 1 · **Approvata il:** 06-07-26 · **Origine:** owner (seed §14.6)
+
+### «timbro» — Liv. 1
+- **Punta a:** il gesto di fine turno in **Oggi**: apertura/chiusura turno + attestazione; record
+  append-only su `shift_seals` (dec. 7).
+- **Comportamento agente:** `aree/OGGI_SKILL.md` (schema timbro → `aree/DB_SKILL.md`).
+- **Livello:** 1 · **Approvata il:** 06-07-26 · **Origine:** owner (seed §14.6)
+
+### «regtemp» — Liv. 1
+- **Punta a:** il gesto di **registrare la temperatura** su un pdc (tastierone da guanti in Reparti):
+  lettura append-only su `temperature_readings`, verdetto colore da `haccp-rules.ts`.
+- **Comportamento agente:** `aree/REPARTI_SKILL.md` + `src/compliance/point-verdict.ts`.
+- **Livello:** 1 · **Approvata il:** 06-07-26 · **Origine:** owner (seed §14.6, forma «regtemp»)
+
+### «piantina» — Liv. 1
+- **Punta a:** la **planimetria schematica** del reparto in Reparti (come piantina su carta: dove sta
+  ogni pdc con marker-verdetto). NON le mappe documentali in `docs/meta/` né la mappa del progetto.
+- **Comportamento agente:** `aree/REPARTI_SKILL.md` + mockup `02_REPARTO_cucina.html`.
+- **Livello:** 1 · **Approvata il:** 06-07-26 · **Origine:** owner (sostituisce proposta «mappa»)
+
+### «dossier» — Liv. 1
+- **Punta a:** l'export audit-grade «Genera dossier» in **Regia** (④ Dimostro): documento costruito dai
+  gesti quotidiani. **Oggi:** CSV del giorno dai registri append-only. PDF e periodi estesi = roadmap.
+- **Comportamento agente:** `aree/REGIA_SKILL.md`.
+- **Livello:** 1 · **Approvata il:** 06-07-26 · **Origine:** owner (seed §14.6)
+
+### «prova haccp» — Liv. 1
+- **Punta a:** il **pacchetto completo** di tutti i dati d'uso dell'app scaricabili per controlli
+  ispettivi — per **giorno / settimana / mese / anno** (temperature, completamenti, timbri, scorte…).
+  È il deliverable ispezione; il dossier è il pezzo export singolo. **Oggi:** parziale (CSV giorno);
+  periodi multipli e formato PDF audit-grade = da costruire (ws7 masterplan).
+- **Comportamento agente:** `aree/REGIA_SKILL.md` + `MAPPA_Regia_setup-controllo.md` · compliance →
+  `context/COMPLIANCE_CONTEXT.md`.
+- **Livello:** 1 · **Approvata il:** 06-07-26 · **Origine:** owner (sostituisce proposta «registro»)
 
 <!-- Una voce per ogni grande zona del progetto. Tieni l'allineamento con la tabella di routing
      della Bussola: ogni parola-mappa Liv.1 dovrebbe comparire come trigger lì. -->

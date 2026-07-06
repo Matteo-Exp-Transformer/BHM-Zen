@@ -28,7 +28,7 @@ Dettaglio + livelli delle voci: `docs/skill-system/comunicazione/VOCABOLARIO.md`
 
 ## Zone che si confondono (chiedi PRIMA di toccare codice)
 - **Oggi** vs **Reparti** vs **Regia**: Oggi = diario operativo dipendente; Reparti = struttura + punti + temp; Regia = setup/controllo titolare.
-- **punto** (PdC) vs **reparto**: il punto è un elettrodomestico/zona dentro un reparto.
+- **pdc** (punto di conservazione) vs **reparto**: il pdc è un elettrodomestico/zona dentro un reparto.
 - **BHM-Zen** vs **BHM-v.2**: scrivi solo in BHM-Zen; legacy è read-only per cherry-pick.
 
 ## Salvaguardie sempre attive

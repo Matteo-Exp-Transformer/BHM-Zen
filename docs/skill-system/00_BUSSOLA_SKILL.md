@@ -57,7 +57,8 @@ Carica il file indicato **prima** di aprire qualsiasi file da modificare.
 | **DB / schema / migrazioni / tipi generati** | `aree/DB_SKILL.md` ⚠️ trigger DEEP |
 | **Compliance / soglie HACCP / regole normative** | `context/COMPLIANCE_CONTEXT.md` ⚠️ LOCK `src/compliance/haccp-rules.ts` |
 | **Valutare una feature** (le due lenti §9.5) | `aree/UFFICIALE_HACCP_SKILL.md` + `aree/RISTORATORE_SKILL.md` |
-| **Test / CI** | `aree/TESTING_SKILL.md.template` *(compilare al primo uso reale)* |
+| **Test / CI / profilo Verifica** | `aree/TESTING_SKILL.md` |
+| **«prepara» / «prepara prompt»** | `PREPARA_PROMPT_SKILL.md` *(non scrive codice)* |
 | **Come rispondere / report / vocabolario** | `comunicazione/COMUNICAZIONE_SKILL.md` |
 | **Affinare il sistema / promuovere voci** | `comunicazione/REVISIONE.md` (sessione dedicata) |
 | **«delego» / «modalità team»** | kit `docs/meta/COLLABORAZIONE_TEAM/` (on-demand, §15.1 masterplan) |
@@ -205,4 +206,4 @@ npm run supabase:migrations# stato history locale vs remota
 
 ---
 
-**Ultimo aggiornamento**: 2026-07-06 · installazione skill-system BHM-Zen (§14.5 masterplan): profili+routing aree reali, RULE §14.4 complete, LOCK, struttura, comandi, didattico OFF · → sessione Fable CP3 (git log)
+**Ultimo aggiornamento**: 2026-07-06 · PREPARA_PROMPT + TESTING_SKILL compilati; lessico-elemento owner (pdc, cascata, timbro, regtemp, piantina, dossier, prova haccp) · → sessione skill-system lessico+testing
