@@ -6,4 +6,5 @@
 
 | Data | Profilo | Tema (one-liner) | Report |
 |------|---------|------------------|--------|
+| 06-07-26 | Esecuzione | Skill-system: lessico elemento owner + PREPARA_PROMPT + TESTING compilati + Playwright smoke | `sessioni/06-07-26/Report-skill-lessico-playwright.md` |
 | 06-07-26 | Esecuzione (Fable) | Fondamenta: ambiente sbloccato · baseline+tipi · skill-system §14.5 · scaffold app · haccp-rules+gate-2 · 8 migration audit-grade APPLICATE sul live · branch §15 protetti | `sessioni/06-07-26/Report-fondamenta-fable.md` |

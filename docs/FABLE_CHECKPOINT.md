@@ -12,8 +12,8 @@
 - **Data**: 2026-07-06
 - **Branch**: `init/fondamenta` (push ok — origin allineato post-CP12; `integrazione` ff dopo ogni milestone)
 - **Fase masterplan (§6)**: ws1-3 ✅ · **ws4-6 QUASI COMPLETI**: tutte e 4 le case vive (Oggi+Calendario · Reparti · Scorte · Regia) + E2E scrittura CP9
-- **Ultimo checkpoint**: CP12 — casa Regia viva (mockup 04: respiro, dossier CSV, staff CRUD, HACCP sola lettura) + icone PWA SVG
-- **Prossimo passo**: inviti staff con password (FU-001 residuo) · PNG maskable PWA (polish) · realtime (dec. 11) · stabilizzazione/export audit-grade · report già scritto
+- **Ultimo checkpoint**: CP12 + post-Fable — skill lessico (62a8f98) + Playwright smoke (35b5926)
+- **Prossimo passo**: **agente senior blindatura impronta** (`PROMPT_SENIOR_BLINDATURA.md`) · poi FU-001 inviti · estensione E2E · realtime
 - **Prompt ripresa pronto**: `docs/skill-system/sessioni/06-07-26/PROMPT_RIPRESA_FABLE.md` (riga «Prossimo lavoro» aggiornata post-CP8)
 
 ## Checkpoint fatti
@@ -61,4 +61,4 @@
 
 ---
 
-**Ultimo aggiornamento**: 2026-07-06 · CP12 Regia viva + icone PWA · → Report-sessione-cp10-12-fable.md
+**Ultimo aggiornamento**: 2026-07-06 · post-CP12: skill lessico + Playwright + prompt senior blindatura · → Report-skill-lessico-playwright
