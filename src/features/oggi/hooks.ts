@@ -45,13 +45,17 @@ export interface LetturaFatta {
   verdict: TemperatureVerdict | null
 }
 
+export type StornoInfo =
+  | { kind: 'mansione'; taskId: string; periodStart: string; periodEnd: string }
+  | { kind: 'manutenzione'; maintenanceTaskId: string }
+
 export interface CompletamentoFatto {
   id: string
   titolo: string
   completedAt: string
   kind: 'mansione' | 'manutenzione'
-  /** presente solo per le mansioni generiche: abilita lo storno */
-  storno?: { taskId: string; periodStart: string; periodEnd: string }
+  /** presente quando il completamento è annullabile con una riga di storno */
+  storno?: StornoInfo
 }
 
 export interface OggiData {
@@ -225,6 +229,7 @@ export function useOggi(): OggiData & { isLoading: boolean } {
         completedAt: r.completed_at,
         kind: 'mansione' as const,
         storno: {
+          kind: 'mansione' as const,
           taskId: r.task_id,
           periodStart: r.period_start,
           periodEnd: r.period_end,
@@ -240,6 +245,10 @@ export function useOggi(): OggiData & { isLoading: boolean } {
           .join(' · '),
         completedAt: r.completed_at,
         kind: 'manutenzione' as const,
+        storno: {
+          kind: 'manutenzione' as const,
+          maintenanceTaskId: r.maintenance_task_id,
+        },
       })),
   ].sort((a, b) => b.completedAt.localeCompare(a.completedAt))
 
@@ -329,10 +338,10 @@ export function useCompletaManutenzione() {
 
 /**
  * STORNO (dec. 1): annullare un completamento = registrare una riga che lo
- * annulla, mai cancellare la prova. Disponibile per le mansioni generiche;
- * per le manutenzioni serve prima la migration sul trigger di ricorrenza.
+ * annulla, mai cancellare la prova. Mansioni generiche e manutenzioni
+ * (il trigger storno-aware `20260706070000` riporta il task esigibile).
  */
-export function useStornaMansione() {
+export function useStorna() {
   const { companyId, session, displayName } = useSession()
   const invalidate = useInvalidateOggi()
   return useMutation({
@@ -340,17 +349,30 @@ export function useStornaMansione() {
       const userId = session?.user.id
       if (!companyId || !userId) throw new Error('Sessione non pronta')
       if (!fatto.storno) throw new Error('Questo completamento non è stornabile')
-      const { error } = await supabase.from('task_completions').insert({
-        company_id: companyId,
-        task_id: fatto.storno.taskId,
-        completed_by: userId,
-        completed_by_name: displayName,
-        period_start: fatto.storno.periodStart,
-        period_end: fatto.storno.periodEnd,
-        notes: 'Storno del completamento precedente',
-        reverses_completion_id: fatto.id,
-      })
-      if (error) throw error
+      if (fatto.storno.kind === 'mansione') {
+        const { error } = await supabase.from('task_completions').insert({
+          company_id: companyId,
+          task_id: fatto.storno.taskId,
+          completed_by: userId,
+          completed_by_name: displayName,
+          period_start: fatto.storno.periodStart,
+          period_end: fatto.storno.periodEnd,
+          notes: 'Storno del completamento precedente',
+          reverses_completion_id: fatto.id,
+        })
+        if (error) throw error
+      } else {
+        const { error } = await supabase.from('maintenance_completions').insert({
+          company_id: companyId,
+          maintenance_task_id: fatto.storno.maintenanceTaskId,
+          completed_by: userId,
+          completed_by_name: displayName,
+          completed_at: new Date().toISOString(),
+          completion_notes: 'Storno del completamento precedente',
+          reverses_completion_id: fatto.id,
+        })
+        if (error) throw error
+      }
     },
     onSuccess: invalidate,
     onError: err => logger.error('storno fallito', err),

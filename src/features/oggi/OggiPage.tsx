@@ -21,7 +21,7 @@ import {
   useCompletaMansione,
   useCompletaManutenzione,
   useOggi,
-  useStornaMansione,
+  useStorna,
   useTimbra,
   type CompletamentoFatto,
   type ManutenzioneOggi,
@@ -116,7 +116,7 @@ export default function OggiPage() {
   const oggi = useOggi()
   const completaMansione = useCompletaMansione()
   const completaManutenzione = useCompletaManutenzione()
-  const storna = useStornaMansione()
+  const storna = useStorna()
   const timbra = useTimbra()
   const { toast, show } = useToast()
 

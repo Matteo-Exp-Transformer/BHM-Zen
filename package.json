@@ -18,6 +18,7 @@
     "verify:supabase-env": "node scripts/verify-supabase-env.mjs",
     "verify:legacy": "node scripts/verify-legacy.mjs",
     "verify:flows": "node scripts/verify-flows.mjs",
+    "verify:flows:write": "node scripts/verify-flows.mjs --write",
     "supabase:link": "node scripts/sb.mjs link --project-ref hjteuounjwkadmsbsmdm",
     "supabase:status": "node scripts/sb.mjs projects list",
     "supabase:tables": "node scripts/sb.mjs inspect db table-stats --linked",

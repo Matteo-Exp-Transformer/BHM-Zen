@@ -117,5 +117,140 @@ if (letture.data.length > 0) {
   console.log('ℹ️ nessuna lettura oggi: test append-only saltato')
 }
 
+// ============================================================================
+// SCRITTURA (FU-009, autorizzata owner 2026-07-06): stesse insert dei hooks.
+// Lascia righe PERMANENTI nei registri append-only (by design): attivare
+// solo con --write. Flusso: registra → auto-complete → storno manutenzione
+// (prova live del trigger 20260706070000) → spunta+storno mansione → timbro.
+// ============================================================================
+if (process.argv.includes('--write')) {
+  console.log('\n--- E2E in scrittura (righe permanenti, marcate E2E) ---')
+  const NOTA = 'E2E verify:flows'
+  const nowISO = () => new Date().toISOString()
+
+  // 1) registra temperatura sul primo punto (stessa insert di useRegistraLettura)
+  const punto = punti.data[0]
+  if (!punto) { console.error('❌ nessun punto di conservazione'); process.exit(1) }
+  const { data: lettura, error: insErr } = await supabase
+    .from('temperature_readings')
+    .insert({
+      company_id: companyId, conservation_point_id: punto.id,
+      temperature: 4, method: 'digital_thermometer', notes: NOTA,
+      recorded_at: nowISO(), recorded_by: auth.user.id,
+    })
+    .select('id').single()
+  if (insErr) { console.error('❌ insert lettura:', insErr.message); process.exit(1) }
+  console.log(`✅ lettura registrata su «${punto.name}»`)
+
+  // 2) auto-complete del task temperatura del giorno (stessa logica del hook)
+  const { data: tempTasks } = await supabase
+    .from('maintenance_tasks')
+    .select('id, next_due')
+    .eq('company_id', companyId).eq('conservation_point_id', punto.id)
+    .eq('type', 'temperature')
+    .in('status', ['scheduled', 'overdue', 'in_progress']).lte('next_due', endISO)
+  if (!tempTasks?.length) {
+    console.log('ℹ️ nessun task temperatura in scadenza per questo punto: trigger-check saltato')
+  } else {
+    const tt = tempTasks[0]
+    const { data: comp, error: compErr } = await supabase
+      .from('maintenance_completions')
+      .insert({
+        maintenance_task_id: tt.id, company_id: companyId,
+        completed_by: auth.user.id, completed_by_name: 'Utente test E2E',
+        completed_at: nowISO(),
+      })
+      .select('id, completed_at').single()
+    if (compErr) { console.error('❌ auto-complete:', compErr.message); process.exit(1) }
+    const { data: dopo } = await supabase.from('maintenance_tasks')
+      .select('next_due, last_completed').eq('id', tt.id).single()
+    const avanzato = dopo && new Date(dopo.next_due) > new Date(tt.next_due)
+    console.log(avanzato
+      ? `✅ trigger completamento: next_due avanzata (${tt.next_due} → ${dopo.next_due})`
+      : `⚠️ next_due NON avanzata (${tt.next_due} → ${dopo?.next_due})`)
+    if (!avanzato) process.exitCode = 1
+
+    // 3) STORNO manutenzione → il trigger storno-aware deve RIPORTARE il task esigibile
+    const { error: stornoErr } = await supabase
+      .from('maintenance_completions')
+      .insert({
+        maintenance_task_id: tt.id, company_id: companyId,
+        completed_by: auth.user.id, completed_by_name: 'Utente test E2E',
+        completed_at: nowISO(), completion_notes: NOTA,
+        reverses_completion_id: comp.id,
+      })
+    if (stornoErr) { console.error('❌ storno manutenzione:', stornoErr.message); process.exit(1) }
+    const { data: dopoStorno } = await supabase.from('maintenance_tasks')
+      .select('next_due, last_completed').eq('id', tt.id).single()
+    const tornato = dopoStorno &&
+      new Date(dopoStorno.next_due) <= new Date(comp.completed_at)
+    console.log(tornato
+      ? `✅ trigger storno-aware: task di nuovo esigibile (next_due ${dopoStorno.next_due}, last_completed ${dopoStorno.last_completed ?? 'NULL'})`
+      : `⚠️ storno NON ha riportato il task esigibile (next_due ${dopoStorno?.next_due})`)
+    if (!tornato) process.exitCode = 1
+  }
+
+  // 4) spunta + storno di una mansione generica (stesse insert di useCompletaMansione/useStorna)
+  const mansione = tasks.data[0]
+  if (!mansione) {
+    console.log('ℹ️ nessuna mansione in scadenza: spunta/storno mansione saltati')
+  } else {
+    const { data: tcRow, error: tcErr } = await supabase
+      .from('task_completions')
+      .insert({
+        company_id: companyId, task_id: mansione.id,
+        completed_by: auth.user.id, completed_by_name: 'Utente test E2E',
+        period_start: startISO, period_end: endISO, notes: NOTA,
+      })
+      .select('id').single()
+    if (tcErr) { console.error('❌ spunta mansione:', tcErr.message); process.exit(1) }
+    console.log(`✅ mansione spuntata («${mansione.name}»)`)
+    const { error: tsErr } = await supabase
+      .from('task_completions')
+      .insert({
+        company_id: companyId, task_id: mansione.id,
+        completed_by: auth.user.id, completed_by_name: 'Utente test E2E',
+        period_start: startISO, period_end: endISO, notes: NOTA,
+        reverses_completion_id: tcRow.id,
+      })
+    if (tsErr) { console.error('❌ storno mansione:', tsErr.message); process.exit(1) }
+    // il filtro dell'app deve escludere ENTRAMBE le righe (annullata + annullo)
+    const { data: tcAll } = await supabase
+      .from('task_completions')
+      .select('id, reverses_completion_id')
+      .eq('company_id', companyId).eq('task_id', mansione.id)
+      .gte('period_end', startISO).lte('period_start', endISO)
+    const reversed = new Set(tcAll.map(r => r.reverses_completion_id).filter(Boolean))
+    const validi = tcAll.filter(r => !r.reverses_completion_id && !reversed.has(r.id))
+    const sparita = !validi.some(r => r.id === tcRow.id)
+    console.log(sparita
+      ? '✅ storno mansione: il completamento non conta più (torna «da fare»)'
+      : '⚠️ il completamento stornato risulta ancora valido!')
+    if (!sparita) process.exitCode = 1
+  }
+
+  // 5) timbro di fine turno (stessa insert di useTimbra)
+  const { data: seal, error: sealErr } = await supabase
+    .from('shift_seals')
+    .insert({
+      company_id: companyId, user_id: auth.user.id,
+      opened_at: nowISO(), attestation: true, notes: NOTA,
+    })
+    .select('id, closed_at').single()
+  if (sealErr) { console.error('❌ timbro:', sealErr.message); process.exit(1) }
+  console.log(`✅ timbro impresso (chiuso alle ${seal.closed_at})`)
+
+  // 6) invariante append-only anche sui registri appena scritti
+  const { data: updSeal } = await supabase
+    .from('shift_seals').update({ notes: 'manomesso' }).eq('id', seal.id).select()
+  const sealRespinto = (updSeal?.length ?? 0) === 0
+  console.log(sealRespinto
+    ? '✅ append-only regge anche su shift_seals: UPDATE respinto'
+    : '⚠️ ATTENZIONE: UPDATE su shift_seals NON respinto!')
+  if (!sealRespinto) process.exitCode = 1
+}
+
 await supabase.auth.signOut()
-console.log('🎉 flussi app verificati (lettura sotto RLS)')
+console.log(process.argv.includes('--write')
+  ? '🎉 flussi app verificati (lettura + SCRITTURA sotto RLS)'
+  : '🎉 flussi app verificati (lettura sotto RLS)')
