@@ -1,0 +1,17 @@
+{
+  "folders": [
+    {
+      "name": "BHM-Zen (casa nuova)",
+      "path": "."
+    },
+    {
+      "name": "BHM-v.2 (legacy read-only)",
+      "path": "../BHM-v.2"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/node_modules": true
+    }
+  }
+}

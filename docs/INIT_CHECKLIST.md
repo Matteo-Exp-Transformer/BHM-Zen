@@ -9,6 +9,9 @@ Branch: `init/fondamenta` · Stato: 🟡 in corso
 - [x] Script verify (`npm run verify:setup`)
 - [x] Docs verità copiati in `docs/`
 - [x] Remote `legacy` → BHM-v.2
+- [x] `.cursor/rules/comandi-base.mdc` — porta Cursor per Fable
+- [x] `BHM-Zen.code-workspace` — multi-root Zen + legacy
+- [x] `npm run verify:legacy` — check repo annessa
 
 ## Fase 1 — Prossimi passi (Fable / init session)
 

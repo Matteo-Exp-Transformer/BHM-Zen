@@ -1,0 +1,38 @@
+---
+description: Grilletti di avvio chat + salvaguardie base — sempre attivi (BHM-Zen / Fable)
+alwaysApply: true
+---
+
+# Comandi e salvaguardie base (sempre noti)
+
+> Rule **Cursor** di default. Porta d'ingresso gemella: `CLAUDE.md` (Claude Code) · `AGENTS.md` (Codex).
+> Fonte di verità comandi: `docs/skill-system/comunicazione/VOCABOLARIO.md`.
+> Bootstrap sessione: leggi `FABLE_AVVIO.md` e esegui `npm run verify:setup` (exit 0) prima di scrivere codice.
+
+Riconosci queste parole dell'utente a INIZIO chat, prima di sapere il task.
+Dettaglio + livelli delle voci: `docs/skill-system/comunicazione/VOCABOLARIO.md`.
+
+## Grilletti di avvio
+- **«prepara» / «prepara prompt»** → NON eseguire codice. Carica `docs/skill-system/PREPARA_PROMPT_SKILL.md` ed entra in modalità filtro: domande mirate, poi consegna SOLO il prompt pronto per l'agente di lavoro.
+- **«implementa» / «fai» / «sistema» / «aggiungi» / «crea»** → profilo Esecuzione: carica la skill dell'area (`docs/skill-system/00_BUSSOLA_SKILL.md` § 0).
+- **«revisiona» / «verifica» / «debugga» / «non funziona»** → profilo Verifica: carica testing + skill area.
+- **«migliora/analizza/revisiona comunicazione»** → Meta revisore.
+- **«evolvi … senior» / «meta senior»** → Meta senior. «evolvi» SENZA «senior» → chiedi: senior o revisore?
+
+## Comandi durante/fine chat
+- **«lavoro ok»** → task accettato + SCRIVI/AGGIORNA un report COMPLETO. Come compilarlo: `docs/skill-system/comunicazione/CHIUSURA_SESSIONE.md`. NON committa, NON fa push.
+- **«fai report finale»** → capitolo chiuso: verifica che il report sia allineato al diff reale, poi proponi/esegui COMMIT + PUSH (su conferma utente).
+- **«dammi follow up»** → SOLO il prompt da incollare nella prossima chat, auto-contenuto.
+- **«spiegamelo semplice»** → effetto concreto + chi fa cosa, breve, no gergo.
+- **«ragioniamo»** → fermati a ragionare PRIMA di eseguire: spiegazione breve + effetto per te + tabellina riassuntiva + checklist.
+
+## Zone che si confondono (chiedi PRIMA di toccare codice)
+- **Oggi** vs **Reparti** vs **Regia**: Oggi = diario operativo dipendente; Reparti = struttura + punti + temp; Regia = setup/controllo titolare.
+- **punto** (PdC) vs **reparto**: il punto è un elettrodomestico/zona dentro un reparto.
+- **BHM-Zen** vs **BHM-v.2**: scrivi solo in BHM-Zen; legacy è read-only per cherry-pick.
+
+## Salvaguardie sempre attive
+- **Sicurezza PROD**: prima di INSERT/UPDATE/DELETE/migrazioni verifica il project ref (`supabase/.temp/project-ref` o `npm run verify:supabase-cli`). Se è PROD (`hjteuounjwkadmsbsmdm`) FERMATI e chiedi conferma. Non fare `db push` cieco — vedi `FABLE_AVVIO.md` §2.3.
+- **NO MCP Supabase** in sessione Fable: usa CLI + script npm (`supabase:*`, `verify:*`).
+- **Stile con l'utente**: parla per schermate/flussi concreti, non nomi-file isolati. Breve di default, dettaglio se lo chiede.
+- **Comando non riconosciuto**: NON dedurre il profilo da solo → fai domande prima di procedere.

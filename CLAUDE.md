@@ -2,6 +2,8 @@
 
 > **Prima di fare qualsiasi cosa**, leggi e segui **`FABLE_AVVIO.md`** (bootstrap completo).
 > Non hai MCP Supabase in questa sessione: usa **Supabase CLI + script npm** documentati lì.
+> **Ripresa sessione interrotta**: leggi `docs/FABLE_CHECKPOINT.md` + `git log --oneline -20`
+> — è il filo di Arianna della costruzione (stato, decisioni, prossimo passo).
 
 ## Comandi obbligatori all'avvio
 

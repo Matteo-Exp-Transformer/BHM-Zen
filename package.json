@@ -8,12 +8,13 @@
     "verify:setup": "node scripts/verify-setup.mjs",
     "verify:supabase-cli": "node scripts/verify-supabase-cli.mjs",
     "verify:supabase-env": "node scripts/verify-supabase-env.mjs",
-    "supabase:link": "supabase link --project-ref hjteuounjwkadmsbsmdm",
-    "supabase:status": "supabase projects list",
-    "supabase:tables": "supabase inspect db table-stats --linked",
-    "supabase:pull": "supabase db pull",
-    "supabase:types": "supabase gen types typescript --linked > src/types/database.types.ts",
-    "supabase:migrations": "supabase migration list"
+    "verify:legacy": "node scripts/verify-legacy.mjs",
+    "supabase:link": "node scripts/sb.mjs link --project-ref hjteuounjwkadmsbsmdm",
+    "supabase:status": "node scripts/sb.mjs projects list",
+    "supabase:tables": "node scripts/sb.mjs inspect db table-stats --linked",
+    "supabase:pull": "node scripts/sb.mjs db pull",
+    "supabase:types": "node scripts/supabase-types.mjs",
+    "supabase:migrations": "node scripts/sb.mjs migration list"
   },
   "engines": {
     "node": ">=20"

@@ -6,12 +6,15 @@
 import { execSync } from 'node:child_process'
 import { existsSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { mergedEnv } from './lib/env.mjs'
 
 const PROJECT_REF = 'hjteuounjwkadmsbsmdm'
 const root = resolve(import.meta.dirname, '..')
+// La CLI legge SUPABASE_DB_PASSWORD solo dall'ambiente → la carichiamo da .env.local
+const env = mergedEnv()
 
 function run(cmd) {
-  return execSync(cmd, { cwd: root, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }).trim()
+  return execSync(cmd, { cwd: root, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'], env }).trim()
 }
 
 const checks = []
