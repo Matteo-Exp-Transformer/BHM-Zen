@@ -2,10 +2,123 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Base clinico-caldo (§13.1): neutro caldo, inchiostro quasi-nero caldo.
-   I token veri si affinano nelle sedute UI — mockup = verità visiva. */
+/* ============================================================================
+   Design token canonici — dal mockup 06 (approvati §13, clinico-caldo).
+   La UI usa SOLO questi via Tailwind (tailwind.config.ts mappa su var(--…)):
+   il tema chiaro/scuro segue il sistema, con override manuale via [data-theme].
+   ========================================================================== */
+:root {
+  --ground: #efede8;
+  --ground-2: #e7e4dd;
+  --surface: #ffffff;
+  --surface-2: #faf9f6;
+  --ink: #24201c;
+  --ink-2: #4c463f;
+  --ink-muted: #7a7268;
+  --hairline: #e4e0d8;
+  --hairline-2: #edeae3;
+  --accent: #c0552e;
+  --accent-ink: #ffffff;
+  --accent-soft: #f4e4db;
+  --ok: #2e8b57;
+  --ok-bg: #e4f1e9;
+  --ok-ink: #1e6b40;
+  --warn: #b9821a;
+  --warn-bg: #f6ecd3;
+  --warn-ink: #87600f;
+  --bad: #c33d3d;
+  --bad-bg: #f7e2e0;
+  --bad-ink: #95271f;
+  --shadow: 0 1px 2px rgba(40, 34, 28, 0.04), 0 8px 24px rgba(40, 34, 28, 0.06);
+  --shadow-lg: 0 20px 60px rgba(30, 24, 18, 0.28);
+  --ease: cubic-bezier(0.4, 0.01, 0.2, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ground: #161310;
+    --ground-2: #100e0b;
+    --surface: #211d17;
+    --surface-2: #26211a;
+    --ink: #f0ebe3;
+    --ink-2: #c9c2b7;
+    --ink-muted: #a0978a;
+    --hairline: #332d24;
+    --hairline-2: #2a241d;
+    --accent: #da7a4d;
+    --accent-ink: #1b1510;
+    --accent-soft: #2e2016;
+    --ok: #54b37e;
+    --ok-bg: #16271d;
+    --ok-ink: #84d2a5;
+    --warn: #ddb155;
+    --warn-bg: #2a2312;
+    --warn-ink: #e7c878;
+    --bad: #e0665e;
+    --bad-bg: #2c1714;
+    --bad-ink: #ee908a;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 30px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 24px 70px rgba(0, 0, 0, 0.6);
+  }
+}
+
+:root[data-theme='light'] {
+  --ground: #efede8;
+  --ground-2: #e7e4dd;
+  --surface: #ffffff;
+  --surface-2: #faf9f6;
+  --ink: #24201c;
+  --ink-2: #4c463f;
+  --ink-muted: #7a7268;
+  --hairline: #e4e0d8;
+  --hairline-2: #edeae3;
+  --accent: #c0552e;
+  --accent-ink: #ffffff;
+  --accent-soft: #f4e4db;
+  --ok: #2e8b57;
+  --ok-bg: #e4f1e9;
+  --ok-ink: #1e6b40;
+  --warn: #b9821a;
+  --warn-bg: #f6ecd3;
+  --warn-ink: #87600f;
+  --bad: #c33d3d;
+  --bad-bg: #f7e2e0;
+  --bad-ink: #95271f;
+  --shadow: 0 1px 2px rgba(40, 34, 28, 0.04), 0 8px 24px rgba(40, 34, 28, 0.06);
+  --shadow-lg: 0 20px 60px rgba(30, 24, 18, 0.28);
+}
+
+:root[data-theme='dark'] {
+  --ground: #161310;
+  --ground-2: #100e0b;
+  --surface: #211d17;
+  --surface-2: #26211a;
+  --ink: #f0ebe3;
+  --ink-2: #c9c2b7;
+  --ink-muted: #a0978a;
+  --hairline: #332d24;
+  --hairline-2: #2a241d;
+  --accent: #da7a4d;
+  --accent-ink: #1b1510;
+  --accent-soft: #2e2016;
+  --ok: #54b37e;
+  --ok-bg: #16271d;
+  --ok-ink: #84d2a5;
+  --warn: #ddb155;
+  --warn-bg: #2a2312;
+  --warn-ink: #e7c878;
+  --bad: #e0665e;
+  --bad-bg: #2c1714;
+  --bad-ink: #ee908a;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 30px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 24px 70px rgba(0, 0, 0, 0.6);
+}
+
 @layer base {
   html {
-    @apply bg-sand-50 text-ink antialiased;
+    @apply bg-ground text-ink antialiased;
+    font-family:
+      'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system,
+      'Helvetica Neue', Arial, sans-serif;
   }
 }

@@ -1,40 +1,41 @@
 import type { Config } from 'tailwindcss'
 
 /**
- * Direzione UI §13 masterplan — «clinico-caldo».
- * Base neutra CALDA (avorio/grigio-sabbia), inchiostro quasi-nero caldo,
- * colore = verdetto (verde ok · ambra attento · rosso raro), accento terracotta.
- * Palette di partenza: si affina nelle sedute UI (mockup = verità visiva).
+ * Direzione UI §13 — «clinico-caldo». I VALORI vivono nelle CSS variables di
+ * src/index.css (token canonici dal mockup 06, light+dark): qui solo la mappa.
+ * Colore = verdetto, non decorazione (ok/warn/bad); accento terracotta con parsimonia.
  */
 export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     extend: {
       colors: {
-        // base clinico-calda
-        sand: {
-          50: '#faf7f2',
-          100: '#f3eee6',
-          200: '#e7dfd2',
-          300: '#d5c9b6',
-        },
+        ground: { DEFAULT: 'var(--ground)', 2: 'var(--ground-2)' },
+        surface: { DEFAULT: 'var(--surface)', 2: 'var(--surface-2)' },
         ink: {
-          DEFAULT: '#2b2622',
-          soft: '#5c544c',
-          mute: '#8a8178',
+          DEFAULT: 'var(--ink)',
+          soft: 'var(--ink-2)',
+          mute: 'var(--ink-muted)',
         },
-        // accento di brand (terracotta / arancio bruciato) — con parsimonia
-        terra: {
-          500: '#c05f36',
-          600: '#b8552f',
-          700: '#9a4526',
+        hairline: { DEFAULT: 'var(--hairline)', 2: 'var(--hairline-2)' },
+        accent: {
+          DEFAULT: 'var(--accent)',
+          ink: 'var(--accent-ink)',
+          soft: 'var(--accent-soft)',
         },
-        // colore = verdetto, non decorazione
-        verdict: {
-          ok: '#3d8b5f',
-          warn: '#d99a2b',
-          alarm: '#c0392b',
-        },
+        ok: { DEFAULT: 'var(--ok)', bg: 'var(--ok-bg)', ink: 'var(--ok-ink)' },
+        warn: { DEFAULT: 'var(--warn)', bg: 'var(--warn-bg)', ink: 'var(--warn-ink)' },
+        bad: { DEFAULT: 'var(--bad)', bg: 'var(--bad-bg)', ink: 'var(--bad-ink)' },
+      },
+      boxShadow: {
+        card: 'var(--shadow)',
+        lg2: 'var(--shadow-lg)',
+      },
+      borderRadius: {
+        card: '18px',
+      },
+      transitionTimingFunction: {
+        calm: 'cubic-bezier(0.4, 0.01, 0.2, 1)',
       },
     },
   },
