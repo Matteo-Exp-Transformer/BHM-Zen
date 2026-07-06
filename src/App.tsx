@@ -4,6 +4,7 @@ import LoginPage from '@/features/auth/LoginPage'
 import OggiPage from '@/features/oggi/OggiPage'
 import CalendarioPage from '@/features/calendario/CalendarioPage'
 import RepartiPage from '@/features/reparti/RepartiPage'
+import ScortePage from '@/features/scorte/ScortePage'
 import { useSession } from '@/lib/auth/session'
 
 /** Attesa calma (§13.6): niente spinner ansiogeni per un check di sessione. */
@@ -60,15 +61,7 @@ export default function App() {
           <Route index element={<OggiPage />} />
           <Route path="calendario" element={<CalendarioPage />} />
           <Route path="reparti" element={<RepartiPage />} />
-          <Route
-            path="scorte"
-            element={
-              <HousePlaceholder
-                title="Scorte"
-                note="Inventario e lista spesa, filtrabili per reparto. In arrivo col giro d'inventario."
-              />
-            }
-          />
+          <Route path="scorte" element={<ScortePage />} />
           <Route element={<RequireDirector />}>
             <Route
               path="regia"

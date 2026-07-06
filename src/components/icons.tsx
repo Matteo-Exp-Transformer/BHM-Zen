@@ -218,6 +218,52 @@ export function PointTypeIcon({
   }
 }
 
+/* --- icone Scorte (mockup 07) --- */
+
+export function CartIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Icon {...props}>
+      <circle cx="9" cy="20" r="1.4" />
+      <circle cx="17" cy="20" r="1.4" />
+      <path d="M2 3h3l2.4 12.4a1 1 0 0 0 1 .8h8.2a1 1 0 0 0 1-.8L21 7H6" />
+    </Icon>
+  )
+}
+
+export function ClipboardIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Icon {...props}>
+      <rect x="6" y="4" width="12" height="17" rx="2" />
+      <path d="M9 4h6v3H9z" fill="currentColor" stroke="none" />
+      <path d="M9 12h6M9 16h4" />
+    </Icon>
+  )
+}
+
+export function PlusIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Icon strokeWidth={2.2} {...props}>
+      <path d="M12 5v14M5 12h14" />
+    </Icon>
+  )
+}
+
+export function MinusIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Icon strokeWidth={2.2} {...props}>
+      <path d="M5 12h14" />
+    </Icon>
+  )
+}
+
+export function XIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Icon strokeWidth={2.2} {...props}>
+      <path d="M6 6l12 12M18 6 6 18" />
+    </Icon>
+  )
+}
+
 /* --- icone mansioni (mockup 01) --- */
 
 export function SprayIcon(props: SVGProps<SVGSVGElement>) {
