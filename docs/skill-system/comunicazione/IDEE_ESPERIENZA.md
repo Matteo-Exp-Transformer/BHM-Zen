@@ -27,7 +27,22 @@
 
 ## Voci
 
-*(ancora nessuna — il ledger si riempie dall'uso)*
+### verdetto temperatura — margine-ambra che spiega perché
+- **Idea:** `computeTemperatureVerdict` ha già il margine "ambra" configurabile; se diventasse
+  per-categoria (surgelati più severi), il sussurro HACCP §13.5 potrebbe dire *perché* è ambra
+  («sei a 1° dal limite») — sapere-che-si-rivela ancora più didattico.
+- **Perché migliora:** compliance (impari il margine, non solo il verdetto)
+- **Stato:** 💡
+- **Autore-sessione:** 06-07-26 · Report-fondamenta-fable
+
+### storno — raccontarlo come gesto dignitoso, non come «errore»
+- **Idea:** quando il dipendente annulla un completamento, la UI non dovrebbe dire «elimina» né
+  «errore»: lo storno è una riga nuova che *corregge la storia a testa alta* («Ho segnato per
+  sbaglio — corretto», voce umana §10.5). Il registro immutabile diventa percepibile come
+  onestà, non come sorveglianza.
+- **Perché migliora:** compliance + navigazione (coerente con «diario dignitoso» §9.4)
+- **Stato:** 💡
+- **Autore-sessione:** 06-07-26 · REVISIONE_FONDAMENTA (Fable)
 
 ---
 

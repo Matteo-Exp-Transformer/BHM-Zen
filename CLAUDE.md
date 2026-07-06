@@ -44,6 +44,12 @@ Chiusura sessione: `docs/skill-system/comunicazione/CHIUSURA_SESSIONE.md`.
 - `src/types/database.types.ts` — generato dal live, mai a mano
 - `.env.local` · `supabase/.temp/` — segreti, mai committare
 
+## Guide di riferimento
+
+- `docs/guide/SCOPE_PRODOTTO_BETA.md` — cosa è dentro/fuori la beta, come si cambia lo scope
+- `docs/guide/PRATICHE_INGEGNERIA.md` — pratiche professionali (migration, RLS, qualità, git)
+- `docs/meta/VISIONE_STRATEGICA_FABLE.md` · `docs/meta/REVISIONE_FONDAMENTA_2026-07-06.md`
+
 ## Regola Fable (dal masterplan)
 
 Valida il masterplan → esegui §6 → migliora tecnicamente **senza** allargare scope prodotto.
