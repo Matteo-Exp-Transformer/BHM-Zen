@@ -44,13 +44,41 @@ source_ref (→ ancora in questo file) · validated_by`.
 - **Fonte**: Regolamento (CE) n. 853/2004 (norme specifiche alimenti di origine animale).
 - **Consultato**: da compilare al primo uso.
 
+### `dpr-327-1980`
+- **Fonte**: D.P.R. 26 marzo 1980, n. 327 (regolamento di esecuzione L. 283/1962, igiene
+  alimenti) — in particolare Allegato C (temperature di conservazione/trasporto) e le
+  disposizioni sul mantenimento a caldo dei cibi cotti da consumarsi caldi.
+- **Consultato**: 2026-07-06 (seed; da ri-verificare con link Normattiva dal track compliance).
+
+### `dlgs-110-1992`
+- **Fonte**: D.Lgs. 27 gennaio 1992, n. 110 (attuazione dir. 89/108/CEE, alimenti surgelati) —
+  temperatura degli alimenti surgelati in ogni punto del prodotto.
+- **Consultato**: 2026-07-06 (seed; da ri-verificare con link Normattiva dal track compliance).
+
 *(altre ancore — linee guida ministeriali IT, DPR/DLgs, manuali di corretta prassi — si
 aggiungono qui quando una regola le cita)*
 
 ## 4. Razionali per rule-id
 
-*(vuoto — si popola insieme a `haccp-rules.ts`: una voce per `rule-id`, con il perché della
-soglia e il contesto normativo; MAI il numero, che vive solo nel TS)*
+> Una voce per `rule-id`; il PERCHÉ della soglia e il contesto, MAI il numero (vive nel TS).
+
+### `frigo-carni-fresche` (v1, pending)
+Conservazione refrigerata delle carni fresche: la catena del freddo positiva è il controllo
+critico più frequente in cucina. Fonte: `dpr-327-1980`. Seed 2026-07-06; il track compliance
+dovrà articolare le categorie per tipo carne (avicole/bovine/preparazioni) che il DPR distingue.
+
+### `congelatore-surgelati` (v1, pending)
+Surgelati: la norma fissa la temperatura massima in ogni punto del prodotto; il limite è aperto
+verso il basso (più freddo = ok). Fonte: `dlgs-110-1992`. Tolleranze di trasporto/scongelamento
+parziale = tema del track compliance, non di questo seed.
+
+### `mantenimento-caldo` (v1, pending)
+Cibi cotti da consumare caldi: mantenimento sopra soglia fino al servizio (legame caldo).
+Fonte: `dpr-327-1980`. Limite aperto verso l'alto.
+
+> **Nota di prodotto (non normativa)**: il margine «ambra» del verdetto colore
+> (`WARN_MARGIN_C` nel TS) è una scelta UX §13.5 — avvisare PRIMA di sforare — da tarare con
+> l'owner. Non ha `source_ref` perché non è una norma.
 
 ---
 

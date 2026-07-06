@@ -17,10 +17,10 @@ Branch: `init/fondamenta` · Stato: 🟡 in corso
 
 - [x] `npm run supabase:pull` — baseline schema remoto (`20260706015742`, history allineata)
 - [x] `npm run supabase:types` — generare `src/types/database.types.ts` (via `--db-url`)
-- [ ] Scaffold app (Vite + React + TS) da stack BHM-v.2
+- [x] Scaffold app (Vite 6 + React + TS) da stack BHM-v.2, snello (no dead code B.9/B.10)
 - [x] Installare skill-system pulito (§14.5 masterplan) — bussola compilata, 3 porte, RULE,
       vocabolario seed, ledger idee, skill-consulenti, 5 skill d'area
-- [ ] `src/compliance/haccp-rules.ts` — stampo tipato (+ gate-2 test dopo scaffold)
+- [x] `src/compliance/haccp-rules.ts` — stampo tipato + 3 seed `pending` + gate-2 test (14 ✓)
 - [ ] Branch `integrazione` + protezioni GitHub (§15)
 
 ## Verifica rapida

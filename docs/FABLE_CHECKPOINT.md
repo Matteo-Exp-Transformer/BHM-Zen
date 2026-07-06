@@ -11,9 +11,9 @@
 
 - **Data**: 2026-07-06
 - **Branch**: `init/fondamenta`
-- **Fase masterplan (§6)**: workstream 2 ✅ (skill-system) · workstream 3 in corso (baseline ✅, gap migration da scrivere)
-- **Ultimo checkpoint**: CP3 — skill-system installato (§14.5)
-- **Prossimo passo**: scaffold app (Vite+React+TS) → `haccp-rules.ts` + gate-2 test → migration gap
+- **Fase masterplan (§6)**: ws2 ✅ (skill-system) · scaffold app ✅ · compliance stampo ✅ · ws3 in corso (gap migration da scrivere)
+- **Ultimo checkpoint**: CP4 — scaffold app + fonte-unica HACCP + gate-2
+- **Prossimo passo**: branch `integrazione` + push → migration gap audit-grade (P0: 015, append-only, RPC shopping)
 
 ## Checkpoint fatti
 
@@ -22,6 +22,7 @@
 | CP1 | 2026-07-06 | Sblocco accesso DB (password in .env.local, account CLI senza privilegi management → wrapper `sb.mjs` + tipi via `--db-url`); `verify:setup` exit 0; sistema checkpoint installato | *(vedi git log)* |
 | CP2 | 2026-07-06 | Baseline schema live (`20260706015742`, 37 tabelle) + history remota allineata + tipi generati. Gap A0 **ri-verificati sul live: tutti confermati** | *(vedi git log)* |
 | CP3 | 2026-07-06 | Skill-system installato (§14.5): bussola compilata (profili, routing, LOCK, 9 RULE §14.4), 3 porte allineate (CLAUDE/AGENTS/cursor), vocabolario seed (comandi v0 + 4 case canoniche; 7 nomi-elemento in PROPOSTE), ledger IDEE_ESPERIENZA + AGGIORNAMENTI_HACCP, COMPLIANCE_CONTEXT stampo, skill-consulenti (Ufficiale-HACCP, Ristoratore), 5 skill d'area (Oggi/Reparti/Scorte/Regia/DB), template report con «💡 Idee» + footer-tracciabilità, CHIUSURA compilata. Didattico OFF | *(vedi git log)* |
+| CP4 | 2026-07-06 | Scaffold app snello (Vite 6 + React 18 + TS strict + Tailwind clinico-caldo + React Query + router 4 case + PWA manifest; NIENTE dead code legacy) + `src/compliance/haccp-rules.ts` (LOCK: stampo tipato, 3 regole seed `pending` con source_ref, verdetto colore, validatore) + gate-2 test (14 ✓). `npm run validate` verde · build+PWA ok · dev server verificato HTTP 200 · 0 vulnerabilità (bump vite 6/vitest 3) | *(vedi git log)* |
 
 ## Decisioni prese in sessione (owner, 2026-07-06)
 
