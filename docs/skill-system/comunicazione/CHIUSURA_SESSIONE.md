@@ -40,7 +40,7 @@ In ordine cronologico, in **linguaggio utente** (non «ho modificato X» ma «or
 Tabella o elenco: file + perché. Compresi i file dello skill system, se li hai toccati.
 
 ### 4. Test eseguiti e risultato
-Il comando di verifica del progetto (`{{comando_validate}}`) + esito reale. Niente «tutto ok» generico.
+Il comando di verifica del progetto (`npm run validate`) + esito reale. Niente «tutto ok» generico.
 
 ### 5. «File di skill aggiornati» (tabella obbligatoria, anche «nessuno»)
 Colonne: **file · modifica · perché**. Elenca TUTTI i file skill toccati (Bussola, file di `context/`,
@@ -211,17 +211,19 @@ aggiornala **ora**, non dopo il merge. Approvare un merge con la skill stale las
 - Aggiungi SOLO i tuoi file: non includere modifiche/untracked altrui nel commit del task.
 
 ## 3. Allineamento branch di lavoro → branch principale (se richiesto)
-- Verifica fast-forward pulito: `git merge-base --is-ancestor {{main}} {{branch_lavoro}}` → se «sì», ff.
+- Topologia BHM-Zen (§15 masterplan): `feature/*` → `integrazione` → `main` (main protetto,
+  promuove solo l'owner). Il branch di lavoro tipico è `integrazione` o un `feature/*`.
+- Verifica fast-forward pulito: `git merge-base --is-ancestor integrazione <branch_lavoro>` → se «sì», ff.
 - Se il working tree ha modifiche non tue che bloccano il checkout → `git stash push <file>`, fai il
   merge, torna sul branch di lavoro, `git stash pop` (preserva il lavoro altrui senza committarlo).
-- `git checkout {{main}} && git merge --ff-only {{branch_lavoro}} && git push origin {{main}}`, poi
-  torna sul branch di lavoro.
+- `git checkout integrazione && git merge --ff-only <branch_lavoro> && git push origin integrazione`,
+  poi torna sul branch di lavoro. **Verso `main` promuove SOLO l'owner.**
 
 ## 4. Allineamento ambienti DB (se richiesto)
-- **Sola lettura per default.** Verifica **dove sei** prima di toccare qualsiasi cosa: il progetto
-  ha tipicamente un ambiente **produzione** e uno **di test/staging**.
-- **Mai scrivere su PRODUZIONE** senza conferma esplicita dell'utente. Sul test/staging la scrittura
-  è ok.
+- **Sola lettura per default.** Verifica **dove sei** prima di toccare qualsiasi cosa.
+- **BHM-Zen ha UN SOLO DB** (`hjteuounjwkadmsbsmdm`, condiviso con l'app legacy deployata):
+  trattalo da **produzione**. Solo dati test (conferma owner 2026-07-06), ma le scritture passano
+  SOLO dalle procedure di `FABLE_AVVIO.md` §2.3 (migration incrementali via CLI, mai db push cieco).
 - Confronta le migrazioni per **nome logico**, non per numero di versione (ambienti diversi possono
   avere schemi di versionamento diversi). Differenze storiche note ≠ disallineamento.
 

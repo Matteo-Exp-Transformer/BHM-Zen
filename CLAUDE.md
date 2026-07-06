@@ -29,6 +29,21 @@ cd BHM-Zen
 claude --add-dir ../BHM-v.2
 ```
 
+## Skill-system (tre porte, una verità)
+
+A inizio sessione carica la **Bussola**: `docs/skill-system/00_BUSSOLA_SKILL.md` — profili
+(Esecuzione/Verifica/Meta), routing per area (Oggi · Reparti · Scorte · Regia · DB · Compliance),
+LOCK e RULE globali. Vocabolario comandi: `docs/skill-system/comunicazione/VOCABOLARIO.md`
+(grilletti sempre-attivi: `.cursor/rules/comandi-base.mdc`; porta Codex: `AGENTS.md`).
+Chiusura sessione: `docs/skill-system/comunicazione/CHIUSURA_SESSIONE.md`.
+
+## Zone delicate / LOCK (dettaglio in Bussola §2)
+
+- `src/compliance/haccp-rules.ts` — numeri HACCP, solo via Change-Control §14.3
+- `supabase/migrations/*` — append-only, mai modificare migration applicate
+- `src/types/database.types.ts` — generato dal live, mai a mano
+- `.env.local` · `supabase/.temp/` — segreti, mai committare
+
 ## Regola Fable (dal masterplan)
 
 Valida il masterplan → esegui §6 → migliora tecnicamente **senza** allargare scope prodotto.

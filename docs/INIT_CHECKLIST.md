@@ -15,11 +15,12 @@ Branch: `init/fondamenta` · Stato: 🟡 in corso
 
 ## Fase 1 — Prossimi passi (Fable / init session)
 
-- [ ] `npm run supabase:pull` — baseline schema remoto
-- [ ] `npm run supabase:types` — generare `src/types/database.types.ts`
+- [x] `npm run supabase:pull` — baseline schema remoto (`20260706015742`, history allineata)
+- [x] `npm run supabase:types` — generare `src/types/database.types.ts` (via `--db-url`)
 - [ ] Scaffold app (Vite + React + TS) da stack BHM-v.2
-- [ ] Installare skill-system pulito (§14.5 masterplan)
-- [ ] `src/compliance/haccp-rules.ts` — stampo tipato
+- [x] Installare skill-system pulito (§14.5 masterplan) — bussola compilata, 3 porte, RULE,
+      vocabolario seed, ledger idee, skill-consulenti, 5 skill d'area
+- [ ] `src/compliance/haccp-rules.ts` — stampo tipato (+ gate-2 test dopo scaffold)
 - [ ] Branch `integrazione` + protezioni GitHub (§15)
 
 ## Verifica rapida

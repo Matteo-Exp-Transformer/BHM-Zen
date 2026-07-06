@@ -54,16 +54,57 @@ L'agente di lavoro **non decide** promozione/regressione: scrive solo i dati. De
 
 # SEZIONE A — Lessico-comando (come ti comporti)
 
-> Le parole ricorrenti dell'utente → comportamento dell'agente. Parti da poche voci e fai
-> crescere il file dall'uso.
+> Le parole ricorrenti dell'utente → comportamento dell'agente. Lessico **ereditato dal
+> skill-system v0** (masterplan §14.6: «non va reinventato») — già rodato con l'owner.
+> I grilletti di avvio vivono anche nella rule always-on `.cursor/rules/comandi-base.mdc`.
 
-### «{{parola — es. lavoro ok}}» — Liv. {{N}}
-- **Intende:** {{...}}
-- **Comportamento agente:** {{...}}
-- **Livello:** {{N}}
-- **Casi identici già ok:** —
-- **Approvata il:** {{GG-MM-AA}}
-- **Origine:** {{...}}
+### «prepara» / «prepara prompt» — Liv. 1
+- **Intende:** voglio un prompt pronto per un agente di lavoro, NON che tu esegua.
+- **Comportamento agente:** carica `PREPARA_PROMPT_SKILL.md`; modalità filtro: domande mirate,
+  poi consegna SOLO il prompt. Niente codice.
+- **Livello:** 1 · **Approvata il:** ereditata v0 · **Origine:** skill-system v0
+
+### «implementa» / «fai» / «sistema» / «aggiungi» / «crea» — Liv. 1
+- **Intende:** profilo Esecuzione sul task indicato.
+- **Comportamento agente:** bussola §0 → carica la skill dell'area → esegui.
+- **Livello:** 1 · **Approvata il:** ereditata v0 · **Origine:** skill-system v0
+
+### «revisiona» / «verifica» / «debugga» / «non funziona» — Liv. 1
+- **Intende:** profilo Verifica: controlla/testa codice già prodotto.
+- **Comportamento agente:** carica testing + skill dell'area revisionata; sempre coi test.
+- **Livello:** 1 · **Approvata il:** ereditata v0 · **Origine:** skill-system v0
+
+### «lavoro ok» — Liv. 1
+- **Intende:** task accettato; scrivi/aggiorna il report COMPLETO.
+- **Comportamento agente:** report secondo `CHIUSURA_SESSIONE.md` Parte A. NON committa, NON pusha.
+- **Livello:** 1 · **Approvata il:** ereditata v0 · **Origine:** skill-system v0
+
+### «fai report finale» — Liv. 1
+- **Intende:** capitolo chiuso: pubblica.
+- **Comportamento agente:** verifica report allineato al diff reale → COMMIT + PUSH (su conferma).
+- **Livello:** 1 · **Approvata il:** ereditata v0 · **Origine:** skill-system v0
+
+### «dammi follow up» — Liv. 1
+- **Intende:** passa il lavoro a un'altra chat.
+- **Comportamento agente:** SOLO il prompt di proseguimento, auto-contenuto.
+- **Livello:** 1 · **Approvata il:** ereditata v0 · **Origine:** skill-system v0
+
+### «spiegamelo semplice» — Liv. 1
+- **Intende:** effetto concreto + chi fa cosa, breve, zero gergo.
+- **Comportamento agente:** rispiega in linguaggio utente (schermate/flussi, non nomi-file).
+- **Livello:** 1 · **Approvata il:** ereditata v0 · **Origine:** skill-system v0
+
+### «ragioniamo» — Liv. 1
+- **Intende:** fermati PRIMA di eseguire: voglio capire e decidere.
+- **Comportamento agente:** spiegazione breve + effetto per l'utente + tabellina riassuntiva +
+  checklist. Nessuna modifica finché non si è deciso.
+- **Livello:** 1 · **Approvata il:** ereditata v0 · **Origine:** skill-system v0
+
+### «delego» / «modalità team» — Liv. 2
+- **Intende:** sto per delegare un task a un collaboratore umano (§15 masterplan).
+- **Comportamento agente:** carica il kit `docs/meta/COLLABORAZIONE_TEAM/` (on-demand, §15.1);
+  aiuta a scegliere Ordine di Lavoro vs Mandato.
+- **Livello:** 2 · **Dati Liv.2:** — · **Approvata il:** masterplan §15.1 (2026-07-06) · **Origine:** Track C
 
 <!-- Aggiungi qui le voci comando. Esempi tipici da coniare con l'utente:
      - GRILLETTI DI PROFILO (avvio chat): una parola per «esecuzione» (scrivi codice), una per
@@ -97,12 +138,31 @@ L'agente di lavoro **non decide** promozione/regressione: scrive solo i dati. De
 > coniare con l'utente una parola breve e registrarla qui, poi aggiornare la routing. Vedi
 > `REVISIONE.md`.
 
-### «{{parola-zona — es. pagina Home}}» — Liv. {{N}}
-- **Punta a:** {{quale zona/route/componente}}
-- **Comportamento agente:** carica `context/{{ZONA}}_CONTEXT.md` (+ eventuali skill d'area)
-- **Livello:** {{N}}
-- **Approvata il:** {{GG-MM-AA}}
-- **Origine:** {{...}}
+> **Nomi CANONICI** (decisi owner, masterplan §12/§13.7 — non proposte): le 4 case sotto.
+> I nomi-elemento corti (punto, cascata, timbro, registra temp, mappa, dossier, registro) sono
+> **proposte** in `PROPOSTE.md` finché l'owner non conferma (§14.6).
+
+### «Oggi» — Liv. 1
+- **Punta a:** la casa-diario (lente TEMPO): cosa fare ora, ieri/domani, timbro fine turno, alert.
+- **Comportamento agente:** carica `aree/OGGI_SKILL.md`
+- **Livello:** 1 · **Approvata il:** canonica §12 (2026-07-05) · **Origine:** masterplan
+
+### «Reparti» (o il nome di un reparto: cucina, sala, bar, magazzino…) — Liv. 1
+- **Punta a:** la casa-spazio: reparti assegnati, punti di conservazione, registra temperatura,
+  form a cascata, mappa del ristorante.
+- **Comportamento agente:** carica `aree/REPARTI_SKILL.md`
+- **Livello:** 1 · **Approvata il:** canonica §12 (2026-07-05) · **Origine:** masterplan
+
+### «Scorte» — Liv. 1
+- **Punta a:** la casa-stock: inventario (mansione ricorrente, dec.12), conteggi, lista spesa.
+- **Comportamento agente:** carica `aree/SCORTE_SKILL.md`
+- **Livello:** 1 · **Approvata il:** canonica §12 (2026-07-05) · **Origine:** masterplan
+
+### «Regia» — Liv. 1
+- **Punta a:** l'ingresso gestionale del titolare: ① Imposto (setup/onboarding) · ③ Controllo ·
+  ④ Dimostro (dossier/export).
+- **Comportamento agente:** carica `aree/REGIA_SKILL.md`
+- **Livello:** 1 · **Approvata il:** canonica §13.7 (2026-07-05) · **Origine:** masterplan
 
 <!-- Una voce per ogni grande zona del progetto. Tieni l'allineamento con la tabella di routing
      della Bussola: ogni parola-mappa Liv.1 dovrebbe comparire come trigger lì. -->

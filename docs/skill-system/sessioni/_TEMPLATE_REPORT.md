@@ -48,10 +48,23 @@
 > layout/comportamento descritto in un file di skill/context, quel file va aggiornato **in questa
 > chiusura** e la riga va qui. «nessuno» vale solo se nessun file skill copre la zona toccata (scrivi
 > il motivo). Vietato rimandare l'allineamento a «al prossimo giro».
+>
+> **Footer-tracciabilità (RULE `file-footer`, §14.4):** ogni file LOCK/skill/context toccato riceve
+> in fondo il footer `**Ultimo aggiornamento**: GG-MM-AAAA · cosa è cambiato · → questo report`.
+> Aggancio **bidirezionale**: questa tabella elenca i file, ogni file punta a questo report.
 
 | File | Modifica (breve) | Perché |
 |------|------------------|--------|
 | {{...}} | {{...}} | {{...}} |
+
+## 💡 Idee esperienza (gusto personale) — obbligatorio, anche «nessuna»
+
+> §11 masterplan: mentre lavoravi sull'elemento, esisteva un modo più bello/fluido/innovativo
+> per la navigazione o l'esperienza di compliance? 1-3 righe, basso attrito. Le idee non banali
+> vanno ANCHE nel ledger `comunicazione/IDEE_ESPERIENZA.md`. Calibra su §10 (delizia = ricompensa,
+> voce umana, i 3 gesti-firma). **Annota, non implementare.**
+
+- {{idea 1-3 righe · perché migliora (navigazione | compliance) — oppure «nessuna»}}
 
 ## Dati comunicazione (obbligatorio standard/deep)
 

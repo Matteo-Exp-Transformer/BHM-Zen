@@ -19,6 +19,26 @@
   automatismo (sempre / solo su richiesta)?
 - **Stato:** in attesa · **Origine:** richiesta utente 2026-05-29 (sessione skill system v0)
 
+### [CANDIDATE — parole-elemento] Seed lessico-mappa §14.6 masterplan (7 nomi corti)
+
+> Seed suggerito dal masterplan §14.6: nomi corti per gli **elementi** che l'app crea. I nomi di
+> **pagina/tab** (Oggi/Reparti/Scorte/Regia) sono già canonici e sono entrati diretti in
+> `VOCABOLARIO.md` sezione B; questi restano proposte finché l'owner non li conferma.
+
+| Termine lungo attuale | Nome corto proposto |
+|-----------------------|---------------------|
+| punto di conservazione | **punto** (dentro un reparto; sigla `PdC` nei doc) |
+| form conservazione a cascata | **cascata** |
+| timbro di fine turno | **timbro** |
+| registrazione temperatura (gesto «che atterra») | **registra temp** |
+| mappa/schematico dei reparti | **mappa** |
+| export audit-grade («Genera dossier») | **dossier** |
+| registro immutabile che alimenta il dossier | **registro** |
+
+- **Perché:** un linguaggio unico per gli elementi → meno testo, meno fraintendimenti (§14.6).
+- **Da decidere:** conferma owner voce per voce (poi salgono in VOCABOLARIO sezione B, Liv. 1).
+- **Stato:** in attesa · **Origine:** masterplan §14.6 (seed Fable, installazione 2026-07-06)
+
 <!-- Aggiungi qui le candidate. Formato libero ma includi sempre: Cosa · Perché · Da decidere ·
      Stato · Origine. Per le parole-comando segui il formato di VOCABOLARIO.md. -->
 
