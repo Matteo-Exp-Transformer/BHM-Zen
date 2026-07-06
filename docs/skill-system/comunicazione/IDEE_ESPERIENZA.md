@@ -44,6 +44,23 @@
 - **Stato:** 💡
 - **Autore-sessione:** 06-07-26 · REVISIONE_FONDAMENTA (Fable)
 
+### mappa reparti — la mappa che impara le posizioni
+- **Idea:** oggi lo schematico dispone i punti in slot deterministici (posizioni vere = builder
+  Regia, roadmap §12.3). Quando il builder arriverà, la transizione potrebbe essere un morphing
+  lento: i marker *scivolano* dalle posizioni automatiche a quelle vere disegnate dal titolare —
+  «la tua cucina prende forma», sapere che si rivela.
+- **Perché migliora:** navigazione (il manuale visivo diventa rito di appropriazione, non setup)
+- **Stato:** 💡
+- **Autore-sessione:** 06-07-26 · Report-port-fu002-fable
+
+### timbro — i sigilli multipli come ceralacca impilata
+- **Idea:** più timbri nello stesso giorno (turni spezzati pranzo/cena) sono già supportati dal
+  registro. In UI potrebbero rendersi visibili come piccoli sigilli impilati in fondo a Oggi
+  («pranzo · 14:32» / «cena · 23:10») — la giornata racconta i suoi capitoli senza aprire report.
+- **Perché migliora:** compliance (l'attestazione per turno diventa leggibile) + navigazione
+- **Stato:** 💡
+- **Autore-sessione:** 06-07-26 · Report-port-fu002-fable
+
 ---
 
-**Ultimo aggiornamento**: 2026-07-06 · creazione ledger (installazione §14.5) · → sessione Fable CP3 (git log)
+**Ultimo aggiornamento**: 2026-07-06 · +2 voci (mappa-morphing, sigilli-ceralacca) da CP8 · → Report-port-fu002-fable

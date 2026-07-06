@@ -10,11 +10,11 @@
 ## Dove sono (aggiornare SEMPRE per ultima cosa)
 
 - **Data**: 2026-07-06
-- **Branch**: `init/fondamenta` (= `integrazione`, entrambi pushati e protetti)
-- **Fase masterplan (§6)**: ws1-3 ✅ **COMPLETI** (fondamenta prodotto validate · skill-system · DB audit-grade APPLICATO sul live) · prossimo: ws4-6 (port logica + shell UI dai mockup)
-- **Ultimo checkpoint**: CP7 — shell navigazione + auth solo-invito FUNZIONANTI (login reale verificato)
-- **Prossimo passo**: FU-002 port Reparti+Oggi contro schema nuovo (include storno → chiude FU-007) · resto FU-001 (inviti staff, tab nome-reparto, icone PWA)
-- **Prompt ripresa pronto**: `docs/skill-system/sessioni/06-07-26/PROMPT_RIPRESA_FABLE.md` (aggiorna la riga «Prossimo lavoro» a FU-002)
+- **Branch**: `init/fondamenta` (locale avanti di 4 commit su origin — push da autorizzare; `integrazione` da riallineare)
+- **Fase masterplan (§6)**: ws1-3 ✅ · **ws4-6 IN CORSO**: Oggi+Reparti PORTATE e vive (CP8); prossime case Scorte/Regia
+- **Ultimo checkpoint**: CP8 — port FU-002: diario Oggi (spunta/storno/timbro) + Reparti (schematico, tastierone, auto-complete) contro il live sotto RLS
+- **Prossimo passo**: FU-008 (push migration storno + UI storno manutenzioni, serve ok owner) · FU-009 (E2E scrittura, serve ok owner) · FU-001 residuo (inviti staff, icone PWA) · poi Scorte (mockup 07 + RPC shopping già live)
+- **Prompt ripresa pronto**: `docs/skill-system/sessioni/06-07-26/PROMPT_RIPRESA_FABLE.md` (riga «Prossimo lavoro» aggiornata post-CP8)
 
 ## Checkpoint fatti
 
@@ -27,6 +27,7 @@
 | CP5 | 2026-07-06 | **8 migration audit-grade APPLICATE sul DB live** (autorizzazione owner esplicita): 015+method NOT NULL, append-only+storno (temp/task/maintenance), `shift_seals`, ciclo scadenze products, `par_level`+`stock_counts`, companies beta, 4 RPC shopping, realtime ×10. History 9/9 · smoke REST 6/6 · tipi rigenerati (2390) · validate verde. Branch `integrazione` ff+push, `main`/`integrazione` protetti (no force-push/delete). Report deep: `docs/skill-system/sessioni/06-07-26/` | *(vedi git log)* |
 | CP6 | 2026-07-06 | Revisione generale (verifiche: helper RLS solidi; **trovate 2 tabelle senza RLS** → migration hardening `20260706050000` **applicata**, history 10/10) + `docs/meta/REVISIONE_FONDAMENTA` (10 perplessità, 5 migliorie M1-M5) + `docs/meta/VISIONE_STRATEGICA_FABLE` (moat, GTM consulenti, pricing, manutenzione norme) + guide `docs/guide/` (SCOPE_PRODOTTO_BETA, PRATICHE_INGEGNERIA) + `PROMPT_RIPRESA_FABLE.md` + 2 idee nel ledger | *(vedi git log)* |
 | CP7 | 2026-07-06 | **Shell + auth FUNZIONANTI** (FU-001 core): design token canonici mockup 06 (CSS vars light/dark → Tailwind), icone SVG disegnate, `AppShell` responsive (bottom bar mobile ↔ side-rail 82px desktop, Regia solo admin/responsabile, avatar/logout), `LoginPage` solo-invito voce umana, `SessionProvider` (ruolo da `company_members` sotto RLS), route protette + guard Regia, `CalmSplash`. Utente test creato (`scripts/create-test-user.mjs`, admin @ Al Ritrovo SRL) — **login reale verificato via API + membership RLS ok** · dev server 200 · validate verde | *(vedi git log)* |
+| CP8 | 2026-07-06 | **Port FU-002: Oggi+Reparti VIVE** (sessione interrotta a metà per limite → ripresa: commit WIP di sicurezza + 5 fix gate). Fondamenta condivise (`lib/dates` RULE-timezone, `compliance/point-verdict` ponte punto→regola SENZA numeri, sessione estesa staff/reparti, Sheet/Toast/VerdictChip, animazioni §13.5). **Oggi**: card-focus Ora/A breve/Fatto, ribbon, spunta mansioni (periodo per frequenza)+manutenzioni, **storno append-only** mansioni (dec.1), **timbro** su `shift_seals` (dec.7, sigillo animato + più turni/giorno). **Reparti**: switcher, schematico marker-verdetto (slot deterministici), tastierone da guanti condiviso, auto-complete task temperatura. Tab nome-reparto reale (FU-001). **Scoperto trigger non storno-aware** → migration draft `20260706070000` NON applicata (serve ok owner). `verify:flows` nuovo (E2E lettura RLS: 7 punti/10+10 task/5 mansioni ok) · validate 29 test verdi · build+PWA ok · dev 200 | `2201036`·`97bbe21`·`642b81d` |
 
 ## Decisioni prese in sessione (owner, 2026-07-06)
 
@@ -56,4 +57,4 @@
 
 ---
 
-**Ultimo aggiornamento**: 2026-07-06 · CP1 · sessione Fable avvio costruzione
+**Ultimo aggiornamento**: 2026-07-06 · CP8 port FU-002 (Oggi+Reparti) · → Report-port-fu002-fable

@@ -45,9 +45,11 @@ la lista si acquieta — *«il tuo l'hai fatto»*.
 
 | Questione | Decisione | Stato |
 |-----------|-----------|-------|
-| Schema `shift_seals` (campi esatti) | tabella append-only company/user/opened/closed/attestation | da progettare (Fondamenta + Track A) |
-| Metadati `[END_DATE:]` in description | diventa colonna vera | da migrare |
-| Realtime | pattern invalidate-on-change esteso a Oggi (dec. 11) | da implementare |
+| Schema `shift_seals` | tabella append-only company/user/opened/closed/attestation | ✅ live (CP5) e usata dal timbro (CP8); più sigilli/giorno = turni spezzati |
+| Storno completamenti | riga con `reverses_completion_id` (dec. 1) | ✅ mansioni generiche (CP8); manutenzioni → FU-008 (draft trigger `20260706070000`, serve push) |
+| Metadati `[END_DATE:]` in description | diventa colonna vera | da migrare (il port CP8 non li legge) |
+| Realtime | pattern invalidate-on-change esteso a Oggi (dec. 11); floor refetch-on-focus attivo | FU-010 |
+| Chiusure/weekend | `company_calendar_settings.open_weekdays` | non ancora filtrato in Oggi (da valutare in beta) |
 
 ## 6. LOCK di area
 
@@ -60,10 +62,11 @@ RULE  date locali Italia: mai toISOString().split (RULE timezone, Bussola §2)
 
 | Se il task tocca… | Apri |
 |-------------------|------|
+| il codice reale dell'area | `src/features/oggi/` (hooks · OggiPage) |
 | dettaglio flussi/dati legacy | `docs/meta/MAPPATURA_AREE/MAPPA_Oggi_calendar.md` |
 | il timbro (schema DB) | `aree/DB_SKILL.md` + mappa Fondamenta §4 |
 | l'aspetto/interazione | mockup 01 + masterplan §13.4-13.6 |
 
 ---
 
-**Ultimo aggiornamento**: 2026-07-06 · scaffolding iniziale (installazione §14.5) · → sessione Fable CP3 (git log)
+**Ultimo aggiornamento**: 2026-07-06 · CP8: port area completato (diario Ora/A breve/Fatto, storno mansioni, timbro shift_seals) · → Report-port-fu002-fable

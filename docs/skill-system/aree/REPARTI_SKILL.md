@@ -49,9 +49,10 @@ attento / rosso raro), sussurro HACCP che si dissolve (~2s). Cascata: le opzioni
 
 | Questione | Decisione | Stato |
 |-----------|-----------|-------|
-| Colonne lettura (method, notes, photo_evidence, recorded_by) | migration tipo-015 | da applicare (gap P0) |
-| Editor mappa | builder strutturato in beta; disegno libero = roadmap (§12.3) | decoupling confermato |
-| Realtime | già coperto dal pattern `useConservationRealtime` (riuso) | da portare |
+| Colonne lettura (method, notes, photo_evidence, recorded_by) | migration tipo-015 | ✅ applicata CP5 (`20260706040000`), usata dal port CP8 |
+| Editor mappa | builder strutturato in beta; disegno libero = roadmap (§12.3) | schematico CP8 = slot deterministici; posizioni vere col builder Regia |
+| Realtime | pattern invalidate-on-change (dec. 11); floor refetch-on-focus attivo | FU-010 (subscriptions non portate) |
+| Metodo lettura | obbligatorio (dec. 8) — beta: default `digital_thermometer`, la UI non chiede | selettore metodo = da valutare con owner |
 
 ## 6. LOCK di area
 
@@ -64,10 +65,12 @@ RULE  temperature_readings: INSERT-only; storno per annullare (dec. 1)
 
 | Se il task tocca… | Apri |
 |-------------------|------|
+| il codice reale dell'area | `src/features/reparti/` (hooks · KeypadSheet · RepartiPage) |
+| il ponte punto→regola (verdetto) | `src/compliance/point-verdict.ts` (zero numeri: legge il LOCK) |
 | dettaglio flussi/dati legacy | `docs/meta/MAPPATURA_AREE/MAPPA_Reparti_conservation.md` |
 | soglie/categorie conservazione | `context/COMPLIANCE_CONTEXT.md` + `src/compliance/haccp-rules.ts` |
 | schema DB (letture, punti, profili) | `aree/DB_SKILL.md` |
 
 ---
 
-**Ultimo aggiornamento**: 2026-07-06 · scaffolding iniziale (installazione §14.5) · → sessione Fable CP3 (git log)
+**Ultimo aggiornamento**: 2026-07-06 · CP8: port area completato (punti+letture oggi, registra append-only con auto-complete, schematico marker-verdetto) · → Report-port-fu002-fable

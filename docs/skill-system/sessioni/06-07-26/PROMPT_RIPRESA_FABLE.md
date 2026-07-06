@@ -17,19 +17,23 @@ autorizzazioni salvo ambiguità bloccanti (falle tutte insieme, subito) o scritt
    `docs/guide/PRATICHE_INGEGNERIA.md` (come si lavora). Revisione critica + rischi aperti:
    `docs/meta/REVISIONE_FONDAMENTA_2026-07-06.md`.
 
-**Stato al 2026-07-06 (CP6):** workstream 1–3 masterplan completi — ambiente sbloccato, baseline
-schema live + tipi, skill-system §14.5 installato, app scaffoldata (Vite 6/React 18/TS strict,
-gira su :3000), `haccp-rules.ts` LOCK con gate-2 (14 test), 9 migration applicate sul DB live
-(append-only+storno, shift_seals, RPC shopping, realtime, RLS hardening). Branch:
-`init/fondamenta` = `integrazione`, protetti. `npm run validate` = gate, verde.
+**Stato al 2026-07-06 (CP8):** ws1-3 completi + **Oggi e Reparti PORTATE e vive** contro il DB
+live sotto RLS — diario card-focus (spunta mansioni/manutenzioni, STORNO append-only mansioni,
+timbro `shift_seals` con sigillo), Reparti (schematico marker-verdetto, tastierone da guanti,
+auto-complete task temperatura), tab nome-reparto reale. Verdetto SOLO da
+`src/compliance/point-verdict.ts` → `haccp-rules.ts` (LOCK). `npm run verify:flows` = E2E
+lettura con utente test. 10 migration applicate + **1 DRAFT NON applicata**
+(`20260706070000` trigger storno-aware manutenzioni). `npm run validate` verde (29 test).
+Branch: `init/fondamenta` avanti di 4+ commit sull'origin (push da autorizzare).
 
 **Prossimo lavoro (in ordine, da FOLLOW_UP.md):**
-- **FU-001**: shell di navigazione dai mockup (`docs/meta/MOCKUP_UI/06_NAVIGAZIONE_shell.html` =
-  verità visiva: bottom tab mobile → side-rail desktop, barra che si trasforma col ruolo, tab
-  centrale dinamica) + auth base solo-invito (valuta se Supabase Auth basta: perplessità n.8
-  della revisione — NON portare ciecamente il CSRF custom legacy).
-- **FU-002**: port hooks/services legacy contro lo schema nuovo, seguendo i verdetti ♻️/✍️/🗑️
-  delle 5 mappe (`docs/meta/MAPPATURA_AREE/`); include lo STORNO (chiude FU-007).
+- **FU-008**: chiedere ok owner → `db push` della migration storno-trigger (dry-run prima),
+  poi abilitare storno manutenzioni in UI (`useOggi`/OggiPage).
+- **FU-009**: E2E in scrittura con utente test (registra → auto-complete → spunta → storno →
+  timbro; righe permanenti nei registri: serve ok owner) — estendere `verify:flows`.
+- **FU-001 residuo**: inviti staff (nasce con Regia) + icone PWA.
+- **Prossima casa: Scorte** (mockup 07 = verità visiva; 4 RPC shopping già live da CP5;
+  mappa `MAPPA_Scorte_inventory-shopping.md`; dec. 12 mansione «Inventario»).
 
 **Vincoli duri (non negoziabili):**
 - Scrivi solo in BHM-Zen; `../BHM-v.2` è read-only (cherry-pick di logica, MAI componenti UI).
@@ -50,4 +54,4 @@ ff `integrazione`; a fine sessione report secondo
 
 ---
 
-**Ultimo aggiornamento**: 2026-07-06 · creato in chiusura sessione fondamenta · → `Report-fondamenta-fable.md`
+**Ultimo aggiornamento**: 2026-07-06 · aggiornato in chiusura CP8 (port Oggi+Reparti) · → `Report-port-fu002-fable.md`
