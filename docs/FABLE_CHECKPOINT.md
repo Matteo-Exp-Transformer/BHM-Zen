@@ -9,11 +9,11 @@
 
 ## Dove sono (aggiornare SEMPRE per ultima cosa)
 
-- **Data**: 2026-07-08
-- **Branch**: `init/fondamenta` (origin allineato post-CP12; `integrazione` ff dopo ogni milestone)
-- **Fase masterplan (§6)**: ws1-3 ✅ · ws4-6 QUASI COMPLETI (4 case vive) · **blindatura ESEGUITA per intero** (Fase 1 doc + Fase 2 test + Fase 3 fetta owner)
-- **Ultimo checkpoint**: **blindatura senior 08-07** — doc riallineati · smoke 9 test (4 case+ruoli+struttura) · verify:flows 5 aree (lettura+scrittura) · component test KeypadSheet · utente dipendente · **Regia: reparti/pdc/staff MODIFICABILI** (StrutturaSheet, setpoint dal LOCK)
-- **Prossimo passo**: **FU-001 inviti staff** (auth) → resto FU-013 (onboarding 7 step, creazione mansioni) → FU-014 cascata → FU-015 mansione Inventario · FU-010 realtime · residui FU-012 (component test conferma armata, e2e in CI)
+- **Data**: 2026-07-08 (pomeriggio)
+- **Branch**: `init/fondamenta` (commit blindatura `7402694`·`4636162`·`df5c9d9` + commit inviti/onboarding — push su ok owner)
+- **Fase masterplan (§6)**: ws1-3 ✅ · ws4-6 COMPLETI nel perimetro beta (4 case vive + ① IMPOSTO chiuso) · blindatura ✅
+- **Ultimo checkpoint**: **inviti+onboarding 08-07 pom.** — **FU-001 CHIUSO** (invites.ts ♻️ legacy, `/accept-invite`, claim al login, «Invita nell'app» in Regia, `verify:invite` verde, kill-switch `VITE_INVITE_EMAIL_ENABLED`) · **FU-013 CHIUSO** (onboarding «cantiere» 7 passi full-screen, ripetibile e pre-compilato, gate azienda vuota, mansioni+manutenzioni dal passo 5) · modal v2 (2 colonne md + scrollbar integrata, keypad/timbro stretti)
+- **Prossimo passo**: test email inviti con inbox vera (owner, FU-017) → **FU-014 cascata** (completa il passo 6 del cantiere) → FU-005 profili frigo nella fonte-unica → FU-015 mansione Inventario · FU-016 hardening RLS legacy · FU-010 realtime · residui FU-012
 - **Prompt ripresa pronto**: `docs/skill-system/sessioni/06-07-26/PROMPT_RIPRESA_FABLE.md` (riga «Prossimo lavoro» aggiornata post-CP8)
 
 ## Checkpoint fatti
@@ -33,6 +33,7 @@
 | CP11 | 2026-07-06 | **Casa Scorte viva (dec. 12)** — port dal mockup 07: `stock.ts` puro (sotto-scorta par/rimanenza, stato scadenza, suggerimenti; 10 test), hooks (inventario per categoria + accordion dec. 12.6, giro d'inventario su `stock_counts` append-only con rimanenza aggiornata, liste spesa SOLO via le 4 RPC dec. 3), `ScortePage` (stepper da guanti, filtro reparto, spesa libera senza avanzamento dec. 12.4). **Verificato live**: conteggio +/− → stock_counts, lista creata via RPC, voce libera, spunta via RPC. Validate verde (53 test) | *(vedi git log)* |
 | CP12 | 2026-07-06 | **Casa Regia viva (mockup 04)** + **icone PWA**: `useRespiro` (numeri reali dal DB, tono ok/warn/alarm), tile Temperature/Mansioni/Scadenze/Turni, dossier CSV del giorno (④ Dimostro — registri append-only), staff CRUD (①, invito password = follow-up FU-001), parametri HACCP sola lettura (dec. 6), anim `anim-breathe`. Icone PWA: `public/pwa-icon.svg` + manifest. Validate verde (53 test) · build+PWA ok | *(vedi git log)* |
 | post-CP12 | 2026-07-06 | Skill-system lessico elemento owner (pdc, regtemp, piantina, prova haccp…) + PREPARA_PROMPT/TESTING compilate (`62a8f98`) · Playwright smoke autenticato (`35b5926`) · HEALTH_CHECK in repo · prompt senior blindatura | `62a8f98`·`35b5926` |
+| inviti+onboarding | 2026-07-08 pom. | **FU-001 + FU-013 CHIUSI** (mandato owner: «prosegui»). **Inviti**: `features/auth/invites.ts` (♻️ logica legacy su schema nuovo, RLS `is_admin` per creare, email opzionale via function `send-invite-email` GIÀ attiva — zero deploy), pagina `/accept-invite` (2 percorsi: sessione dal link email → password; link manuale → signUp), claim automatico al primo login (SessionProvider), Regia → persona → «Accesso all'app» (invita/copia link/annulla, solo titolare), `verify:invite` live verde con pulizia. Kill-switch email: `VITE_INVITE_EMAIL_ENABLED=false`. **Onboarding «cantiere»** `/onboarding` (mockup 05 v2): rail collassabile con progresso+anteprima azienda, 7 passi navigabili con dipendenze, RIPETIBILE già compilato, gate d'avvio solo per azienda vuota, «Chiudi il cantiere» → `onboarding_completed`; passo 4 setpoint dal LOCK (`suggestedSetpointForType` in point-verdict, riusato da StrutturaSheet); passo 5 genera manutenzioni obbligatorie per punto + crea mansioni. **Modal v2**: 2 colonne+font maggiore su md (mobile invariato), scrollbar integrata per tutti i dialog, keypad/timbro `layout="stretto"`. Gate: 58 unit ✅ · **10/10 e2e** ✅ · verify:invite ✅. Profili frigo NON portati (numeri fuori LOCK → FU-005) | *(vedi git log)* |
 | blindatura | 2026-07-08 | **Sessione Meta senior → esecuzione completa**: matrice drift 9 aree + piano 3 fasi. **Fase 1** doc riallineati (HEALTH_CHECK, DB_SKILL §3, SCORTE_SKILL, REPARTI_SKILL cascata, SESSION_LOG, banner mappe, nota Docker, `docs/Archivio/` rimosso). **Fase 2**: smoke Playwright **9 test** (4 case + struttura + login) · utente test **dipendente** (`--dipendente`) + test ruoli (non vede Regia) · `verify:flows` esteso a 5 aree, `--write` con Scorte (conteggio, RPC lista, spunta, voce libera) e Calendario (anticipata+storno) · fix clock-skew timbro · component test KeypadSheet (3, verdetto dal LOCK) · `validate:full`. **Fase 3 (fetta owner)**: **Regia → StrutturaSheet** (crea/modifica reparti e pdc, setpoint proposto DAL LOCK) + **modifica staff** (ruolo, reparti, in servizio) — RLS provata live (probe insert/update/delete pulito). Gate: validate 56 unit ✅ · e2e 9/9 ✅. Decisioni owner: UI dai mockup (logica legacy sì, componenti no) | *(vedi git log)* |
 
 ## Decisioni prese in sessione (owner, 2026-07-06)
@@ -62,10 +63,10 @@
 3. ✅ Skill-system §14.5 (CP3; lessico owner post-CP12)
 4. ✅ Scaffold app (CP4)
 5. ✅ Migration gap audit-grade (CP5 + CP6 + CP9 — history 11/11)
-6. 🔄 Port logica + UI dai mockup — 4 case vive (CP7–CP12) + **struttura reparti/pdc/staff modificabile da Regia** (08-07); **manca**: onboarding 7 step, creazione mansioni, inviti (FU-001/FU-013) + cascata (FU-014)
-7. 🔄 Stabilizzazione + export audit-grade — blindatura 08-07 COMPLETA (doc + rete test: 9 e2e, 56 unit, verify:flows 5 aree); export = solo CSV giorno (PDF ws7)
+6. ✅ Port logica + UI dai mockup — 4 case vive (CP7–CP12) + struttura da Regia + **onboarding cantiere + inviti staff (08-07 pom.)**; fuori perimetro step: cascata (FU-014), profili frigo (FU-005)
+7. 🔄 Stabilizzazione + export audit-grade — blindatura 08-07 COMPLETA (doc + rete test: 10 e2e, 58 unit, verify:flows 5 aree, verify:invite); export = solo CSV giorno (PDF ws7)
 8. ⬜ Beta (Vercel nuovo progetto)
 
 ---
 
-**Ultimo aggiornamento**: 2026-07-08 · blindatura senior: righe post-CP12/blindatura, rotta allineata (2-5 ✅), decisioni owner 5-6 · → `docs/skill-system/sessioni/08-07-26/Report-senior-blindatura-fable.md`
+**Ultimo aggiornamento**: 2026-07-08 pom. · inviti+onboarding: FU-001/FU-013 chiusi, rotta 6 ✅ · → `docs/skill-system/sessioni/08-07-26/Report-esecuzione-inviti-onboarding.md`

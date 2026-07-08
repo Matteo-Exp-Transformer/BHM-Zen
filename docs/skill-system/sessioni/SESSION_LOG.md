@@ -6,6 +6,7 @@
 
 | Data | Profilo | Tema (one-liner) | Report |
 |------|---------|------------------|--------|
+| 08-07-26 (pom.) | Esecuzione | FU-001 inviti staff CHIUSO (invites.ts ♻️ legacy, /accept-invite, claim al login, Regia «Invita nell'app», verify:invite verde, kill-switch email) + FU-013 onboarding «cantiere» 7 passi (full-screen, ripetibile, gate azienda vuota) + modal v2 (2 colonne md, scrollbar integrata). 58 unit · 10 e2e. FU-016/017 aperti | `sessioni/08-07-26/Report-esecuzione-inviti-onboarding.md` |
 | 08-07-26 | Meta senior → Esecuzione | Blindatura COMPLETA: matrice drift + Fase 1 doc riallineati + Fase 2 rete test (9 e2e, utente dipendente, verify:flows 5 aree, component test) + Fase 3 fetta owner (Regia: reparti/pdc/staff modificabili, setpoint dal LOCK). FU-011 fatto, FU-012/013 in corso, FU-014/015 aperti | `sessioni/08-07-26/Report-senior-blindatura-fable.md` |
 | 06-07-26 | Esecuzione | Skill-system: lessico elemento owner + PREPARA_PROMPT + TESTING compilati + Playwright smoke | `sessioni/06-07-26/Report-skill-lessico-playwright.md` |
 | 06-07-26 | Esecuzione (Fable) | CP10–CP12: Calendario vivo (dec. 13) · Scorte viva (dec. 12) · Regia viva (respiro+dossier CSV+staff) + icone PWA | `sessioni/06-07-26/Report-sessione-cp10-12-fable.md` |

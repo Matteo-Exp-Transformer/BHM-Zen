@@ -16,10 +16,11 @@
 
 **BHM-Zen è una PWA React collegata al DB Supabase live** (stesso progetto di BHM-v.2).
 Le **4 case** del mockup 06 sono **navigabili e scrivono sul database** sotto RLS:
-Oggi (+ Calendario figlio), Reparti, Scorte, Regia. Auth solo-invito con utente test admin.
+Oggi (+ Calendario figlio), Reparti, Scorte, Regia. Auth solo-invito: **gli inviti staff
+funzionano** (08-07 pom.) e il titolare ha l'**onboarding «cantiere»** ripetibile su `/onboarding`.
 
-Non è ancora la beta pubblica: mancano inviti staff, onboarding completo, export PDF audit-grade,
-realtime e una passata sistematica di QA manuale su tutti i flussi.
+Non è ancora la beta pubblica: mancano cascata prodotti (FU-014), export PDF audit-grade,
+SMTP custom per le email (FU-017), realtime e una passata sistematica di QA manuale.
 
 ---
 
@@ -31,7 +32,9 @@ realtime e una passata sistematica di QA manuale su tutti i flussi.
 | **Calendario** | `/calendario` | tutti (stesse regole di Oggi) | Agenda verticale del mese: cose future, registro passato, **completamento anticipato** (conferma armata), storno. Temperature **non** spuntabili a distanza. |
 | **Reparti** | `/reparti` | tutti | Mappa schematica punti di conservazione, **tastierone temperatura**, auto-complete task temperatura, verdetto colore da `haccp-rules.ts`. |
 | **Scorte** | `/scorte` | tutti | Inventario per categoria, giro conteggi (`stock_counts`), liste spesa via **4 RPC** shopping, spunta voci. |
-| **Regia** | `/regia` | solo **admin / responsabile** | Respiro (numeri dal DB), dossier CSV del giorno, staff **aggiungi+modifica**, **Reparti & punti modificabili** (sheet Struttura, setpoint proposto dal LOCK — 08-07), parametri HACCP **sola lettura**. |
+| **Regia** | `/regia` | solo **admin / responsabile** | Respiro (numeri dal DB), dossier CSV del giorno, staff **aggiungi+modifica+INVITA nell'app** (solo titolare; email opzionale + link da copiare), **Reparti & punti modificabili** (sheet Struttura, setpoint proposto dal LOCK — 08-07), card **«La tua azienda»** → cantiere, parametri HACCP **sola lettura**. |
+| **Onboarding** | `/onboarding` | solo admin/responsabile | **Cantiere 7 passi** full-screen (mockup 05 v2): anagrafica, reparti, staff, punti (temp dal LOCK), attività+manutenzioni generate, inventario (recap), calendario. **Ripetibile** già compilato; obbligatorio solo per azienda vuota. |
+| **Accetta invito** | `/accept-invite?token=…` | anon / invitato | Imposta password (arrivo da email) o crea account (link condiviso); membership agganciata al primo accesso. |
 | **Login** | `/login` | anon | Email + password (no sign-up pubblico). |
 
 **Storage / dati:** tutto vive su **Supabase Postgres** remoto (project ref `hjteuounjwkadmsbsmdm`).
@@ -72,12 +75,12 @@ src/
 | Oggi + Reparti | ✅ Live, E2E lettura + scrittura | CP8–CP9 |
 | Calendario | ✅ Live, smoke browser CP10 | Nessuna tabella nuova |
 | Scorte | ✅ Live, smoke browser CP11 | RPC shopping già sul DB (CP5) |
-| Regia | ✅ Live parziale CP12+08-07 | Respiro + dossier CSV + staff (add/edit) + **struttura reparti/pdc modificabile**; **no onboarding 7 step** |
-| Inviti staff (password) | ❌ Non implementato | FU-001 residuo — si aggiunge persona in `staff`, non auth |
-| Onboarding titolare | ❌ Non implementato | Mockup 05 esiste, codice no |
+| Regia | ✅ Live CP12+08-07 | Respiro + dossier CSV + staff (add/edit/**invita**) + **struttura reparti/pdc modificabile** + card cantiere |
+| Inviti staff (password) | ✅ Fatto 08-07 pom. | `invites.ts` + `/accept-invite` + claim al login; `verify:invite` verde. Email: kill-switch `VITE_INVITE_EMAIL_ENABLED`; SMTP custom prima dell'uso reale (FU-017) |
+| Onboarding titolare | ✅ Fatto 08-07 pom. | `/onboarding` cantiere 7 passi, ripetibile pre-compilato, gate azienda vuota. Profili frigo = FU-005; cascata (passo 6) = FU-014 |
 | Realtime invalidate | ❌ Solo refetch on focus | FU-010, dec. 11 |
 | Export PDF audit-grade | ❌ Solo CSV dossier giorno | ws7 masterplan |
-| Playwright E2E | ✅ smoke read-only | `npm run test:e2e`: login + 4 case (Oggi/Calendario/Scorte/Regia) + ruoli (dipendente non vede Regia). Scritture via UI = da fare (FU-012) |
+| Playwright E2E | ✅ smoke read-only **10 test** | `npm run test:e2e`: login + 4 case + ruoli + struttura Regia + onboarding. Scritture via UI = da fare (FU-012) |
 | Multi-sede / IA / pagamenti | ❌ Fuori scope beta | |
 
 ### Database
@@ -107,14 +110,15 @@ Eseguire **in ordine** — tutti devono uscire **0**:
 ```bash
 npm run verify:setup          # CLI + env + legacy path
 npm run verify:supabase-env   # .env.local + ping REST
-npm run validate              # lint + tsc + 53 unit test
-npm run verify:flows          # E2E lettura RLS (Oggi + Reparti)
+npm run validate              # lint + tsc + 58 unit test
+npm run verify:flows          # E2E lettura RLS (5 aree)
 ```
 
 **Scrittura sul DB live** (solo se autorizzato — crea righe permanenti):
 
 ```bash
-npm run verify:flows:write    # temperatura, spunta, storno, timbro
+npm run verify:flows:write    # temperatura, spunta, storno, timbro, conteggio, lista RPC
+npm run verify:invite         # flusso inviti (si ripulisce da solo; email vera solo con INVITE_TEST_EMAIL)
 ```
 
 ### 4.3 Avvio app in locale
@@ -204,8 +208,11 @@ Usare come prima passata sistematica. Segnare ✅ / ❌ / ⚠️ con data e note
 | `verify:flows` esteso a Scorte + Calendario + Regia (lettura) e `--write` (RPC spesa, conteggio, anticipata+storno) | blindatura 08-07 | ✅ |
 | Component test KeypadSheet (verdetto SOLO dalla fonte-unica) | blindatura 08-07 | ✅ 3 test |
 | Probe RLS struttura (INSERT/UPDATE/DELETE departments + UPDATE pdc, admin, cleanup) | blindatura 08-07 | ✅ |
+| `npm run verify:invite` — token RLS admin, function attiva, validazione anonima, login invitato, claim membership, pulizia | 08-07 pom. | ✅ (email vera = passo owner, FU-017) |
+| Smoke Playwright onboarding (cantiere pre-compilato + temperatura dal LOCK) | 08-07 pom. | ✅ (tot **10 test**) |
+| `npm run validate` post inviti+onboarding | 08-07 pom. | ✅ 58 unit |
 
-**Gap QA:** gli smoke Playwright sono **read-only** (nessuna scrittura via UI: spunta, regtemp, timbro); component test assenti; `verify:flows` copre solo Oggi+Reparti. Estensioni = FU-012.
+**Gap QA:** gli smoke Playwright sono **read-only** (nessuna scrittura via UI: spunta, regtemp, timbro). Estensioni = FU-012. Email invito reale non ancora cliccata da inbox vera (FU-017).
 
 ---
 
@@ -214,11 +221,11 @@ Usare come prima passata sistematica. Segnare ✅ / ❌ / ⚠️ con data e note
 | Priorità | Cosa | Perché conta per chi testa |
 |----------|------|---------------------------|
 | **P0** | QA manuale checklist §5 su device reale (mobile + desktop) | Prima beta interna |
-| **P0** | Inviti staff con password (FU-001) | Oggi solo admin può entrare; staff aggiunto in Regia non ha login |
+| **P0** | Test email invito da inbox vera + SMTP custom (FU-017) | Il flusso è verde via API; manca il click reale dal messaggio |
 | **P1** | PNG PWA 192/512 maskable | Installazione iOS/Android affidabile |
-| **P1** | Estendere `verify:flows` a Scorte + Calendario + Regia (FU-012; smoke Playwright read-only già estesi 08-07) | E2E automatico oltre Oggi/Reparti |
+| **P1** | Cascata prodotti (FU-014, mockup 03) | Completa il passo 6 del cantiere |
 | **P1** | Realtime / invalidate on change (FU-010) | Due tab aperte non si allineano subito |
-| **P2** | Onboarding 7 step Regia (mockup 05) — **FU-013**: attiva anche la creazione reparti+pdc da UI (oggi ① IMPOSTO = solo staff-add) | Primo setup azienda nuova |
+| **P2** | Hardening RLS legacy (FU-016) + profili frigo nella fonte-unica (FU-005) | Sicurezza inviti · passo 4 coi profili |
 | **P2** | Export PDF audit-grade (ws7) | Oggi solo CSV dossier giorno |
 | **P2** | `haccp-rules.ts`: regole `pending` → validate con consulente | Verdetti su tipi punto incompleti |
 | **P3** | Code-split bundle (>500 kB warning build) | Performance, non funzionalità |
@@ -275,4 +282,4 @@ npx vitest run src/features/scorte
 
 ---
 
-**Ultimo aggiornamento:** 2026-07-08 · blindatura Fase 1: stato Playwright/smoke corretto (§3/§6/§7), utente test dipendente · → `docs/skill-system/sessioni/08-07-26/Report-senior-blindatura-fable.md`
+**Ultimo aggiornamento:** 2026-07-08 pom. · inviti staff + onboarding cantiere + modal v2 (§1/§2/§3/§4/§6/§7) · → `docs/skill-system/sessioni/08-07-26/Report-esecuzione-inviti-onboarding.md`

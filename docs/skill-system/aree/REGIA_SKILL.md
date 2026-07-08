@@ -61,16 +61,30 @@ Viva in `src/features/regia/`: **③ Controllo** (`useRespiro` — numeri dal DB
   (policy baseline, verificate live 08-07).
 - Parametri HACCP in sheet sola lettura (dec. 6).
 
-**Restano**: onboarding 7 step (FU-013), invito password (FU-001), creazione mansioni da Regia.
+**08-07 pomeriggio — ① IMPOSTO chiuso:**
+- **Inviti staff (FU-001)**: `features/auth/invites.ts` (token `invite_tokens`, RLS `is_admin`;
+  email opzionale via edge function `send-invite-email` già attiva) + `/accept-invite`
+  (password da link email o signUp da link condiviso) + **claim al primo login** in
+  SessionProvider. In Regia: tap sulla persona → «Accesso all'app» (invita / copia link /
+  annulla — solo titolare). Kill-switch email: `VITE_INVITE_EMAIL_ENABLED=false` (resta il
+  link manuale). Verifica: `npm run verify:invite`.
+- **Onboarding «cantiere»** (`/onboarding`, mockup 05 v2, FU-013): 7 passi full-screen con
+  rail collassabile e anteprima azienda; **ripetibile già compilato** (card «La tua azienda»
+  in Regia); gate d'avvio solo per azienda vuota (0 reparti + cantiere mai chiuso);
+  passo 5 = generatore manutenzioni obbligatorie per punto + creazione mansioni;
+  chiusura → `companies.onboarding_completed = true`.
+
+**Restano**: profili frigo nella fonte-unica (FU-005), cascata per il passo 6 (FU-014),
+SMTP custom email (FU-017), hardening RLS inviti (FU-016).
 
 ## 6. Questioni aperte
 
 | Questione | Decisione | Stato |
 |-----------|-----------|-------|
-| `onboarding_completed` server-side su companies | aggiungere | migration da fare |
-| RLS ruolo `responsabile` | verificare sul live | da verificare |
-| Forma esatta vat_number/ragione sociale | da progettare | aperta |
-| Onboarding dipendente | carta bianca a Fable (nessun mockup) | da disegnare |
+| `onboarding_completed` server-side su companies | esiste già in baseline — usato dal cantiere (08-07) | ✅ chiusa |
+| RLS ruolo `responsabile` | verificare sul live (nota: creare inviti = solo `is_admin`) | da verificare |
+| Forma esatta vat_number/ragione sociale | campi in passo 1 cantiere; validazioni fini da rifinire | in corso |
+| Onboarding dipendente | carta bianca a Fable (nessun mockup) — oggi: accept-invite → app | da disegnare |
 
 ## 7. LOCK di area
 
@@ -91,4 +105,4 @@ RULE  auth/inviti/ruoli = trigger DEEP (Bussola §6)
 
 ---
 
-**Ultimo aggiornamento**: 2026-07-08 · blindatura Fase 3 (parziale): StrutturaSheet (CRUD reparti/pdc, setpoint dal LOCK) + modifica staff · → `sessioni/08-07-26/Report-senior-blindatura-fable.md`
+**Ultimo aggiornamento**: 2026-07-08 pom. · ① IMPOSTO chiuso: inviti staff (FU-001) + onboarding cantiere (FU-013) · → `sessioni/08-07-26/Report-esecuzione-inviti-onboarding.md`
