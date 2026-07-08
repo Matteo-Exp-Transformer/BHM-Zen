@@ -54,6 +54,19 @@ test.describe('smoke autenticato', () => {
     await expect(sheet.getByText(/atteso .*°C/)).toBeVisible()
   })
 
+  test('Onboarding — il cantiere si riapre già compilato (owner 08-07)', async ({ page }) => {
+    await page.goto('/onboarding')
+    await expect(
+      page.getByRole('heading', { name: 'Chi sei, nero su bianco' }),
+    ).toBeVisible()
+    // ripetibile: l'anagrafica arriva già compilata dal DB
+    await expect(page.getByLabel(/Ragione sociale/)).toHaveValue(/.+/)
+    // passo 4: la temperatura è derivata dal LOCK, mai digitata
+    await page.getByRole('button', { name: 'Passo 4: Punti di conservazione' }).click()
+    await expect(page.getByRole('heading', { name: 'Dove tieni il freddo' })).toBeVisible()
+    await expect(page.getByText('derivata dalle regole HACCP', { exact: true })).toBeVisible()
+  })
+
   test('login — pagina solo-invito', async ({ browser }) => {
     const ctx = await browser.newContext()
     const page = await ctx.newPage()

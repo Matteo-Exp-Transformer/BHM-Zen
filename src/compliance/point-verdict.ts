@@ -50,6 +50,16 @@ export function formatC(valueC: number): string {
   return String(rounded).replace('.', ',').replace('-', '−')
 }
 
+/** Setpoint proposto DAL LOCK: centro del range, o il limite se il range è
+ *  aperto; null per i tipi senza regola (blast/ambient) — mai hardcoded.
+ *  Quando FU-005 porterà i profili, la proposta passerà dal profilo. */
+export function suggestedSetpointForType(pointType: string): number | null {
+  const rule = ruleForPointType(pointType)
+  if (!rule) return null
+  if (rule.minC !== null && rule.maxC !== null) return (rule.minC + rule.maxC) / 2
+  return rule.maxC ?? rule.minC
+}
+
 /** Il colore È il verdetto (§13.5) — parole brevi per chip e sussurro. */
 export const VERDICT_WORDS: Record<
   TemperatureVerdict,

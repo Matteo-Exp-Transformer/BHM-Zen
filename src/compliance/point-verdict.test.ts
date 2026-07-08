@@ -4,6 +4,7 @@ import {
   POINT_TYPE_LABELS,
   ruleForPointType,
   ruleRangeLabel,
+  suggestedSetpointForType,
   verdictForPoint,
 } from './point-verdict'
 
@@ -43,6 +44,21 @@ describe('verdictForPoint — il colore È il verdetto (§13.5)', () => {
   it('punti senza regola: nessun verdetto', () => {
     expect(verdictForPoint('blast', 3)).toBeNull()
     expect(verdictForPoint('ambient', 20)).toBeNull()
+  })
+})
+
+describe('suggestedSetpointForType — proposta derivata, mai hardcoded', () => {
+  it('è sempre dentro il range della regola (verdetto mai alarm)', () => {
+    for (const t of ['fridge', 'freezer']) {
+      const sp = suggestedSetpointForType(t)
+      expect(sp).not.toBeNull()
+      expect(verdictForPoint(t, sp!)).not.toBe('alarm')
+    }
+  })
+
+  it('tipi senza regola: nessuna proposta', () => {
+    expect(suggestedSetpointForType('blast')).toBeNull()
+    expect(suggestedSetpointForType('ambient')).toBeNull()
   })
 })
 

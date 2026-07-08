@@ -1,11 +1,14 @@
 import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
 import AppShell from '@/components/shell/AppShell'
 import LoginPage from '@/features/auth/LoginPage'
+import AcceptInvitePage from '@/features/auth/AcceptInvitePage'
 import OggiPage from '@/features/oggi/OggiPage'
 import CalendarioPage from '@/features/calendario/CalendarioPage'
 import RepartiPage from '@/features/reparti/RepartiPage'
 import ScortePage from '@/features/scorte/ScortePage'
 import RegiaPage from '@/features/regia/RegiaPage'
+import OnboardingPage from '@/features/onboarding/OnboardingPage'
+import { useOnboardingGate } from '@/features/onboarding/hooks'
 import { useSession } from '@/lib/auth/session'
 
 /** Attesa calma (§13.6): niente spinner ansiogeni per un check di sessione. */
@@ -33,20 +36,35 @@ function RequireDirector() {
   return <Outlet />
 }
 
+/** Azienda nuova (0 reparti, cantiere mai chiuso) → il titolare parte
+ *  dall'onboarding (mockup 05: obbligatorio). Un'azienda viva non si tocca. */
+function OnboardingGate() {
+  const { daFare } = useOnboardingGate()
+  if (daFare) return <Navigate to="/onboarding" replace />
+  return <Outlet />
+}
+
 export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/accept-invite" element={<AcceptInvitePage />} />
       <Route element={<RequireSession />}>
-        <Route element={<AppShell />}>
-          <Route index element={<OggiPage />} />
-          <Route path="calendario" element={<CalendarioPage />} />
-          <Route path="reparti" element={<RepartiPage />} />
-          <Route path="scorte" element={<ScortePage />} />
-          <Route element={<RequireDirector />}>
-            <Route path="regia" element={<RegiaPage />} />
+        {/* cantiere full-screen, fuori dalla shell (mockup 05) */}
+        <Route element={<RequireDirector />}>
+          <Route path="onboarding" element={<OnboardingPage />} />
+        </Route>
+        <Route element={<OnboardingGate />}>
+          <Route element={<AppShell />}>
+            <Route index element={<OggiPage />} />
+            <Route path="calendario" element={<CalendarioPage />} />
+            <Route path="reparti" element={<RepartiPage />} />
+            <Route path="scorte" element={<ScortePage />} />
+            <Route element={<RequireDirector />}>
+              <Route path="regia" element={<RegiaPage />} />
+            </Route>
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
-          <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Route>
     </Routes>

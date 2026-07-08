@@ -13,6 +13,7 @@ import {
   POINT_TYPE_LABELS,
   ruleForPointType,
   ruleRangeLabel,
+  suggestedSetpointForType,
   verdictForPoint,
 } from '@/compliance/point-verdict'
 import {
@@ -31,13 +32,8 @@ type Vista =
 
 const TIPI_PUNTO = Object.keys(POINT_TYPE_LABELS)
 
-/** Setpoint proposto DAL LOCK: centro del range, o il limite se aperto. */
-function setpointSuggerito(tipo: string): number | null {
-  const rule = ruleForPointType(tipo)
-  if (!rule) return null
-  if (rule.minC !== null && rule.maxC !== null) return (rule.minC + rule.maxC) / 2
-  return rule.maxC ?? rule.minC
-}
+// setpoint proposto dal LOCK: ora in point-verdict.suggestedSetpointForType
+const setpointSuggerito = suggestedSetpointForType
 
 const inputCls =
   'rounded-xl bg-surface-2 px-3.5 py-2.5 text-[14px] shadow-[inset_0_0_0_1px_var(--hairline)] outline-none placeholder:text-ink-mute focus:shadow-[inset_0_0_0_2px_var(--accent)]'
@@ -138,7 +134,7 @@ export function StrutturaSheet({
       {vista.kind === 'lista' && (
         <>
           <h3 className="text-lg font-bold tracking-tight">Reparti & punti</h3>
-          <div className="flex max-h-[52vh] flex-col gap-4 overflow-y-auto">
+          <div className="flex max-h-[52vh] flex-col gap-4 overflow-y-auto md:col-span-2 md:grid md:max-h-[60vh] md:grid-cols-2 md:items-start md:gap-x-7">
             <div className="flex flex-col gap-2">
               <p className="text-[12px] font-bold uppercase tracking-[0.1em] text-ink-mute">
                 Reparti
@@ -172,7 +168,7 @@ export function StrutturaSheet({
               </button>
             </div>
 
-            <div className="flex flex-col gap-2 border-t border-hairline pt-3">
+            <div className="flex flex-col gap-2 border-t border-hairline pt-3 md:border-t-0 md:pt-0">
               <p className="text-[12px] font-bold uppercase tracking-[0.1em] text-ink-mute">
                 Punti di conservazione
               </p>

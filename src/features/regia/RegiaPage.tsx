@@ -4,6 +4,7 @@
  * Ogni numero è reale (dec. 2); parametri HACCP in SOLA lettura (dec. 6).
  */
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useSession } from '@/lib/auth/session'
 import { useToast } from '@/components/ui/Toast'
 import { Sheet } from '@/components/ui/Sheet'
@@ -32,6 +33,13 @@ import {
   type PersonaStaff,
 } from './hooks'
 import { StrutturaSheet } from './StrutturaSheet'
+import {
+  inviteEmailAbilitate,
+  linkInvito,
+  useAnnullaInvito,
+  useCreaInvito,
+  useInvitiPendenti,
+} from '@/features/auth/invites'
 
 const RESPIRO_UI = {
   ok: {
@@ -67,7 +75,8 @@ const RUOLO_LABEL: Record<string, string> = {
 }
 
 export default function RegiaPage() {
-  const { displayName } = useSession()
+  const navigate = useNavigate()
+  const { displayName, role } = useSession()
   const { respiro, isLoading } = useRespiro()
   const { persone } = useStaffRegia()
   const aggiungi = useAggiungiPersona()
@@ -89,6 +98,41 @@ export default function RegiaPage() {
   const [editRuolo, setEditRuolo] = useState('dipendente')
   const [editReparti, setEditReparti] = useState<string[]>([])
   const [editAttivo, setEditAttivo] = useState(true)
+
+  // inviti (FU-001): token + email opzionale via edge function, RLS is_admin
+  const { inviti } = useInvitiPendenti()
+  const creaInvitoM = useCreaInvito()
+  const annullaInvito = useAnnullaInvito()
+
+  const copiaLink = async (token: string) => {
+    try {
+      await navigator.clipboard.writeText(linkInvito(token))
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  const invita = () => {
+    const email = editEmail.trim()
+    if (!personaSel || !email) return
+    creaInvitoM.mutate(
+      { email, ruolo: editRuolo, staffId: personaSel.id },
+      {
+        onSuccess: async ({ invito, emailInviata }) => {
+          const copiato = await copiaLink(invito.token)
+          show(
+            emailInviata
+              ? 'Invito inviato via email.'
+              : copiato
+                ? 'Invito creato — link copiato, condividilo tu.'
+                : 'Invito creato — copia il link qui sotto.',
+          )
+        },
+        onError: () => show('Invito non creato — riprova.'),
+      },
+    )
+  }
 
   const apriModifica = (p: PersonaStaff) => {
     setPersonaSel(p)
@@ -335,6 +379,21 @@ export default function RegiaPage() {
               </span>
             </span>
           </button>
+          <button
+            type="button"
+            onClick={() => navigate('/onboarding')}
+            className="flex items-center gap-3 rounded-2xl bg-surface p-4 text-left shadow-card transition-transform active:scale-[0.985]"
+          >
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[11px] bg-surface-2 text-ink-soft shadow-[inset_0_0_0_1px_var(--hairline)]">
+              <FileIcon className="h-5 w-5" />
+            </span>
+            <span>
+              <span className="block text-[14.5px] font-bold">La tua azienda</span>
+              <span className="mt-0.5 block text-[12.5px] text-ink-mute">
+                il cantiere: rivedi tutto, a schermo intero
+              </span>
+            </span>
+          </button>
         </div>
       </section>
 
@@ -425,6 +484,79 @@ export default function RegiaPage() {
                 </button>
               ))}
             </div>
+            {/* Accesso all'app (FU-001): invito con link, email opzionale */}
+            <div className="flex flex-col gap-2 border-t border-hairline pt-3">
+              <p className="text-[12px] font-bold uppercase tracking-[0.1em] text-ink-mute">
+                Accesso all'app
+              </p>
+              {(() => {
+                if (role !== 'admin')
+                  return (
+                    <p className="text-[12.5px] leading-snug text-ink-mute">
+                      Gli inviti li manda il titolare.
+                    </p>
+                  )
+                const email = editEmail.trim().toLowerCase()
+                if (!email)
+                  return (
+                    <p className="text-[12.5px] leading-snug text-ink-mute">
+                      Scrivi un'email qui sopra per invitare questa persona.
+                    </p>
+                  )
+                const invitoPersona = inviti.find(i => i.email === email)
+                if (invitoPersona)
+                  return (
+                    <div className="flex flex-col gap-2">
+                      <p className="text-[12.5px] leading-snug text-ink-soft">
+                        Invito attivo · scade il{' '}
+                        {new Date(invitoPersona.expires_at).toLocaleDateString('it-IT')}
+                      </p>
+                      <div className="flex gap-1.5">
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            const ok = await copiaLink(invitoPersona.token)
+                            show(ok ? 'Link invito copiato.' : 'Copia non riuscita — riprova.')
+                          }}
+                          className="flex-1 rounded-full bg-surface-2 px-2 py-2 text-[12.5px] font-bold text-ink-soft shadow-[inset_0_0_0_1px_var(--hairline)]"
+                        >
+                          Copia link
+                        </button>
+                        <button
+                          type="button"
+                          disabled={annullaInvito.isPending}
+                          onClick={() =>
+                            annullaInvito.mutate(invitoPersona.id, {
+                              onSuccess: () => show('Invito annullato.'),
+                              onError: () => show('Non annullato — riprova.'),
+                            })
+                          }
+                          className="flex-1 rounded-full bg-surface-2 px-2 py-2 text-[12.5px] font-bold text-bad-ink shadow-[inset_0_0_0_1px_var(--hairline)] disabled:opacity-50"
+                        >
+                          Annulla invito
+                        </button>
+                      </div>
+                    </div>
+                  )
+                return (
+                  <div className="flex flex-col gap-1.5">
+                    <button
+                      type="button"
+                      disabled={creaInvitoM.isPending}
+                      onClick={invita}
+                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-surface-2 px-4 py-2.5 text-[13.5px] font-bold text-ink shadow-[inset_0_0_0_1px_var(--hairline)] transition-transform active:scale-[0.975] disabled:opacity-50"
+                    >
+                      {creaInvitoM.isPending ? 'Un momento…' : "Invita nell'app"}
+                    </button>
+                    <p className="text-[11.5px] leading-snug text-ink-mute">
+                      {inviteEmailAbilitate()
+                        ? 'Riceverà un\'email con il link; il link resta anche qui da copiare.'
+                        : 'Le email sono spente: il link verrà copiato, condividilo tu.'}
+                    </p>
+                  </div>
+                )
+              })()}
+            </div>
             <button
               type="button"
               disabled={!editNome.trim() || modifica.isPending}
@@ -474,7 +606,7 @@ export default function RegiaPage() {
             </button>
           ))}
         </div>
-        <div className="flex flex-col gap-2 border-t border-hairline pt-3">
+        <div className="flex flex-col gap-2 border-t border-hairline pt-3 md:border-t-0 md:pt-0">
           <p className="text-[12px] font-bold uppercase tracking-[0.1em] text-ink-mute">
             Aggiungi una persona
           </p>
@@ -518,8 +650,8 @@ export default function RegiaPage() {
             Aggiungi allo staff
           </button>
           <p className="text-[11.5px] leading-snug text-ink-mute">
-            L'accesso all'app (invito con password) arriva con il sistema inviti —
-            intanto la persona esiste nei registri e nelle assegnazioni.
+            Per dare l'accesso all'app: tocca la persona e usa «Invita
+            nell'app» — le serve solo un'email.
           </p>
         </div>
           </>
@@ -540,7 +672,7 @@ export default function RegiaPage() {
           Le soglie vivono nel codice sotto controllo di qualità (change-control a
           3 livelli): qui le vedi, non si modificano dall'app.
         </p>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 md:col-span-2 md:grid md:grid-cols-2">
           {TEMPERATURE_RULES.map(r => (
             <div key={r.id} className="flex items-center gap-3 rounded-xl bg-surface-2 p-3">
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[10px] bg-surface text-ink-soft shadow-card">
