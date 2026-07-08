@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase/client'
+import { claimInvitoPendente } from '@/features/auth/invites'
 import { SessionContext, type Role, type SessionContextValue } from './session'
 
 async function fetchMembership(userId: string) {
@@ -48,9 +49,20 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const userId = session?.user.id
+  const userEmail = session?.user.email
   const membership = useQuery({
     queryKey: ['membership', userId],
-    queryFn: () => fetchMembership(userId!),
+    queryFn: async () => {
+      const m = await fetchMembership(userId!)
+      if (m) return m
+      // sessione senza membership: se c'è un invito pendente per questa
+      // email lo agganciamo qui (FU-001) — copre il primo login dopo la
+      // conferma email e l'arrivo dal link d'invito
+      if (userEmail && (await claimInvitoPendente(userId!, userEmail))) {
+        return fetchMembership(userId!)
+      }
+      return m
+    },
     enabled: !!userId,
     staleTime: 5 * 60_000,
   })
