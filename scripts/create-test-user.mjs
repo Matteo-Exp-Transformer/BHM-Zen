@@ -2,18 +2,22 @@
 /**
  * Crea (o ripara) l'utente di test E2E — autorizzato dall'owner (2026-07-06):
  * credenziali TEST_USER_* in .env.local, ruolo admin sulla prima company.
+ * Con `--dipendente` usa TEST_USER_DIPENDENTE_* e ruolo `dipendente` (test ruoli/RLS, 08-07).
  * Idempotente: riusa l'utente se esiste già, aggiorna la membership se serve.
  */
 import { loadEnvLocal } from './lib/env.mjs'
 
 const env = loadEnvLocal()
+const isDipendente = process.argv.includes('--dipendente')
+const role = isDipendente ? 'dipendente' : 'admin'
 const url = env.VITE_SUPABASE_URL
 const service = env.SUPABASE_SERVICE_KEY
-const email = env.TEST_USER_EMAIL
-const password = env.TEST_USER_PASSWORD
+const email = isDipendente ? env.TEST_USER_DIPENDENTE_EMAIL : env.TEST_USER_EMAIL
+const password = isDipendente ? env.TEST_USER_DIPENDENTE_PASSWORD : env.TEST_USER_PASSWORD
 
 if (!url || !service || !email || !password) {
-  console.error('❌ Servono VITE_SUPABASE_URL, SUPABASE_SERVICE_KEY, TEST_USER_EMAIL, TEST_USER_PASSWORD in .env.local')
+  const prefix = isDipendente ? 'TEST_USER_DIPENDENTE' : 'TEST_USER'
+  console.error(`❌ Servono VITE_SUPABASE_URL, SUPABASE_SERVICE_KEY, ${prefix}_EMAIL, ${prefix}_PASSWORD in .env.local`)
   process.exit(1)
 }
 
@@ -75,16 +79,16 @@ const existing = await api(
 if (existing.json?.length) {
   await api(`/rest/v1/company_members?id=eq.${existing.json[0].id}`, {
     method: 'PATCH',
-    body: JSON.stringify({ role: 'admin', is_active: true }),
+    body: JSON.stringify({ role, is_active: true }),
   })
-  console.log(`✅ Membership aggiornata: admin @ ${company.name}`)
+  console.log(`✅ Membership aggiornata: ${role} @ ${company.name}`)
 } else {
   const ins = await api('/rest/v1/company_members', {
     method: 'POST',
     body: JSON.stringify({
       user_id: userId,
       company_id: company.id,
-      role: 'admin',
+      role,
       is_active: true,
     }),
   })
@@ -92,7 +96,7 @@ if (existing.json?.length) {
     console.error('❌ Insert membership fallita:', ins.status, ins.json)
     process.exit(1)
   }
-  console.log(`✅ Membership creata: admin @ ${company.name}`)
+  console.log(`✅ Membership creata: ${role} @ ${company.name}`)
 }
 
 console.log('🎉 Utente test pronto per il login')

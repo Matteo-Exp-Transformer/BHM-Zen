@@ -36,3 +36,18 @@ export function requireTestUser() {
   }
   return testUser
 }
+
+export const dipendenteUser = {
+  email: process.env.TEST_USER_DIPENDENTE_EMAIL ?? local.TEST_USER_DIPENDENTE_EMAIL ?? '',
+  password:
+    process.env.TEST_USER_DIPENDENTE_PASSWORD ?? local.TEST_USER_DIPENDENTE_PASSWORD ?? '',
+}
+
+export function requireDipendenteUser() {
+  if (!dipendenteUser.email || !dipendenteUser.password) {
+    throw new Error(
+      'E2E ruoli: servono TEST_USER_DIPENDENTE_* in .env.local — crea l’utente con: node scripts/create-test-user.mjs --dipendente',
+    )
+  }
+  return dipendenteUser
+}

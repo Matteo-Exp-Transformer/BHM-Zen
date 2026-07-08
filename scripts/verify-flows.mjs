@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * Verifica E2E dei flussi app (Oggi + Reparti) con l'UTENTE TEST — decisione
- * owner n.4 (2026-07-06): client ANON + login reale → RLS attiva, stesse
- * query dei hooks. Output: solo conteggi/strutture, niente dati personali.
- * Uso: npm run verify:flows (creato in CP8 per il port FU-002).
+ * Verifica E2E dei flussi app (Oggi + Reparti + Scorte + Calendario + Regia)
+ * con l'UTENTE TEST — decisione owner n.4 (2026-07-06): client ANON + login
+ * reale → RLS attiva, stesse query dei hooks. Output: solo conteggi/strutture.
+ * Uso: npm run verify:flows (CP8) · esteso a Scorte/Calendario/Regia (blindatura 08-07, FU-012).
  */
 import { createClient } from '@supabase/supabase-js'
 import { loadEnvLocal } from './lib/env.mjs'
@@ -117,6 +117,50 @@ if (letture.data.length > 0) {
   console.log('ℹ️ nessuna lettura oggi: test append-only saltato')
 }
 
+// --- Scorte (CP11): stesse query di useInventario / useListeSpesa ---
+const [prodotti, liste] = await Promise.all([
+  supabase.from('products')
+    .select('id, name, quantity, par_level, unit, expiry_date, status, department_id, category:product_categories(name)')
+    .eq('company_id', companyId).in('status', ['active', 'expired']).order('name'),
+  supabase.rpc('get_shopping_lists_with_stats', { p_company_id: companyId }),
+])
+for (const [nome, r] of [['prodotti vivi (inventario)', prodotti], ['liste spesa (RPC stats)', liste]]) {
+  if (r.error) { console.error(`❌ ${nome}:`, r.error.message); fallito = true }
+  else console.log(`✅ ${nome}: ${r.data.length} righe`)
+}
+
+// --- Calendario (CP10): stesse tabelle di useCalendario, finestra mese ---
+const meseEnd = new Date(); meseEnd.setMonth(meseEnd.getMonth() + 1); meseEnd.setHours(23, 59, 59, 999)
+const [mtMese, tcMese] = await Promise.all([
+  supabase.from('maintenance_tasks')
+    .select('id, next_due, status')
+    .eq('company_id', companyId)
+    .in('status', ['scheduled', 'overdue', 'in_progress']).lte('next_due', meseEnd.toISOString()),
+  supabase.from('task_completions')
+    .select('id, reverses_completion_id')
+    .eq('company_id', companyId).gte('period_end', startISO),
+])
+for (const [nome, r] of [['occorrenze manutenzioni (mese)', mtMese], ['registro mansioni (da oggi)', tcMese]]) {
+  if (r.error) { console.error(`❌ ${nome}:`, r.error.message); fallito = true }
+  else console.log(`✅ ${nome}: ${r.data.length} righe`)
+}
+
+// --- Regia (CP12): campioni delle query di useRespiro / useStaffRegia ---
+const tra7gg = new Date(); tra7gg.setDate(tra7gg.getDate() + 7)
+// RULE timezone: chiave-giorno LOCALE, mai toISOString() su una data di calendario
+const dayKey = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+const [staffAttivo, repartiAttivi, scadenze7] = await Promise.all([
+  supabase.from('staff').select('id').eq('company_id', companyId).eq('status', 'active'),
+  supabase.from('departments').select('id').eq('company_id', companyId).eq('is_active', true),
+  supabase.from('products').select('id').eq('company_id', companyId).eq('status', 'active')
+    .not('expiry_date', 'is', null).lte('expiry_date', dayKey(tra7gg)),
+])
+for (const [nome, r] of [['staff attivo', staffAttivo], ['reparti attivi', repartiAttivi], ['scadenze 7gg', scadenze7]]) {
+  if (r.error) { console.error(`❌ ${nome}:`, r.error.message); fallito = true }
+  else console.log(`✅ ${nome}: ${r.data.length} righe`)
+}
+if (fallito) process.exit(1)
+
 // ============================================================================
 // SCRITTURA (FU-009, autorizzata owner 2026-07-06): stesse insert dei hooks.
 // Lascia righe PERMANENTI nei registri append-only (by design): attivare
@@ -229,12 +273,14 @@ if (process.argv.includes('--write')) {
     if (!sparita) process.exitCode = 1
   }
 
-  // 5) timbro di fine turno (stessa insert di useTimbra)
+  // 5) timbro di fine turno (stessa insert di useTimbra). opened_at retrodatato
+  // di 1': closed_at è il now() del SERVER e il check period esige closed>=opened
+  // (lo skew di clock client/server ha già fatto fallire un run — 08-07).
   const { data: seal, error: sealErr } = await supabase
     .from('shift_seals')
     .insert({
       company_id: companyId, user_id: auth.user.id,
-      opened_at: nowISO(), attestation: true, notes: NOTA,
+      opened_at: new Date(Date.now() - 60_000).toISOString(), attestation: true, notes: NOTA,
     })
     .select('id, closed_at').single()
   if (sealErr) { console.error('❌ timbro:', sealErr.message); process.exit(1) }
@@ -248,6 +294,71 @@ if (process.argv.includes('--write')) {
     ? '✅ append-only regge anche su shift_seals: UPDATE respinto'
     : '⚠️ ATTENZIONE: UPDATE su shift_seals NON respinto!')
   if (!sealRespinto) process.exitCode = 1
+
+  // 7) Scorte (CP11, FU-012): giro conteggio + lista spesa via RPC (dec. 3/12)
+  const prod = prodotti.data?.[0]
+  if (!prod) {
+    console.log('ℹ️ nessun prodotto vivo: flusso Scorte saltato')
+  } else {
+    // conteggio = stessa rimanenza attuale → riga-prova del giro senza alterare lo stock
+    const qta = prod.quantity ?? 0
+    const { error: scErr } = await supabase.from('stock_counts').insert({
+      company_id: companyId, product_id: prod.id, quantity: qta,
+      counted_by: auth.user.id, expiry_confirmed: null,
+    })
+    if (scErr) { console.error('❌ conteggio stock_counts:', scErr.message); process.exit(1) }
+    const { error: puErr } = await supabase.from('products')
+      .update({ quantity: qta }).eq('id', prod.id).eq('company_id', companyId)
+    if (puErr) { console.error('❌ update rimanenza:', puErr.message); process.exit(1) }
+    console.log(`✅ giro conteggio registrato («${prod.name}», rimanenza invariata)`)
+
+    const nomeLista = `E2E verify:flows ${nowISO()}`
+    const { error: clErr } = await supabase.rpc('create_shopping_list_with_items', {
+      p_company_id: companyId, p_list_name: nomeLista,
+      p_items: [{ product_id: prod.id, product_name: prod.name, category_name: 'E2E', quantity: 1, unit: prod.unit }],
+    })
+    if (clErr) { console.error('❌ RPC create_shopping_list_with_items:', clErr.message); process.exit(1) }
+    const { data: listeDopo, error: lsErr } = await supabase.rpc('get_shopping_lists_with_stats', { p_company_id: companyId })
+    if (lsErr) { console.error('❌ RPC get stats:', lsErr.message); process.exit(1) }
+    const lista = listeDopo.find(l => l.name === nomeLista)
+    if (!lista) { console.error('❌ lista creata non trovata nelle stats'); process.exit(1) }
+    console.log(`✅ lista spesa creata via RPC (${lista.total_items} voce/i)`)
+
+    const { data: righe, error: riErr } = await supabase.from('shopping_list_items')
+      .select('id, is_checked').eq('shopping_list_id', lista.id)
+    if (riErr || !righe?.length) { console.error('❌ righe lista:', riErr?.message ?? 'vuota'); process.exit(1) }
+    const { error: tgErr } = await supabase.rpc('toggle_shopping_list_item', {
+      p_item_id: righe[0].id, p_checked: true,
+    })
+    if (tgErr) { console.error('❌ RPC toggle item:', tgErr.message); process.exit(1) }
+    const { error: vlErr } = await supabase.from('shopping_list_items').insert({
+      shopping_list_id: lista.id, product_name: NOTA, category_name: 'Aggiunti da te',
+    })
+    if (vlErr) { console.error('❌ voce libera:', vlErr.message); process.exit(1) }
+    console.log('✅ spunta via RPC + voce libera ok (spesa senza completamento, dec. 12.4)')
+  }
+
+  // 8) Calendario (CP10, FU-012): spunta ANTICIPATA di domani + storno (dec. 13)
+  if (!mansione) {
+    console.log('ℹ️ nessuna mansione: spunta anticipata saltata')
+  } else {
+    const domaniStart = new Date(start); domaniStart.setDate(domaniStart.getDate() + 1)
+    const domaniEnd = new Date(end); domaniEnd.setDate(domaniEnd.getDate() + 1)
+    const { data: antRow, error: antErr } = await supabase.from('task_completions').insert({
+      company_id: companyId, task_id: mansione.id,
+      completed_by: auth.user.id, completed_by_name: 'Utente test E2E',
+      period_start: domaniStart.toISOString(), period_end: domaniEnd.toISOString(), notes: NOTA,
+    }).select('id').single()
+    if (antErr) { console.error('❌ spunta anticipata:', antErr.message); process.exit(1) }
+    const { error: antStornoErr } = await supabase.from('task_completions').insert({
+      company_id: companyId, task_id: mansione.id,
+      completed_by: auth.user.id, completed_by_name: 'Utente test E2E',
+      period_start: domaniStart.toISOString(), period_end: domaniEnd.toISOString(), notes: NOTA,
+      reverses_completion_id: antRow.id,
+    })
+    if (antStornoErr) { console.error('❌ storno anticipata:', antStornoErr.message); process.exit(1) }
+    console.log('✅ Calendario: spunta anticipata (domani) + storno — occorrenza torna esigibile')
+  }
 }
 
 await supabase.auth.signOut()

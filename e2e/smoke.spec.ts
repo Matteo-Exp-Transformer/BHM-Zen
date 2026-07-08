@@ -22,6 +22,38 @@ test.describe('smoke autenticato', () => {
     await expect(page).toHaveURL(/\/regia/)
   })
 
+  test('Calendario — agenda del mese', async ({ page }) => {
+    await page.goto('/calendario')
+    await expect(page.getByRole('heading', { name: 'Calendario' })).toBeVisible()
+  })
+
+  test('Scorte — inventario caricato', async ({ page }) => {
+    await page.goto('/scorte')
+    await expect(page.getByRole('heading', { name: 'Scorte' })).toBeVisible()
+  })
+
+  test('Regia — dossier e parametri (admin)', async ({ page }) => {
+    await page.goto('/regia')
+    await expect(
+      page.getByRole('heading', { name: 'Il dossier del controllo' }),
+    ).toBeVisible()
+    await expect(
+      page.getByRole('button', { name: /Parametri HACCP/ }),
+    ).toBeVisible()
+  })
+
+  test('Regia — struttura: reparti e punti modificabili (owner 08-07)', async ({ page }) => {
+    await page.goto('/regia')
+    await page.getByRole('button', { name: /Reparti & punti/ }).click()
+    await expect(page.getByText('Punti di conservazione')).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Nuovo reparto' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Nuovo punto' })).toBeVisible()
+    // il form del punto parla la lingua della fonte-unica (range atteso dal LOCK)
+    await page.getByRole('button', { name: 'Nuovo punto' }).click()
+    const sheet = page.getByRole('dialog', { name: 'Reparti e punti di conservazione' })
+    await expect(sheet.getByText(/atteso .*°C/)).toBeVisible()
+  })
+
   test('login — pagina solo-invito', async ({ browser }) => {
     const ctx = await browser.newContext()
     const page = await ctx.newPage()

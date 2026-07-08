@@ -16,6 +16,7 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:report": "playwright show-report",
     "validate": "npm run lint && npm run type-check && npm run test",
+    "validate:full": "npm run validate && npm run test:e2e",
     "verify:setup": "node scripts/verify-setup.mjs",
     "verify:supabase-cli": "node scripts/verify-supabase-cli.mjs",
     "verify:supabase-env": "node scripts/verify-supabase-env.mjs",
