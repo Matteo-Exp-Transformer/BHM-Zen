@@ -236,6 +236,36 @@
   }
 }
 
+/* ============================================================================
+   Scrollbar dei modal (owner 08-07): sottile, senza binario, integrata nella
+   superficie — mai la barra di sistema attaccata al bordo del pannello.
+   Vale per ogni area scrollabile dentro un dialog, presente e futura.
+   ========================================================================== */
+[role='dialog'],
+[role='dialog'] * {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--ink) 22%, transparent) transparent;
+}
+[role='dialog'] ::-webkit-scrollbar,
+[role='dialog']::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+[role='dialog'] ::-webkit-scrollbar-track,
+[role='dialog']::-webkit-scrollbar-track {
+  background: transparent;
+  margin-block: 10px;
+}
+[role='dialog'] ::-webkit-scrollbar-thumb,
+[role='dialog']::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 22%, transparent);
+}
+[role='dialog'] ::-webkit-scrollbar-thumb:hover,
+[role='dialog']::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--ink) 36%, transparent);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .anim-land,
   .anim-pop,

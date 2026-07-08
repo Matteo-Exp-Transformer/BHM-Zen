@@ -425,6 +425,7 @@ export default function OggiPage() {
         open={sealSheetOpen}
         onClose={() => setSealSheetOpen(false)}
         label="Timbra fine turno"
+        layout="stretto"
       >
         <p className="text-center text-[17px] font-bold tracking-tight">
           Timbra fine turno

@@ -103,7 +103,12 @@ export function KeypadSheet({
   const verdictTone = landing && landing !== 'saving' ? DISPLAY_TONES[landing] : null
 
   return (
-    <Sheet open={open} onClose={onClose} label={`Registra temperatura ${punto.name}`}>
+    <Sheet
+      open={open}
+      onClose={onClose}
+      label={`Registra temperatura ${punto.name}`}
+      layout="stretto"
+    >
       <p className="flex items-center justify-center gap-1.5 text-[13px] font-semibold text-ink-mute">
         <ThermoIcon className="h-[15px] w-[15px]" />
         {punto.departmentName ? `${punto.departmentName} · ` : ''}
