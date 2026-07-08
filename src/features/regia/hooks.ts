@@ -223,6 +223,198 @@ export function useAggiungiPersona() {
   })
 }
 
+/** Modifica una persona esistente (FU-013 parziale, owner 08-07: «da Regia
+ *  devo poter modificare staff»). L'accesso auth resta FU-001 (inviti). */
+export function useModificaPersona() {
+  const { companyId } = useSession()
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async ({
+      id,
+      nome,
+      ruolo,
+      email,
+      reparti,
+      attivo,
+    }: {
+      id: string
+      nome: string
+      ruolo: string
+      email?: string
+      reparti: string[]
+      attivo: boolean
+    }) => {
+      if (!companyId) throw new Error('Sessione non pronta')
+      const { error } = await supabase
+        .from('staff')
+        .update({
+          name: nome,
+          role: ruolo,
+          category: ruolo,
+          email: email || null,
+          department_assignments: reparti,
+          status: attivo ? 'active' : 'inactive',
+        })
+        .eq('id', id)
+        .eq('company_id', companyId)
+      if (error) throw error
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['regia-staff', companyId] })
+      void queryClient.invalidateQueries({ queryKey: ['regia-respiro', companyId] })
+    },
+    onError: err => logger.error('modifica persona fallita', err),
+  })
+}
+
+/* -------------------------------------------------------------------------- */
+/* ① Imposto — struttura: reparti e pdc (owner 08-07: modifica da Regia).      */
+/* RLS: has_management_role (policy baseline). UI dai mockup; la logica dei    */
+/* form legacy (tipo → temperatura) passa dalla fonte-unica, mai hardcoded.    */
+/* -------------------------------------------------------------------------- */
+
+export interface RepartoRegia {
+  id: string
+  nome: string
+  attivo: boolean
+}
+
+export function useRepartiRegia() {
+  const { companyId } = useSession()
+  const query = useQuery({
+    queryKey: ['regia-reparti', companyId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('departments')
+        .select('id, name, is_active')
+        .eq('company_id', companyId!)
+        .order('name')
+      if (error) throw error
+      return data.map((d): RepartoRegia => ({ id: d.id, nome: d.name, attivo: d.is_active }))
+    },
+    enabled: !!companyId,
+  })
+  return { reparti: query.data ?? [], isLoading: query.isLoading }
+}
+
+function useInvalidateStruttura() {
+  const { companyId } = useSession()
+  const queryClient = useQueryClient()
+  return () => {
+    void queryClient.invalidateQueries({ queryKey: ['regia-reparti', companyId] })
+    void queryClient.invalidateQueries({ queryKey: ['regia-punti', companyId] })
+    void queryClient.invalidateQueries({ queryKey: ['regia-respiro', companyId] })
+    void queryClient.invalidateQueries({ queryKey: ['regia-staff', companyId] })
+  }
+}
+
+/** Crea o rinomina/attiva un reparto (id assente = nuovo). */
+export function useSalvaReparto() {
+  const { companyId } = useSession()
+  const invalidate = useInvalidateStruttura()
+  return useMutation({
+    mutationFn: async ({ id, nome, attivo }: { id?: string; nome: string; attivo?: boolean }) => {
+      if (!companyId) throw new Error('Sessione non pronta')
+      if (id) {
+        const { error } = await supabase
+          .from('departments')
+          .update({ name: nome, is_active: attivo ?? true })
+          .eq('id', id)
+          .eq('company_id', companyId)
+        if (error) throw error
+      } else {
+        const { error } = await supabase
+          .from('departments')
+          .insert({ company_id: companyId, name: nome })
+        if (error) throw error
+      }
+    },
+    onSuccess: invalidate,
+    onError: err => logger.error('salvataggio reparto fallito', err),
+  })
+}
+
+export interface PuntoRegia {
+  id: string
+  nome: string
+  tipo: string
+  setpoint: number
+  departmentId: string | null
+  departmentName: string | null
+  status: string
+}
+
+export function usePuntiRegia() {
+  const { companyId } = useSession()
+  const query = useQuery({
+    queryKey: ['regia-punti', companyId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('conservation_points')
+        .select('id, name, type, setpoint_temp, department_id, status, department:departments(name)')
+        .eq('company_id', companyId!)
+        .order('name')
+      if (error) throw error
+      return data.map(
+        (p): PuntoRegia => ({
+          id: p.id,
+          nome: p.name,
+          tipo: p.type,
+          setpoint: p.setpoint_temp,
+          departmentId: p.department_id,
+          departmentName: p.department?.name ?? null,
+          status: p.status,
+        }),
+      )
+    },
+    enabled: !!companyId,
+  })
+  return { punti: query.data ?? [], isLoading: query.isLoading }
+}
+
+/** Crea o modifica un pdc (id assente = nuovo). Le letture restano intoccabili
+ *  (append-only): qui si cambia solo l'anagrafica del punto. */
+export function useSalvaPunto() {
+  const { companyId } = useSession()
+  const invalidate = useInvalidateStruttura()
+  return useMutation({
+    mutationFn: async ({
+      id,
+      nome,
+      tipo,
+      setpoint,
+      departmentId,
+    }: {
+      id?: string
+      nome: string
+      tipo: string
+      setpoint: number
+      departmentId: string | null
+    }) => {
+      if (!companyId) throw new Error('Sessione non pronta')
+      if (id) {
+        const { error } = await supabase
+          .from('conservation_points')
+          .update({ name: nome, type: tipo, setpoint_temp: setpoint, department_id: departmentId })
+          .eq('id', id)
+          .eq('company_id', companyId)
+        if (error) throw error
+      } else {
+        const { error } = await supabase.from('conservation_points').insert({
+          company_id: companyId,
+          name: nome,
+          type: tipo,
+          setpoint_temp: setpoint,
+          department_id: departmentId,
+        })
+        if (error) throw error
+      }
+    },
+    onSuccess: invalidate,
+    onError: err => logger.error('salvataggio punto fallito', err),
+  })
+}
+
 /* -------------------------------------------------------------------------- */
 /* ④ Dimostro — il dossier del giorno: CSV dei registri append-only.           */
 /* -------------------------------------------------------------------------- */

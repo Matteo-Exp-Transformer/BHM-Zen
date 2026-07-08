@@ -24,10 +24,14 @@ import {
   tonoRespiro,
   useAggiungiPersona,
   useGeneraDossier,
+  useModificaPersona,
+  useRepartiRegia,
   useRespiro,
   useStaffRegia,
   type DossierGiorno,
+  type PersonaStaff,
 } from './hooks'
+import { StrutturaSheet } from './StrutturaSheet'
 
 const RESPIRO_UI = {
   ok: {
@@ -71,10 +75,50 @@ export default function RegiaPage() {
   const { toast, show } = useToast()
 
   const [dossier, setDossier] = useState<DossierGiorno | null>(null)
-  const [sheet, setSheet] = useState<'staff' | 'haccp' | null>(null)
+  const [sheet, setSheet] = useState<'staff' | 'haccp' | 'struttura' | null>(null)
   const [nuovoNome, setNuovoNome] = useState('')
   const [nuovaEmail, setNuovaEmail] = useState('')
   const [nuovoRuolo, setNuovoRuolo] = useState<string>('dipendente')
+
+  // modifica persona (owner 08-07: «da Regia devo poter modificare staff»)
+  const modifica = useModificaPersona()
+  const { reparti } = useRepartiRegia()
+  const [personaSel, setPersonaSel] = useState<PersonaStaff | null>(null)
+  const [editNome, setEditNome] = useState('')
+  const [editEmail, setEditEmail] = useState('')
+  const [editRuolo, setEditRuolo] = useState('dipendente')
+  const [editReparti, setEditReparti] = useState<string[]>([])
+  const [editAttivo, setEditAttivo] = useState(true)
+
+  const apriModifica = (p: PersonaStaff) => {
+    setPersonaSel(p)
+    setEditNome(p.nome)
+    setEditEmail(p.email ?? '')
+    setEditRuolo(p.ruolo)
+    setEditReparti(reparti.filter(r => p.reparti.includes(r.nome)).map(r => r.id))
+    setEditAttivo(true)
+  }
+
+  const salvaModifica = () => {
+    if (!personaSel || !editNome.trim()) return
+    modifica.mutate(
+      {
+        id: personaSel.id,
+        nome: editNome.trim(),
+        ruolo: editRuolo,
+        email: editEmail.trim() || undefined,
+        reparti: editReparti,
+        attivo: editAttivo,
+      },
+      {
+        onSuccess: () => {
+          show(editAttivo ? 'Persona aggiornata.' : 'Persona disattivata.')
+          setPersonaSel(null)
+        },
+        onError: () => show('Non salvato — riprova.'),
+      },
+    )
+  }
 
   const tono = respiro ? tonoRespiro(respiro) : 'ok'
   const ui = RESPIRO_UI[tono]
@@ -244,7 +288,11 @@ export default function RegiaPage() {
           <span className="h-px flex-1 bg-hairline" />
         </div>
         <div className="grid gap-3 md:grid-cols-3">
-          <div className="flex items-center gap-3 rounded-2xl bg-surface p-4 shadow-card">
+          <button
+            type="button"
+            onClick={() => setSheet('struttura')}
+            className="flex items-center gap-3 rounded-2xl bg-surface p-4 text-left shadow-card transition-transform active:scale-[0.985]"
+          >
             <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[11px] bg-surface-2 text-ink-soft shadow-[inset_0_0_0_1px_var(--hairline)]">
               <RepartiIcon className="h-5 w-5" />
             </span>
@@ -256,7 +304,7 @@ export default function RegiaPage() {
                   : '—'}
               </span>
             </span>
-          </div>
+          </button>
           <button
             type="button"
             onClick={() => setSheet('staff')}
@@ -290,8 +338,111 @@ export default function RegiaPage() {
         </div>
       </section>
 
-      {/* sheet Staff & ruoli */}
-      <Sheet open={sheet === 'staff'} onClose={() => setSheet(null)} label="Staff e ruoli">
+      {/* sheet Staff & ruoli (tap su una persona = modifica, owner 08-07) */}
+      <Sheet
+        open={sheet === 'staff'}
+        onClose={() => {
+          setPersonaSel(null)
+          setSheet(null)
+        }}
+        label="Staff e ruoli"
+      >
+        {personaSel ? (
+          <>
+            <h3 className="text-lg font-bold tracking-tight">Modifica persona</h3>
+            <input
+              type="text"
+              value={editNome}
+              onChange={e => setEditNome(e.target.value)}
+              placeholder="Nome e cognome"
+              className="rounded-xl bg-surface-2 px-3.5 py-2.5 text-[14px] shadow-[inset_0_0_0_1px_var(--hairline)] outline-none placeholder:text-ink-mute focus:shadow-[inset_0_0_0_2px_var(--accent)]"
+            />
+            <input
+              type="email"
+              value={editEmail}
+              onChange={e => setEditEmail(e.target.value)}
+              placeholder="Email (per l'invito, opzionale)"
+              className="rounded-xl bg-surface-2 px-3.5 py-2.5 text-[14px] shadow-[inset_0_0_0_1px_var(--hairline)] outline-none placeholder:text-ink-mute focus:shadow-[inset_0_0_0_2px_var(--accent)]"
+            />
+            <div className="flex gap-1.5">
+              {RUOLI.map(r => (
+                <button
+                  key={r}
+                  type="button"
+                  onClick={() => setEditRuolo(r)}
+                  className={`flex-1 rounded-full px-2 py-2 text-[12.5px] font-bold transition-all ${
+                    editRuolo === r
+                      ? 'bg-accent text-accent-ink'
+                      : 'bg-surface-2 text-ink-soft shadow-[inset_0_0_0_1px_var(--hairline)]'
+                  }`}
+                >
+                  {RUOLO_LABEL[r]}
+                </button>
+              ))}
+            </div>
+            {reparti.length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {reparti
+                  .filter(r => r.attivo || editReparti.includes(r.id))
+                  .map(r => (
+                    <button
+                      key={r.id}
+                      type="button"
+                      onClick={() =>
+                        setEditReparti(sel =>
+                          sel.includes(r.id) ? sel.filter(id => id !== r.id) : [...sel, r.id],
+                        )
+                      }
+                      className={`rounded-full px-2.5 py-2 text-[12.5px] font-bold transition-all ${
+                        editReparti.includes(r.id)
+                          ? 'bg-accent text-accent-ink'
+                          : 'bg-surface-2 text-ink-soft shadow-[inset_0_0_0_1px_var(--hairline)]'
+                      }`}
+                    >
+                      {r.nome}
+                    </button>
+                  ))}
+              </div>
+            )}
+            <div className="flex gap-1.5">
+              {(
+                [
+                  [true, 'in servizio'],
+                  [false, 'non più in staff'],
+                ] as const
+              ).map(([val, label]) => (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => setEditAttivo(val)}
+                  className={`flex-1 rounded-full px-2 py-2 text-[12.5px] font-bold transition-all ${
+                    editAttivo === val
+                      ? 'bg-accent text-accent-ink'
+                      : 'bg-surface-2 text-ink-soft shadow-[inset_0_0_0_1px_var(--hairline)]'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            <button
+              type="button"
+              disabled={!editNome.trim() || modifica.isPending}
+              onClick={salvaModifica}
+              className="mt-1 inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-3 text-[15px] font-bold text-accent-ink shadow-card transition-transform active:scale-[0.975] disabled:opacity-50"
+            >
+              Salva
+            </button>
+            <button
+              type="button"
+              onClick={() => setPersonaSel(null)}
+              className="p-1.5 text-sm font-semibold text-ink-mute"
+            >
+              Indietro
+            </button>
+          </>
+        ) : (
+          <>
         <h3 className="text-lg font-bold tracking-tight">Staff & ruoli</h3>
         <div className="flex max-h-[38vh] flex-col gap-2 overflow-y-auto">
           {persone.length === 0 && (
@@ -300,7 +451,12 @@ export default function RegiaPage() {
             </p>
           )}
           {persone.map(p => (
-            <div key={p.id} className="flex items-center gap-3 rounded-xl bg-surface-2 p-3">
+            <button
+              key={p.id}
+              type="button"
+              onClick={() => apriModifica(p)}
+              className="flex items-center gap-3 rounded-xl bg-surface-2 p-3 text-left transition-transform active:scale-[0.985]"
+            >
               <span
                 aria-hidden="true"
                 className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-accent to-[color-mix(in_srgb,var(--accent)_60%,#7a2f16)] text-[12px] font-bold text-white"
@@ -315,7 +471,7 @@ export default function RegiaPage() {
                   {p.email && ` · ${p.email}`}
                 </p>
               </div>
-            </div>
+            </button>
           ))}
         </div>
         <div className="flex flex-col gap-2 border-t border-hairline pt-3">
@@ -366,7 +522,16 @@ export default function RegiaPage() {
             intanto la persona esiste nei registri e nelle assegnazioni.
           </p>
         </div>
+          </>
+        )}
       </Sheet>
+
+      {/* sheet Reparti & punti (① Imposto — owner 08-07) */}
+      <StrutturaSheet
+        open={sheet === 'struttura'}
+        onClose={() => setSheet(null)}
+        show={show}
+      />
 
       {/* sheet Parametri HACCP — SOLA lettura (dec. 6) */}
       <Sheet open={sheet === 'haccp'} onClose={() => setSheet(null)} label="Parametri HACCP">
