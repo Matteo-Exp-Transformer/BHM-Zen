@@ -7,7 +7,7 @@
 > **Aggiornare** questo file quando cambia qualcosa di rilevante per chi testa (nuova casa,
 > migration, utente test, gap chiusi).
 
-**Data snapshot:** 2026-07-06 · **Commit di riferimento:** `18f1ed0` (`feat(cp12): casa Regia viva + icone PWA`)
+**Data snapshot:** 2026-07-08 · **Commit di riferimento:** `35b5926` (`test(e2e): configura Playwright con smoke autenticato`)
 **Branch attivo:** `init/fondamenta` = `integrazione` = `origin` (allineati)
 
 ---
@@ -31,7 +31,7 @@ realtime e una passata sistematica di QA manuale su tutti i flussi.
 | **Calendario** | `/calendario` | tutti (stesse regole di Oggi) | Agenda verticale del mese: cose future, registro passato, **completamento anticipato** (conferma armata), storno. Temperature **non** spuntabili a distanza. |
 | **Reparti** | `/reparti` | tutti | Mappa schematica punti di conservazione, **tastierone temperatura**, auto-complete task temperatura, verdetto colore da `haccp-rules.ts`. |
 | **Scorte** | `/scorte` | tutti | Inventario per categoria, giro conteggi (`stock_counts`), liste spesa via **4 RPC** shopping, spunta voci. |
-| **Regia** | `/regia` | solo **admin / responsabile** | Respiro (numeri dal DB), dossier CSV del giorno, staff CRUD, parametri HACCP **sola lettura**. |
+| **Regia** | `/regia` | solo **admin / responsabile** | Respiro (numeri dal DB), dossier CSV del giorno, staff **aggiungi+modifica**, **Reparti & punti modificabili** (sheet Struttura, setpoint proposto dal LOCK — 08-07), parametri HACCP **sola lettura**. |
 | **Login** | `/login` | anon | Email + password (no sign-up pubblico). |
 
 **Storage / dati:** tutto vive su **Supabase Postgres** remoto (project ref `hjteuounjwkadmsbsmdm`).
@@ -72,12 +72,12 @@ src/
 | Oggi + Reparti | ✅ Live, E2E lettura + scrittura | CP8–CP9 |
 | Calendario | ✅ Live, smoke browser CP10 | Nessuna tabella nuova |
 | Scorte | ✅ Live, smoke browser CP11 | RPC shopping già sul DB (CP5) |
-| Regia | ✅ Live parziale CP12 | Respiro + dossier CSV + staff; **no onboarding 7 step** |
+| Regia | ✅ Live parziale CP12+08-07 | Respiro + dossier CSV + staff (add/edit) + **struttura reparti/pdc modificabile**; **no onboarding 7 step** |
 | Inviti staff (password) | ❌ Non implementato | FU-001 residuo — si aggiunge persona in `staff`, non auth |
 | Onboarding titolare | ❌ Non implementato | Mockup 05 esiste, codice no |
 | Realtime invalidate | ❌ Solo refetch on focus | FU-010, dec. 11 |
 | Export PDF audit-grade | ❌ Solo CSV dossier giorno | ws7 masterplan |
-| Playwright UI | ❌ | Esiste `verify:flows` script Node, non browser automation |
+| Playwright E2E | ✅ smoke read-only | `npm run test:e2e`: login + 4 case (Oggi/Calendario/Scorte/Regia) + ruoli (dipendente non vede Regia). Scritture via UI = da fare (FU-012) |
 | Multi-sede / IA / pagamenti | ❌ Fuori scope beta | |
 
 ### Database
@@ -200,8 +200,12 @@ Usare come prima passata sistematica. Segnare ✅ / ❌ / ⚠️ con data e note
 | Smoke browser Calendario (spunta anticipata + storno) | CP10 | ✅ |
 | Smoke browser Scorte | CP11 | ✅ (sessione Fable) |
 | Smoke browser Regia | CP12 | parziale (codice + validate; QA manuale sistematico **da fare**) |
+| Smoke Playwright (`test:e2e`) — login, 4 case, ruolo dipendente, struttura Regia | blindatura 08-07 | ✅ 9 test |
+| `verify:flows` esteso a Scorte + Calendario + Regia (lettura) e `--write` (RPC spesa, conteggio, anticipata+storno) | blindatura 08-07 | ✅ |
+| Component test KeypadSheet (verdetto SOLO dalla fonte-unica) | blindatura 08-07 | ✅ 3 test |
+| Probe RLS struttura (INSERT/UPDATE/DELETE departments + UPDATE pdc, admin, cleanup) | blindatura 08-07 | ✅ |
 
-**Gap QA:** nessuna suite Playwright/Cypress; nessun test automatico per Scorte/Regia/Calendario oltre unit test puri (`occurrences`, `stock`, compliance).
+**Gap QA:** gli smoke Playwright sono **read-only** (nessuna scrittura via UI: spunta, regtemp, timbro); component test assenti; `verify:flows` copre solo Oggi+Reparti. Estensioni = FU-012.
 
 ---
 
@@ -212,9 +216,9 @@ Usare come prima passata sistematica. Segnare ✅ / ❌ / ⚠️ con data e note
 | **P0** | QA manuale checklist §5 su device reale (mobile + desktop) | Prima beta interna |
 | **P0** | Inviti staff con password (FU-001) | Oggi solo admin può entrare; staff aggiunto in Regia non ha login |
 | **P1** | PNG PWA 192/512 maskable | Installazione iOS/Android affidabile |
-| **P1** | Estendere `verify:flows` a Scorte + Calendario + Regia | E2E automatico oltre Oggi/Reparti |
+| **P1** | Estendere `verify:flows` a Scorte + Calendario + Regia (FU-012; smoke Playwright read-only già estesi 08-07) | E2E automatico oltre Oggi/Reparti |
 | **P1** | Realtime / invalidate on change (FU-010) | Due tab aperte non si allineano subito |
-| **P2** | Onboarding 7 step Regia (mockup 05) | Primo setup azienda nuova |
+| **P2** | Onboarding 7 step Regia (mockup 05) — **FU-013**: attiva anche la creazione reparti+pdc da UI (oggi ① IMPOSTO = solo staff-add) | Primo setup azienda nuova |
 | **P2** | Export PDF audit-grade (ws7) | Oggi solo CSV dossier giorno |
 | **P2** | `haccp-rules.ts`: regole `pending` → validate con consulente | Verdetti su tipi punto incompleti |
 | **P3** | Code-split bundle (>500 kB warning build) | Performance, non funzionalità |
@@ -271,4 +275,4 @@ npx vitest run src/features/scorte
 
 ---
 
-**Ultimo aggiornamento:** 2026-07-06 · creato post-CP12 per handoff test/debug · commit `18f1ed0`
+**Ultimo aggiornamento:** 2026-07-08 · blindatura Fase 1: stato Playwright/smoke corretto (§3/§6/§7), utente test dipendente · → `docs/skill-system/sessioni/08-07-26/Report-senior-blindatura-fable.md`

@@ -9,11 +9,11 @@
 
 ## Dove sono (aggiornare SEMPRE per ultima cosa)
 
-- **Data**: 2026-07-06
-- **Branch**: `init/fondamenta` (push ok — origin allineato post-CP12; `integrazione` ff dopo ogni milestone)
-- **Fase masterplan (§6)**: ws1-3 ✅ · **ws4-6 QUASI COMPLETI**: tutte e 4 le case vive (Oggi+Calendario · Reparti · Scorte · Regia) + E2E scrittura CP9
-- **Ultimo checkpoint**: CP12 + post-Fable — skill lessico (62a8f98) + Playwright smoke (35b5926)
-- **Prossimo passo**: **agente senior blindatura impronta** (`PROMPT_SENIOR_BLINDATURA.md`) · poi FU-001 inviti · estensione E2E · realtime
+- **Data**: 2026-07-08
+- **Branch**: `init/fondamenta` (origin allineato post-CP12; `integrazione` ff dopo ogni milestone)
+- **Fase masterplan (§6)**: ws1-3 ✅ · ws4-6 QUASI COMPLETI (4 case vive) · **blindatura ESEGUITA per intero** (Fase 1 doc + Fase 2 test + Fase 3 fetta owner)
+- **Ultimo checkpoint**: **blindatura senior 08-07** — doc riallineati · smoke 9 test (4 case+ruoli+struttura) · verify:flows 5 aree (lettura+scrittura) · component test KeypadSheet · utente dipendente · **Regia: reparti/pdc/staff MODIFICABILI** (StrutturaSheet, setpoint dal LOCK)
+- **Prossimo passo**: **FU-001 inviti staff** (auth) → resto FU-013 (onboarding 7 step, creazione mansioni) → FU-014 cascata → FU-015 mansione Inventario · FU-010 realtime · residui FU-012 (component test conferma armata, e2e in CI)
 - **Prompt ripresa pronto**: `docs/skill-system/sessioni/06-07-26/PROMPT_RIPRESA_FABLE.md` (riga «Prossimo lavoro» aggiornata post-CP8)
 
 ## Checkpoint fatti
@@ -27,11 +27,13 @@
 | CP5 | 2026-07-06 | **8 migration audit-grade APPLICATE sul DB live** (autorizzazione owner esplicita): 015+method NOT NULL, append-only+storno (temp/task/maintenance), `shift_seals`, ciclo scadenze products, `par_level`+`stock_counts`, companies beta, 4 RPC shopping, realtime ×10. History 9/9 · smoke REST 6/6 · tipi rigenerati (2390) · validate verde. Branch `integrazione` ff+push, `main`/`integrazione` protetti (no force-push/delete). Report deep: `docs/skill-system/sessioni/06-07-26/` | *(vedi git log)* |
 | CP6 | 2026-07-06 | Revisione generale (verifiche: helper RLS solidi; **trovate 2 tabelle senza RLS** → migration hardening `20260706050000` **applicata**, history 10/10) + `docs/meta/REVISIONE_FONDAMENTA` (10 perplessità, 5 migliorie M1-M5) + `docs/meta/VISIONE_STRATEGICA_FABLE` (moat, GTM consulenti, pricing, manutenzione norme) + guide `docs/guide/` (SCOPE_PRODOTTO_BETA, PRATICHE_INGEGNERIA) + `PROMPT_RIPRESA_FABLE.md` + 2 idee nel ledger | *(vedi git log)* |
 | CP7 | 2026-07-06 | **Shell + auth FUNZIONANTI** (FU-001 core): design token canonici mockup 06 (CSS vars light/dark → Tailwind), icone SVG disegnate, `AppShell` responsive (bottom bar mobile ↔ side-rail 82px desktop, Regia solo admin/responsabile, avatar/logout), `LoginPage` solo-invito voce umana, `SessionProvider` (ruolo da `company_members` sotto RLS), route protette + guard Regia, `CalmSplash`. Utente test creato (`scripts/create-test-user.mjs`, admin @ Al Ritrovo SRL) — **login reale verificato via API + membership RLS ok** · dev server 200 · validate verde | *(vedi git log)* |
-| CP9 | 2026-07-06 | **FU-008+FU-009 chiusi** (autorizzazione owner esplicita): push branch su origin; migration `20260706070000` storno-trigger **APPLICATA** (dry-run pulito, history 11/11 — l'header «DRAFT» nel file resta: migration applicata = LOCK); `useStorna` unificata (mansioni + manutenzioni) e storno manutenzioni abilitato in OggiPage; **E2E SCRITTURA verde** via `npm run verify:flows:write` (flag `--write`, run base resta sola-lettura): lettura→trigger avanza next_due→storno manutenzione (trigger storno-aware provato live: task torna esigibile)→spunta+storno mansione→timbro+append-only shift_seals. Validate verde (29 test) | *(vedi git log)* |
-| CP12 | 2026-07-06 | **Casa Regia viva (mockup 04)** + **icone PWA**: `useRespiro` (numeri reali dal DB, tono ok/warn/alarm), tile Temperature/Mansioni/Scadenze/Turni, dossier CSV del giorno (④ Dimostro — registri append-only), staff CRUD (①, invito password = follow-up FU-001), parametri HACCP sola lettura (dec. 6), anim `anim-breathe`. Icone PWA: `public/pwa-icon.svg` + manifest. Validate verde (53 test) · build+PWA ok | *(vedi git log)* |
-| CP11 | 2026-07-06 | **Casa Scorte viva (dec. 12)** — port dal mockup 07: `stock.ts` puro (sotto-scorta par/rimanenza, stato scadenza, suggerimenti; 10 test), hooks (inventario per categoria + accordion dec. 12.6, giro d'inventario su `stock_counts` append-only con rimanenza aggiornata, liste spesa SOLO via le 4 RPC dec. 3), `ScortePage` (stepper da guanti, filtro reparto, spesa libera senza avanzamento dec. 12.4). **Verificato live**: conteggio +/− → stock_counts, lista creata via RPC, voce libera, spunta via RPC. Validate verde (53 test) | *(vedi git log)* |
-| CP10 | 2026-07-06 | **Calendario vivo (dec. 13)** — sessione interrotta a metà (limite) e ripresa: fix TS test + gate. Feature DEFINITA (`FEATURE_Calendario_vista-completa.md` + dec. 13 + scope + skill Oggi) e COSTRUITA: `occurrences.ts` puro (specchio client di `calculate_next_due_date`, 14 unit test), `useCalendario` (mese navigabile, occorrenze mansioni/manutenzioni/temperature + registro storno-aware, filtro ruoli come Oggi), `CalendarioPage` agenda verticale (spunta con conferma armata per l'anticipato, storno, giorni chiusi, temperature mai spuntabili a distanza), route `/calendario` + 📅 in header Oggi, invalidazioni incrociate. Nessuna migration (solo letture + le 2 insert di Oggi). **Verificato live nel browser**: spunta anticipata 7 lug → riga nel registro → storno → torna esigibile. Validate verde (43 test) · build+PWA ok | *(vedi git log)* |
 | CP8 | 2026-07-06 | **Port FU-002: Oggi+Reparti VIVE** (sessione interrotta a metà per limite → ripresa: commit WIP di sicurezza + 5 fix gate). Fondamenta condivise (`lib/dates` RULE-timezone, `compliance/point-verdict` ponte punto→regola SENZA numeri, sessione estesa staff/reparti, Sheet/Toast/VerdictChip, animazioni §13.5). **Oggi**: card-focus Ora/A breve/Fatto, ribbon, spunta mansioni (periodo per frequenza)+manutenzioni, **storno append-only** mansioni (dec.1), **timbro** su `shift_seals` (dec.7, sigillo animato + più turni/giorno). **Reparti**: switcher, schematico marker-verdetto (slot deterministici), tastierone da guanti condiviso, auto-complete task temperatura. Tab nome-reparto reale (FU-001). **Scoperto trigger non storno-aware** → migration draft `20260706070000` NON applicata (serve ok owner). `verify:flows` nuovo (E2E lettura RLS: 7 punti/10+10 task/5 mansioni ok) · validate 29 test verdi · build+PWA ok · dev 200 | `2201036`·`97bbe21`·`642b81d` |
+| CP9 | 2026-07-06 | **FU-008+FU-009 chiusi** (autorizzazione owner esplicita): push branch su origin; migration `20260706070000` storno-trigger **APPLICATA** (dry-run pulito, history 11/11 — l'header «DRAFT» nel file resta: migration applicata = LOCK); `useStorna` unificata (mansioni + manutenzioni) e storno manutenzioni abilitato in OggiPage; **E2E SCRITTURA verde** via `npm run verify:flows:write` (flag `--write`, run base resta sola-lettura): lettura→trigger avanza next_due→storno manutenzione (trigger storno-aware provato live: task torna esigibile)→spunta+storno mansione→timbro+append-only shift_seals. Validate verde (29 test) | *(vedi git log)* |
+| CP10 | 2026-07-06 | **Calendario vivo (dec. 13)** — sessione interrotta a metà (limite) e ripresa: fix TS test + gate. Feature DEFINITA (`FEATURE_Calendario_vista-completa.md` + dec. 13 + scope + skill Oggi) e COSTRUITA: `occurrences.ts` puro (specchio client di `calculate_next_due_date`, 14 unit test), `useCalendario` (mese navigabile, occorrenze mansioni/manutenzioni/temperature + registro storno-aware, filtro ruoli come Oggi), `CalendarioPage` agenda verticale (spunta con conferma armata per l'anticipato, storno, giorni chiusi, temperature mai spuntabili a distanza), route `/calendario` + 📅 in header Oggi, invalidazioni incrociate. Nessuna migration (solo letture + le 2 insert di Oggi). **Verificato live nel browser**: spunta anticipata 7 lug → riga nel registro → storno → torna esigibile. Validate verde (43 test) · build+PWA ok | *(vedi git log)* |
+| CP11 | 2026-07-06 | **Casa Scorte viva (dec. 12)** — port dal mockup 07: `stock.ts` puro (sotto-scorta par/rimanenza, stato scadenza, suggerimenti; 10 test), hooks (inventario per categoria + accordion dec. 12.6, giro d'inventario su `stock_counts` append-only con rimanenza aggiornata, liste spesa SOLO via le 4 RPC dec. 3), `ScortePage` (stepper da guanti, filtro reparto, spesa libera senza avanzamento dec. 12.4). **Verificato live**: conteggio +/− → stock_counts, lista creata via RPC, voce libera, spunta via RPC. Validate verde (53 test) | *(vedi git log)* |
+| CP12 | 2026-07-06 | **Casa Regia viva (mockup 04)** + **icone PWA**: `useRespiro` (numeri reali dal DB, tono ok/warn/alarm), tile Temperature/Mansioni/Scadenze/Turni, dossier CSV del giorno (④ Dimostro — registri append-only), staff CRUD (①, invito password = follow-up FU-001), parametri HACCP sola lettura (dec. 6), anim `anim-breathe`. Icone PWA: `public/pwa-icon.svg` + manifest. Validate verde (53 test) · build+PWA ok | *(vedi git log)* |
+| post-CP12 | 2026-07-06 | Skill-system lessico elemento owner (pdc, regtemp, piantina, prova haccp…) + PREPARA_PROMPT/TESTING compilate (`62a8f98`) · Playwright smoke autenticato (`35b5926`) · HEALTH_CHECK in repo · prompt senior blindatura | `62a8f98`·`35b5926` |
+| blindatura | 2026-07-08 | **Sessione Meta senior → esecuzione completa**: matrice drift 9 aree + piano 3 fasi. **Fase 1** doc riallineati (HEALTH_CHECK, DB_SKILL §3, SCORTE_SKILL, REPARTI_SKILL cascata, SESSION_LOG, banner mappe, nota Docker, `docs/Archivio/` rimosso). **Fase 2**: smoke Playwright **9 test** (4 case + struttura + login) · utente test **dipendente** (`--dipendente`) + test ruoli (non vede Regia) · `verify:flows` esteso a 5 aree, `--write` con Scorte (conteggio, RPC lista, spunta, voce libera) e Calendario (anticipata+storno) · fix clock-skew timbro · component test KeypadSheet (3, verdetto dal LOCK) · `validate:full`. **Fase 3 (fetta owner)**: **Regia → StrutturaSheet** (crea/modifica reparti e pdc, setpoint proposto DAL LOCK) + **modifica staff** (ruolo, reparti, in servizio) — RLS provata live (probe insert/update/delete pulito). Gate: validate 56 unit ✅ · e2e 9/9 ✅. Decisioni owner: UI dai mockup (logica legacy sì, componenti no) | *(vedi git log)* |
 
 ## Decisioni prese in sessione (owner, 2026-07-06)
 
@@ -39,6 +41,11 @@
 2. **MCP Supabase**: divieto CONFERMATO anche se i server risultano configurati nell'ambiente — solo CLI + script npm.
 3. **Dati DB**: solo dati test/owner sul DB live → migration ok una volta fatta la baseline pull (comunque additive, append-only, mai distruttive).
 4. **Utente test E2E**: credenziali in `.env.local` (`TEST_USER_*`); Fable è autorizzato a creare l'utente via admin API quando l'auth esiste.
+
+**Decisioni owner 2026-07-08 (sessione blindatura):**
+
+5. **Form legacy in Regia/onboarding**: si riusa la **logica di validazione/compliance** dei form BHM-v.2 (conservation, management, onboarding-steps) — la **UI resta dai mockup** (conferma vincolo SCOPE).
+6. **Onboarding** = gap ① IMPOSTO da chiudere in Fase 3 (attiva creazione reparti+pdc da UI).
 
 ## Vincoli sempre attivi (promemoria rapido)
 
@@ -51,14 +58,14 @@
 ## Rotta (sequenza §6 masterplan, adattata)
 
 1. ✅ Fondamenta prodotto (masterplan validato — nessuna contraddizione grave)
-2. 🔄 Baseline DB: pull schema live → tipi generati (**prima** di ogni codice, schema = verità)
-3. 🔄 Skill-system §14.5 (bussola, 3 porte, RULE, vocabolario, haccp-rules stampo)
-4. ⬜ Scaffold app (Vite+React+TS, stack da §5 FABLE_AVVIO)
-5. ⬜ Migration gap audit-grade (015, RPC shopping, shift_seals, append-only, products, companies)
-6. ⬜ Port logica (hooks/services cherry-pick) + UI dai mockup
-7. ⬜ Stabilizzazione + export audit-grade
+2. ✅ Baseline DB: pull schema live + tipi generati (CP2)
+3. ✅ Skill-system §14.5 (CP3; lessico owner post-CP12)
+4. ✅ Scaffold app (CP4)
+5. ✅ Migration gap audit-grade (CP5 + CP6 + CP9 — history 11/11)
+6. 🔄 Port logica + UI dai mockup — 4 case vive (CP7–CP12) + **struttura reparti/pdc/staff modificabile da Regia** (08-07); **manca**: onboarding 7 step, creazione mansioni, inviti (FU-001/FU-013) + cascata (FU-014)
+7. 🔄 Stabilizzazione + export audit-grade — blindatura 08-07 COMPLETA (doc + rete test: 9 e2e, 56 unit, verify:flows 5 aree); export = solo CSV giorno (PDF ws7)
 8. ⬜ Beta (Vercel nuovo progetto)
 
 ---
 
-**Ultimo aggiornamento**: 2026-07-06 · post-CP12: skill lessico + Playwright + prompt senior blindatura · → Report-skill-lessico-playwright
+**Ultimo aggiornamento**: 2026-07-08 · blindatura senior: righe post-CP12/blindatura, rotta allineata (2-5 ✅), decisioni owner 5-6 · → `docs/skill-system/sessioni/08-07-26/Report-senior-blindatura-fable.md`

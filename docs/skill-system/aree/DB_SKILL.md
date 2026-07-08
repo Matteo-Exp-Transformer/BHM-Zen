@@ -11,7 +11,7 @@ description: >-
 > Verità di dettaglio: [`MAPPA_Fondamenta_DB-tipi.md`](../../meta/MAPPATURA_AREE/MAPPA_Fondamenta_DB-tipi.md)
 > (schema target audit-grade §4) + [`FASE3_MIGRATION_GAPS.md`](../../meta/FASE3_MIGRATION_GAPS.md)
 > (inventario gap) + baseline live `supabase/migrations/20260706015742_remote_schema.sql`.
-> **Gap ri-verificati sul live 2026-07-06** (sessione Fable): tutti confermati.
+> **Gap ri-verificati sul live 2026-07-06 e CHIUSI in CP5/CP6/CP9** — stato in §3.
 
 ## 1. A che serve (il senso)
 
@@ -30,19 +30,25 @@ retention, export con valore probatorio. Registro = sottoprodotto del fare, non 
 5. **Il DB `hjteuounjwkadmsbsmdm` è l'unico DB (condiviso col legacy deployato)**: solo dati
    test (conferma owner 2026-07-06), ma trattalo con cautela da PROD.
 
-## 3. Gap confermati sul live (ordine di applicazione indicativo)
+## 3. Stato migration — gap CHIUSI (CP5/CP6/CP9, 2026-07-06)
 
-| # | Gap | Decisione | Priorità |
-|---|-----|-----------|----------|
-| 1 | `temperature_readings`: `method` (NOT NULL target), `notes`, `photo_evidence`, `recorded_by` | dec. 8 + mig. 015 | **P0** |
-| 2 | Append-only: trigger no-UPDATE/DELETE su `temperature_readings`, `task_completions`, `maintenance_completions` | dec. 1 | **P0** |
-| 3 | 4 RPC shopping + RLS (`create_shopping_list_with_items`, `get_shopping_lists_with_stats`, `toggle_shopping_list_item`, `complete_shopping_list`) | dec. 3 (mig. 007) | **P0** |
-| 4 | `shift_seals` append-only (company_id, user_id, opened_at, closed_at, attestation) | dec. 7 | P1 |
-| 5 | `products`: `expired_at`, `previous_product_id`, `reinsertion_count`, `archived_at`, status `archived` | dec. 10 | P1 |
-| 6 | `products.par_level` + storico conteggi (`stock_counts`) | dec. 12 | P1 |
-| 7 | `companies`: + `vat_number`, + `onboarding_completed`; UI senza licenza | dec. 4 | P2 |
-| 8 | Publication realtime + REPLICA IDENTITY su tabelle condivise beta | dec. 11 | P2 |
-| 9 | `notification_preferences` | **NON creare** (dec. 5) | — |
+History locale = remota (**11/11**). Le migration applicate sono **LOCK** (append-only, Bussola §2):
+
+| Migration | Cosa | Decisione |
+|-----------|------|-----------|
+| `20260706015742_remote_schema` | baseline dal live (37 tabelle) | regola d'oro §1 |
+| `20260706040000_temperature_readings_audit_grade` | `method` NOT NULL + `notes`/`photo_evidence`/`recorded_by` | dec. 8 |
+| `20260706040100_append_only_completions` | trigger no-UPDATE/DELETE su letture/completamenti | dec. 1 |
+| `20260706040200_shift_seals` | timbro append-only (opened/closed/attestation) | dec. 7 |
+| `20260706040300_products_expiry_cycle` | ciclo scadenze + reinserimento + `archived` | dec. 10 |
+| `20260706040400_par_level_stock_counts` | `par_level` + storico conteggi `stock_counts` | dec. 12 |
+| `20260706040500_companies_beta` | companies snella (`vat_number`, `onboarding_completed`) | dec. 4 |
+| `20260706040600_shopping_rpcs` | 4 RPC shopping + RLS | dec. 3 |
+| `20260706040700_realtime_publication` | publication + REPLICA IDENTITY ×10 | dec. 11 |
+| `20260706050000_rls_hardening_relics` | RLS sulle 2 tabelle relitto scoperte in CP6 | PRATICHE §2 |
+| `20260706070000_storno_maintenance_trigger` | trigger storno-aware manutenzioni (CP9; header «DRAFT» nel file = superato, file LOCK) | dec. 1 |
+
+`notification_preferences` **non creata** (dec. 5) — non è un gap, è una decisione.
 
 ## 4. Limiti e regole VOLUTE — NON «aggiustarle»
 
@@ -73,4 +79,4 @@ RULE  ogni task DB = modalità DEEP (Bussola §6)
 
 ---
 
-**Ultimo aggiornamento**: 2026-07-06 · scaffolding iniziale + gap ri-verificati sul live, baseline allineata (installazione §14.5) · → sessione Fable CP3 (git log)
+**Ultimo aggiornamento**: 2026-07-08 · blindatura Fase 1: §3 riscritta da «gap da applicare» a «stato applicato» (11 migration, history 11/11) · → `sessioni/08-07-26/Report-senior-blindatura-fable.md`

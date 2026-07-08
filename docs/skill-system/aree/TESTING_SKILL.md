@@ -59,6 +59,7 @@ npm run test:e2e          # Playwright — avvia dev server + smoke browser
 npm run test:e2e:ui       # Playwright UI mode (debug)
 npm run test:e2e:report   # apre ultimo report HTML Playwright
 npm run validate          # gate pre-PR: lint + typecheck + test (unit only)
+npm run validate:full     # validate + test:e2e (gate completo, serve .env.local)
 npm run verify:setup      # bootstrap ambiente (prima sessione)
 npm run verify:flows      # E2E lettura RLS — Oggi + Reparti (serve .env.local + TEST_USER_*)
 npm run verify:flows:write  # E2E SCRITTURA sul DB live — righe permanenti; ok owner prima
@@ -99,9 +100,13 @@ Non dichiarare «verificato» con una sola larghezza né con la sola lettura del
 
 | Percorso | Cosa copre |
 |----------|------------|
-| `e2e/auth.setup.ts` | Login utente test → `e2e/.auth/user.json` (gitignored) |
-| `e2e/smoke.spec.ts` | Oggi caricato, navigazione case, pagina login |
+| `e2e/auth.setup.ts` | Login utente test admin → `e2e/.auth/user.json` (gitignored) |
+| `e2e/smoke.spec.ts` | Oggi caricato, navigazione case, Calendario, Scorte, Regia (dossier+parametri), pagina login |
+| `e2e/ruoli.spec.ts` | Guard ruoli: dipendente non vede Regia (barra + route `/regia` rimbalza) — login fresco `TEST_USER_DIPENDENTE_*` |
 | `playwright.config.ts` | webServer Vite :3000, progetto chromium |
+
+**Utente dipendente:** `node scripts/create-test-user.mjs --dipendente` (credenziali
+`TEST_USER_DIPENDENTE_*` in `.env.local`).
 
 ### Unit (Vitest)
 
@@ -112,9 +117,16 @@ Non dichiarare «verificato» con una sola larghezza né con la sola lettura del
 | `src/lib/dates.test.ts` | RULE timezone (mai `toISOString().split`) |
 | `src/features/calendario/occurrences.test.ts` | Occorrenze calendario (logica pura) |
 | `src/features/scorte/stock.test.ts` | Sotto-scorta, scadenze, suggerimenti |
+| `src/features/reparti/KeypadSheet.test.tsx` | Component: regtemp — cablaggio UI→fonte-unica (verdetto calcolato dal LOCK nel test, hook mockato), segno/cancella, errore non chiude |
 
-**Gap noto:** `verify:flows` copre solo Oggi+Reparti via API; Playwright smoke non ancora esteso a
-Scorte/Calendario/Regia né a scritture UI.
+**verify:flows** (esteso 08-07): lettura RLS su Oggi+Reparti+Scorte+Calendario+Regia;
+`--write` copre regtemp→trigger→storno, spunta+storno, timbro, giro conteggio, lista via
+RPC + spunta + voce libera, spunta anticipata+storno. Gate completo: `npm run validate:full`
+(= validate + test:e2e).
+
+**Gap noto:** gli smoke Playwright sono read-only (nessuna scrittura via UI: spunta, regtemp,
+timbro); component test = solo KeypadSheet (manca conferma armata Calendario — FU-012 residuo);
+`test:e2e` non è nel gate `validate` (usare `validate:full` — CI da decidere).
 
 ---
 
@@ -128,4 +140,4 @@ RULE  test che scrivono sul DB → documentare nel report cosa resta sul live
 
 ---
 
-**Ultimo aggiornamento**: 2026-07-06 · Playwright configurato (test:e2e smoke) + verify:flows · → sessione playwright
+**Ultimo aggiornamento**: 2026-07-08 · blindatura Fase 2 completa: smoke 9 test (4 case+ruoli+struttura), verify:flows esteso a 5 aree, component test KeypadSheet, `validate:full` · → `sessioni/08-07-26/Report-senior-blindatura-fable.md`

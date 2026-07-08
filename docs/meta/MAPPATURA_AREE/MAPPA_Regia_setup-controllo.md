@@ -1,6 +1,11 @@
 # MAPPA — 🎬 Regia · setup + controllo + dossier (titolare)
 **Data:** 2026-07-06 · **Fonte verità:** codice + snapshot DB live A1/A4/A6 (05-07) · **Report Fase 3 base:** A1, A4, A6 (+ A7 export)
 
+> 🕰️ **Fotografia storica pre-Fable** (legacy BHM-v.2). L'area è PARZIALMENTE viva in
+> `src/features/regia/` (CP12: respiro, dossier CSV, staff-add; onboarding/① IMPOSTO = FU-013):
+> stato reale in `docs/guide/HEALTH_CHECK_POST_FABLE.md`. La mappa resta come razionale dei
+> verdetti di riuso — non aggiornarla al presente.
+
 > ⚠️ **Accesso DB**: schema live = **snapshot del 2026-07-05** (token MCP di sessione non raggiunge
 > `hjteuounjwkadmsbsmdm`). Schema target: [`MAPPA_Fondamenta_DB-tipi.md`](./MAPPA_Fondamenta_DB-tipi.md).
 

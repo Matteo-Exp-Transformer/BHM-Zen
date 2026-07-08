@@ -1,5 +1,10 @@
 # 00 · Indice — Mappatura area per area
 
+> 🕰️ **Fotografia storica pre-Fable (05/06-07-2026).** Queste mappe descrivono il LEGACY BHM-v.2 e
+> hanno già alimentato la costruzione (CP1–CP12). Oggi la verità è il codice BHM-Zen: per lo stato
+> reale leggi `docs/guide/HEALTH_CHECK_POST_FABLE.md`. Le mappe restano come razionale dei verdetti
+> di riuso e dello schema target.
+
 > **Cos'è**: la mappa (flusso utente + flusso dati + schema target audit-grade + verdetto riuso) di
 > ogni area, con **codice+DB come verità**, che alimenta la ricostruzione di Fable (§6.5 UI, §6.6 port logica).
 > **Handoff di riferimento**: [`../HANDOFF_MAPPATURA_AREE.md`](../HANDOFF_MAPPATURA_AREE.md) · **decide**: masterplan §8.

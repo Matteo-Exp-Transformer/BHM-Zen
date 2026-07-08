@@ -1,6 +1,10 @@
 # MAPPA — 📦 Scorte · Inventory + Shopping (prodotti, scadenze, liste spesa)
 **Data:** 2026-07-06 · **Fonte verità:** codice + snapshot DB live A5 (05-07) · **Report Fase 3 base:** A5
 
+> 🕰️ **Fotografia storica pre-Fable** (legacy BHM-v.2). L'area è VIVA in `src/features/scorte/`
+> (CP11, RPC dec. 3): stato reale in `docs/guide/HEALTH_CHECK_POST_FABLE.md`.
+> La mappa resta come razionale dei verdetti di riuso — non aggiornarla al presente.
+
 > ⚠️ **Accesso DB**: schema live = **snapshot A5 del 2026-07-05** (token MCP di sessione non raggiunge
 > `hjteuounjwkadmsbsmdm`). Schema target: [`MAPPA_Fondamenta_DB-tipi.md`](./MAPPA_Fondamenta_DB-tipi.md).
 

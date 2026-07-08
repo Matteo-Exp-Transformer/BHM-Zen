@@ -1,6 +1,10 @@
 # MAPPA — 🧱 Fondamenta · DB schema + tipi/servizi condivisi (A0 + A7)
 **Data:** 2026-07-06 · **Fonte verità:** codice + snapshot DB live A0 (05-07) · **Report Fase 3 base:** A0, A7
 
+> 🕰️ **Fotografia storica pre-Fable** (legacy BHM-v.2). Da CP2–CP12 la verità è il codice BHM-Zen
+> (`src/` + `supabase/migrations/`, history 11/11): stato reale in `docs/guide/HEALTH_CHECK_POST_FABLE.md`.
+> La mappa resta come razionale dei verdetti di riuso e dello schema target — non aggiornarla al presente.
+
 > ⚠️ **Nota accesso DB**: in questa sessione i token MCP Supabase **non raggiungono** il progetto BHM
 > `hjteuounjwkadmsbsmdm` (vedono altri progetti). Lo schema live qui riportato = **snapshot A0 del
 > 2026-07-05** (read-only, dettagliato). **To-do owner**: ripristinare il token MCP sul progetto BHM

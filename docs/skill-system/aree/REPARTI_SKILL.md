@@ -52,6 +52,7 @@ attento / rosso raro), sussurro HACCP che si dissolve (~2s). Cascata: le opzioni
 | Editor mappa | builder strutturato in beta; disegno libero = roadmap (§12.3) | schematico CP8 = slot deterministici; posizioni vere col builder Regia |
 | Realtime | pattern invalidate-on-change (dec. 11); floor refetch-on-focus attivo | FU-010 (subscriptions non portate) |
 | Metodo lettura | obbligatorio (dec. 8) — beta: default `digital_thermometer`, la UI non chiede | selettore metodo = da valutare con owner |
+| 💧 **Cascata** (gesto-firma 2) | mockup 03 approvato; inserimento prodotti con compliance; riuso logica form legacy (owner 08-07), UI dai mockup | **NON implementata** — FU-014 (in questa skill è design, non codice) |
 
 ## 6. LOCK di area
 
@@ -73,4 +74,4 @@ RULE  temperature_readings: INSERT-only; storno per annullare (dec. 1)
 
 ---
 
-**Ultimo aggiornamento**: 2026-07-06 · lessico-elemento owner (pdc, regtemp, piantina, cascata) · → sessione skill-system lessico+testing
+**Ultimo aggiornamento**: 2026-07-08 · blindatura Fase 1: nota esplicita «cascata NON implementata» (FU-014) in §5 · → `sessioni/08-07-26/Report-senior-blindatura-fable.md`

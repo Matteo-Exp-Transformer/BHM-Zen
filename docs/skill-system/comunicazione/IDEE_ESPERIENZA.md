@@ -61,6 +61,15 @@
 - **Stato:** 💡
 - **Autore-sessione:** 06-07-26 · Report-port-fu002-fable
 
+### piantina Reparti ↔ struttura Regia — stesso oggetto, due lenti anche per il titolare
+- **Idea:** il titolare che tocca un pdc sulla piantina di Reparti potrebbe avere (solo lui) una
+  via diretta alla modifica del punto (lo stesso sheet della Struttura in Regia) — «stesso item,
+  due lenti» §12.1 applicato anche al gesto di setup: correggi il frigo dove lo vedi, non dove
+  lo amministri.
+- **Perché migliora:** navigazione (zero caccia al menu) + compliance (setpoint corretto subito)
+- **Stato:** 💡
+- **Autore-sessione:** 08-07-26 · Report-senior-blindatura-fable
+
 ---
 
-**Ultimo aggiornamento**: 2026-07-06 · +2 voci (mappa-morphing, sigilli-ceralacca) da CP8 · → Report-port-fu002-fable
+**Ultimo aggiornamento**: 2026-07-08 · +1 voce (piantina↔struttura, due lenti per il titolare) · → Report-senior-blindatura-fable

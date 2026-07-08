@@ -1,6 +1,10 @@
 # MAPPA — 🕐 Oggi · Calendar / Attività (diario, mansioni, completamenti)
 **Data:** 2026-07-06 · **Fonte verità:** codice + snapshot DB live A0/A3 (05-07) · **Report Fase 3 base:** A3
 
+> 🕰️ **Fotografia storica pre-Fable** (legacy BHM-v.2). L'area è VIVA in `src/features/oggi/` +
+> `src/features/calendario/` (CP8–CP10): stato reale in `docs/guide/HEALTH_CHECK_POST_FABLE.md`.
+> La mappa resta come razionale dei verdetti di riuso — non aggiornarla al presente.
+
 > ⚠️ **Accesso DB**: schema live = **snapshot A3/A0 del 2026-07-05** (token MCP di sessione non
 > raggiunge `hjteuounjwkadmsbsmdm`). Schema target di riferimento: [`MAPPA_Fondamenta_DB-tipi.md`](./MAPPA_Fondamenta_DB-tipi.md).
 

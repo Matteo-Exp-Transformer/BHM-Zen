@@ -41,14 +41,23 @@ dai sotto-scorta. Appare in **Oggi** come reminder (stesso item, due lenti).
 - **Ciclo scadenze completo** (dec. 10): `expired_at` + reinserimento (`previous_product_id`,
   `reinsertion_count`, `archived_at`, status `archived`) + storico. Mai DELETE fisico del prodotto.
 
-## 5. Questioni aperte
+## 5. Implementazione beta (CP11, 2026-07-06)
+
+Viva in `src/features/scorte/`: `stock.ts` puro (sotto-scorta par/rimanenza, stato scadenza,
+suggerimenti — 10 unit test), hooks (inventario per categoria + accordion dec. 12.6, giro
+d'inventario su `stock_counts` append-only con rimanenza aggiornata, liste spesa SOLO via le
+4 RPC dec. 3), `ScortePage` (stepper da guanti, filtro reparto, voce libera, spesa senza
+avanzamento dec. 12.4). **Verificato live CP11**: conteggio +/− → `stock_counts`, lista via RPC,
+voce libera, spunta via RPC.
+
+## 5-bis. Questioni aperte
 
 | Questione | Decisione | Stato |
 |-----------|-----------|-------|
-| 4 RPC shopping sul live | deploy migration (gap P0) | da applicare |
-| `par_level` + storico conteggi (`stock_counts`) | migration nuova | da progettare |
-| Tipo mansione «Inventario» nel sistema tasks | nuovo tipo + generatore ricorrenze | da progettare |
-| Scadenza per lotto vs flat | da valutare in implementazione | aperta |
+| 4 RPC shopping sul live | migration `20260706040600` | ✅ applicata CP5, usate da CP11 |
+| `par_level` + storico conteggi (`stock_counts`) | migration `20260706040400` | ✅ applicata CP5, usati da CP11 |
+| Tipo mansione «Inventario» nel sistema tasks | nuovo tipo + generatore ricorrenze (dec. 12) | **FU-015** — il giro CP11 è manuale, non mansione assegnabile |
+| Scadenza per lotto vs flat · cattura scadenza all'inserimento | da valutare con la cascata (FU-014) | aperta |
 
 ## 6. LOCK di area
 
@@ -67,4 +76,4 @@ RULE  spesa senza avanzamento/completamento (dec. 12) — non «aggiungerlo per 
 
 ---
 
-**Ultimo aggiornamento**: 2026-07-06 · scaffolding iniziale (installazione §14.5) · → sessione Fable CP3 (git log)
+**Ultimo aggiornamento**: 2026-07-08 · blindatura Fase 1: sezione «Implementazione beta CP11» + questioni aperte allineate (RPC/par_level applicate; mansione Inventario = FU-015) · → `sessioni/08-07-26/Report-senior-blindatura-fable.md`

@@ -71,6 +71,9 @@ supabase login
 npm run supabase:link
 ```
 
+> ⚠️ **`npm run supabase:pull` (db pull) richiede Docker Desktop ATTIVO** (shadow DB locale) —
+> trappola nota FU-006. CLI verificata ≥ 2.106; bump ≥ 2.109 da valutare al prossimo uso CLI.
+
 ### 2.3 ⚠️ Stato migration (critico per Fable)
 
 Il DB remoto **esiste ed è popolato** (companies, conservation_points, staff, … verificato 2026-07-06).
@@ -216,4 +219,4 @@ npm run verify:setup                  # ✅ tutto
 
 ---
 
-**Ultimo aggiornamento**: 2026-07-06 · Bootstrap BHM-Zen + Supabase CLI linkata e testata · → sessione owner setup Fable
+**Ultimo aggiornamento**: 2026-07-08 · nota Docker per `db pull` (FU-006) · → `docs/skill-system/sessioni/08-07-26/Report-senior-blindatura-fable.md`

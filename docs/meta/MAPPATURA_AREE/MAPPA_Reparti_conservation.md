@@ -1,6 +1,10 @@
 # MAPPA — 🧭 Reparti · Conservation (punti + temperatura + manutenzioni)
 **Data:** 2026-07-06 · **Fonte verità:** codice + snapshot DB live A0/A2 (05-07) · **Report Fase 3 base:** A2 (+ A0)
 
+> 🕰️ **Fotografia storica pre-Fable** (legacy BHM-v.2). L'area è VIVA in `src/features/reparti/`
+> (CP8; cascata NON ancora portata = FU-014): stato reale in `docs/guide/HEALTH_CHECK_POST_FABLE.md`.
+> La mappa resta come razionale dei verdetti di riuso — non aggiornarla al presente.
+
 > ⚠️ **Accesso DB**: schema live = **snapshot A0/A2 del 2026-07-05** (token MCP di sessione non
 > raggiunge `hjteuounjwkadmsbsmdm`). Vedi nota in [`MAPPA_Fondamenta_DB-tipi.md`](./MAPPA_Fondamenta_DB-tipi.md).
 > Schema target di riferimento: la mappa Fondamenta (questa area ne è il primo grande consumatore).
